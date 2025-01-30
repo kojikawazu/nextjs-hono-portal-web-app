@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ポータルWebアプリケーション(フロント側 + バックエンド側)(リニューアル版)
 
-## Getting Started
+## Summary
 
-First, run the development server:
+- 私のポータルWebサイトがリニューアルしました。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- 以下が解消されました。
+    - デザインのリニューアル
+    - Vercel → Cloud Runによりインフラの統一化
+    - Cloudflareによりセキュリティ強化
+    - Cloud Storageによりリソースの分離
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Site
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+以下URLで公開しています。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+[https://smartportalcom.com/](https://smartportalcom.com/)
 
-## Learn More
+## Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+[![React](https://img.shields.io/badge/React-18.3.1-blue)](https://reactjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.4-blue)](https://www.typescriptlang.org)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2.1-blue)](https://nextjs.org)
+[![Hono](https://img.shields.io/badge/Hono-4.5.0-blue)](https://hono.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.11-blue)](https://tailwindcss.com)
+[![Google Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-1.1.0-blue)](https://cloud.google.com/run)
+[![Google Cloud Storage](https://img.shields.io/badge/Google%20Cloud%20Storage-1.1.0-blue)](https://cloud.google.com/storage)
+[![Google Cloud Artifact Registry](https://img.shields.io/badge/Google%20Cloud%20Artifact%20Registry-1.1.0-blue)](https://cloud.google.com/artifact-registry)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-1.1.0-blue)](https://www.cloudflare.com)
+[![Terraform](https://img.shields.io/badge/Terraform-1.1.0-blue)](https://www.terraform.io)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-1.1.0-blue)](https://github.com/features/actions)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+TODO
 
-## Deploy on Vercel
+## Archived
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+アーカイブ用リポジトリは以下になります。
+※非公開分は未記載。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[Web側リポジトリ](https://github.com/kojikawazu/archived-nextjs-portal-app)
