@@ -18,21 +18,21 @@
 
 ## Tech Stack
 
-[![React](https://img.shields.io/badge/React-18.3.1-blue)](https://reactjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.5.4-blue)](https://www.typescriptlang.org)
-[![Next.js](https://img.shields.io/badge/Next.js-14.2.1-blue)](https://nextjs.org)
-[![Hono](https://img.shields.io/badge/Hono-4.5.0-blue)](https://hono.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.11-blue)](https://tailwindcss.com)
-[![Google Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-1.1.0-blue)](https://cloud.google.com/run)
-[![Google Cloud Storage](https://img.shields.io/badge/Google%20Cloud%20Storage-1.1.0-blue)](https://cloud.google.com/storage)
-[![Google Cloud Artifact Registry](https://img.shields.io/badge/Google%20Cloud%20Artifact%20Registry-1.1.0-blue)](https://cloud.google.com/artifact-registry)
-[![Cloudflare](https://img.shields.io/badge/Cloudflare-1.1.0-blue)](https://www.cloudflare.com)
-[![Terraform](https://img.shields.io/badge/Terraform-1.1.0-blue)](https://www.terraform.io)
-[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-1.1.0-blue)](https://github.com/features/actions)
+[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org)
+[![Next.js](https://img.shields.io/badge/Next.js-14-blue)](https://nextjs.org)
+[![Hono](https://img.shields.io/badge/Hono-4.6.19-blue)](https://hono.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-blue)](https://tailwindcss.com)
+[![Google Cloud Run](https://img.shields.io/badge/Google%20Cloud%20Run-blue)](https://cloud.google.com/run)
+[![Google Cloud Storage](https://img.shields.io/badge/Google%20Cloud%20Storage-blue)](https://cloud.google.com/storage)
+[![Google Cloud Artifact Registry](https://img.shields.io/badge/Google%20Cloud%20Artifact%20Registry-blue)](https://cloud.google.com/artifact-registry)
+[![Cloudflare](https://img.shields.io/badge/Cloudflare-blue)](https://www.cloudflare.com)
+[![Terraform](https://img.shields.io/badge/Terraform-blue)](https://www.terraform.io)
+[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-blue)](https://github.com/features/actions)
 
 ## Architecture
 
-TODO
+![Architecture](./architecture/architecture.drawio.png)
 
 ## Archived
 
