@@ -16,7 +16,7 @@ const Hero = () => {
 
             <div className="relative z-10 text-center px-4 animate-fade-in">
                 <div className="inline-block mb-6 px-4 py-2 bg-secondary/50 backdrop-blur-sm rounded-full">
-                    <span className="text-primary">Creative Developer</span>
+                    <span className="text-primary">Developers Hub</span>
                 </div>
 
                 <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
@@ -28,7 +28,7 @@ const Hero = () => {
                 <p className="text-gray-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
                     フロントエンド、バックエンド、インフラまで。
                     <br />
-                    モダンな技術で革新的なソリューションを提供します。
+                    多様な技術を探求し、最適な価値を提供します。 
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
