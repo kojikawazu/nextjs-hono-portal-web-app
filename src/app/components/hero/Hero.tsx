@@ -32,7 +32,7 @@ const Hero = () => {
                 <p className="text-gray-400 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
                     フロントエンド、バックエンド、インフラまで。
                     <br />
-                    多様な技術を探求し、最適な価値を提供します。 
+                    多様な技術を探求し、最適な価値を提供します。
                 </p>
 
                 {isLoading ? (
@@ -43,10 +43,10 @@ const Hero = () => {
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Link
                             href={commonData?.portfolioUrl || ''}
-                        className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-dark font-medium rounded-full transition-colors duration-200"
-                    >
-                        View Portfolio
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                            className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-dark font-medium rounded-full transition-colors duration-200"
+                        >
+                            View Portfolio
+                            <ArrowRight className="ml-2 h-4 w-4" />
                         </Link>
                         <Link
                             href="/contact/form"
