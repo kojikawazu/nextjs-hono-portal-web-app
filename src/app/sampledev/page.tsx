@@ -102,22 +102,22 @@ const SampleHistoryDevPage = () => {
                         サンプル開発履歴
                     </motion.h1>
 
-                    <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                    >
-                        {isLoading ? (
-                            <div className="flex justify-center items-center h-screen">
-                                <PulseLoader color="#ffffff" size={10} />
-                            </div>
-                        ) : sampleDevDataList.length == 0 ? (
-                            <div className="text-white text-center">
-                                <p>No sample development data available.</p>
-                            </div>
-                        ) : (
-                            sampleDevDataList.map((sample, index) => (
+                    {isLoading ? (
+                        <div className="flex justify-center items-center min-h-screen">
+                            <PulseLoader color="#ffffff" size={10} />
+                        </div>
+                    ) : sampleDevDataList.length == 0 ? (
+                        <div className="text-white text-center">
+                            <p>No sample development data available.</p>
+                        </div>
+                    ) : (
+                        <motion.div
+                            variants={containerVariants}
+                            initial="hidden"
+                            animate="visible"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                        >
+                            {sampleDevDataList.map((sample, index) => (
                                 <motion.div
                                     key={index}
                                     variants={itemVariants}
@@ -159,9 +159,9 @@ const SampleHistoryDevPage = () => {
                                         </Link>
                                     </div>
                                 </motion.div>
-                            ))
-                        )}
-                    </motion.div>
+                            ))}
+                        </motion.div>
+                    )}
                 </div>
             </div>
             {isHome && <Footer />}
