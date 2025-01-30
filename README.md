@@ -14,7 +14,7 @@
 
 以下URLで公開しています。
 
-[https://smartportalcom.com/](https://smartportalcom.com/)
+[該当サイト](https://smartportalcom.com/)
 
 ## Tech Stack
 
