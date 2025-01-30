@@ -31,7 +31,6 @@
 [![Google Cloud Run](https://img.shields.io/badge/-Google%20Cloud%20Run-4285F4?style=flat-square&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
 [![Google Cloud Storage](https://img.shields.io/badge/-Google%20Cloud%20Storage-4285F4?style=flat-square&logo=google-cloud&logoColor=white)](https://cloud.google.com/storage)
 [![Google Cloud Artifact Registry](https://img.shields.io/badge/-Google%20Cloud%20Artifact%20Registry-4285F4?style=flat-square&logo=google-cloud&logoColor=white)](https://cloud.google.com/artifact-registry)
-[![Cloudflare](https://img.shields.io/badge/-Cloudflare-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://www.cloudflare.com/)
 [![Terraform](https://img.shields.io/badge/-Terraform-000000?style=flat-square&logo=terraform&logoColor=white)](https://www.terraform.io/)
 [![GitHub Actions](https://img.shields.io/badge/-GitHub%20Actions-2088FF?style=flat-square&logo=github-actions&logoColor=white)](https://github.com/features/actions)
 
