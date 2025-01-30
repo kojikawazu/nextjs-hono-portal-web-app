@@ -1,18 +1,15 @@
-## API の有効リスト
-
-- Artifact Registry API の有効化
-- Cloud Run API の有効化
-- Cloud DNS API の有効化
-
-## Google Cloud のセットアップ
+# Terraform のセットアップ
 
 ```bash
-# 認証情報の設定
-gcloud auth application-default login
+# ディレクトリ移動
+cd terraform
 
-# プロジェクト設定
-gcloud config set project [project-id]
+# 初期化
+terraform init
 
-# プロジェクト取得
-gcloud config get-value project
+# 計画
+terraform plan
+
+# 適用
+terraform apply -auto-approve
 ```
