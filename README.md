@@ -40,6 +40,12 @@
 
 ![Architecture](./architecture/architecture.drawio.png)
 
+## Environment
+
+環境変数は以下ファイルを参照してください。
+
+[Environment](./manuals/environments.md)
+
 ## Archived
 
 アーカイブ用リポジトリは以下になります。
