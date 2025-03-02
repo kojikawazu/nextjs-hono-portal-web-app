@@ -1,0 +1,18 @@
+{
+    "sampledev": [
+        {
+          "title": "サンプル開発プロジェクト①",
+          "description": "プロジェクト①の説明文",
+          "tech": ["React", "TypeScript", "Tailwind CSS"],
+          "imageUrl": "https://example.com/image1.png",
+          "url": "https://example.com/sample1"
+        },
+        {
+          "title": "サンプル開発プロジェクト②",
+          "description": "プロジェクト②の説明文",
+          "tech": ["Next.js", "Playwright", "Zod"],
+          "imageUrl": "https://example.com/image2.png",
+          "url": "https://example.com/sample2"
+        }
+    ]
+}
