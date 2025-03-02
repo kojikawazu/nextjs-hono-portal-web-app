@@ -8,6 +8,8 @@ export default defineConfig({
     testDir: './e2e/tests',
     // テストの実行回数
     retries: process.env.CI ? 2 : 0,
+    // テストの実行結果のレポート
+    reporter: [['html', { outputFolder: 'playwright-report' }]],
     // テストの実行環境
     use: {
         // テストの実行環境のベースURL
