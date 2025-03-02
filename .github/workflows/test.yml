@@ -1,0 +1,43 @@
+name: Test Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create .env.test file
+        run: |
+          echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env.test
+          echo ALLOWED_ORIGIN=${{ secrets.ALLOWED_ORIGIN }} >> .env.test
+          echo BACKEND_API_URL=${{ secrets.BACKEND_API_URL }} >> .env.test
+          echo GCS_PRIVATE_BUCKET_NAME=${{ secrets.GCS_PRIVATE_BUCKET_NAME }} >> .env.test
+          echo GCS_COMMON_DATA_PATH=${{ secrets.GCS_COMMON_DATA_PATH }} >> .env.test
+          echo GCS_PERSONAL_DATA_PATH=${{ secrets.GCS_PERSONAL_DATA_PATH }} >> .env.test
+          echo GCS_SAMPLE_DATA_PATH=${{ secrets.GCS_SAMPLE_DATA_PATH }} >> .env.test
+          echo MY_MAIL_ADDRESS=${{ secrets.MY_MAIL_ADDRESS }} >> .env.test
+          echo RESEND_API_KEY=${{ secrets.RESEND_API_KEY }} >> .env.test
+          echo RESEND_SEND_DOMAIN=${{ secrets.RESEND_SEND_DOMAIN }} >> .env.test
+          echo API_VALIDATE_SECRET_TOKEN=${{ secrets.API_VALIDATE_SECRET_TOKEN }} >> .env.test
+          echo API_SECRET_TOKEN=${{ secrets.API_SECRET_TOKEN }} >> .env.test
+          echo NEXT_PUBLIC_API_TOKEN=${{ secrets.NEXT_PUBLIC_API_TOKEN }} >> .env.test
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Run unit tests
+        run: npm run test
+
+      - name: Run Playwright e2e tests
+        run: npm run test:e2e
+
+      - name: Remove .env.test file
+        if: always()
+        run: rm .env.test
