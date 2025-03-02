@@ -16,4 +16,18 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   // 変換除外パターン
   transformIgnorePatterns: ['/node_modules/(?!(uuid|@google-cloud/storage)/)'],
+  // レポート
+  reporters: [
+    // デフォルトレポート
+    "default",
+    // HTMLレポート
+    ["jest-html-reporters", {
+      // レポートパス
+      publicPath: "./jest-reports",
+      // レポートファイル名
+      filename: "jest-report.html",
+      // レポートを開く
+      openReport: false
+    }]
+  ],
 };
