@@ -1,0 +1,9 @@
+{
+    "portfolio": { "url": "https://mock-portfolio.com" },
+    "blog": { "url": "https://mock-blog.com" },
+    "link": {
+        "github": "https://github.com/mock-user",
+        "x": "https://x.com/mock-user",
+        "linkedin": "https://linkedin.com/mock-user"
+    }
+}

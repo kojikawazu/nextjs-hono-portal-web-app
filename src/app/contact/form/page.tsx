@@ -180,7 +180,7 @@ const ContactFormPage = () => {
                             </motion.div>
 
                             <motion.div variants={itemVariants}>
-                                <Label htmlFor="subject" className="text-white mb-2">
+                                <Label htmlFor="subjects" className="text-white mb-2">
                                     件名
                                 </Label>
                                 <Input
@@ -196,7 +196,7 @@ const ContactFormPage = () => {
                             </motion.div>
 
                             <motion.div variants={itemVariants}>
-                                <Label htmlFor="message" className="text-white mb-2">
+                                <Label htmlFor="messages" className="text-white mb-2">
                                     メッセージ
                                 </Label>
                                 <Textarea
