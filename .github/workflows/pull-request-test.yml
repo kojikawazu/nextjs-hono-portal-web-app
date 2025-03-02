@@ -2,8 +2,22 @@ name: Pull Request Test
 
 on:
     pull_request:
-        branches:
-            - main
+        paths:
+            - '.github/**'
+            - '__tests__/**'
+            - 'e2e/**'
+            - 'public/**'
+            - 'src/**'
+            - '.eslintrc.js'
+            - 'jest.config.js'
+            - 'jest.setup.ts'
+            - 'next.config.mjs'
+            - 'package-lock.json'
+            - 'package.json'
+            - 'playwright.config.ts'
+            - 'postcss.config.js'
+            - 'tailwind.config.js'
+            - 'tsconfig.json'
 
 jobs:
     test:
@@ -30,6 +44,9 @@ jobs:
 
         - name: Install dependencies
           run: npm install
+
+        - name: Install Playwright
+          run: npx playwright install --with-deps chromium
 
         - name: Run tests
           run: npm run test
