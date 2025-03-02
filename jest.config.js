@@ -23,7 +23,7 @@ module.exports = {
     // HTMLレポート
     ["jest-html-reporters", {
       // レポートパス
-      publicPath: "./jest-reports",
+      publicPath: "./jest-report",
       // レポートファイル名
       filename: "jest-report.html",
       // レポートを開く
