@@ -49,3 +49,7 @@ terraform.tfvars
 
 # other
 private/
+
+# reports
+jest-report/
+playwright-report/
