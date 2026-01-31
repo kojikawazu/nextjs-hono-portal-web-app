@@ -235,15 +235,49 @@ npm audit fix
 - ✅ ESLint: No warnings or errors
 - ✅ Jest: 6 passed, 6 total
 
-### 対応方針
+### 追加対応（Next.js 16アップグレード）
 
-残存する8件の脆弱性はNext.js 14 → 16へのメジャーアップグレードが必要です。
-これは大規模な変更となるため、以下の条件が整ったタイミングで対応を検討してください：
+残存する8件の脆弱性を解消するため、Next.js 16へのアップグレードを実施しました。
 
-1. Next.js 16の安定版リリース後
-2. 十分なテスト期間の確保
-3. 依存パッケージの互換性確認
+#### 実行内容
 
-**現時点での対応**:
-- 10件の脆弱性は修正済み（Critical 2件、High 3件含む）
-- 残り8件は開発環境・ビルドツール関連が中心で、本番環境への直接的な影響は限定的
+```bash
+npm install next@16 eslint@9 eslint-config-next@16
+```
+
+#### 結果
+
+- **修正後**: 2件の脆弱性（High: 2）
+- **解決した脆弱性**: 6件追加（合計16件解決）
+
+| パッケージ | 脆弱性 | 状態 |
+|-----------|--------|------|
+| next | DoS（Image Optimizer、Server Components） | ✅ 修正済 |
+| glob | コマンドインジェクション | ✅ 修正済 |
+| @next/eslint-plugin-next | glob依存 | ✅ 修正済 |
+| eslint | スタックオーバーフロー | ✅ 修正済 |
+| eslint-config-next | eslint依存 | ✅ 修正済 |
+| eslint-plugin-react-hooks | eslint依存 | ✅ 修正済 |
+
+#### 付随する変更
+
+- Dockerfile: `node:18-alpine` → `node:20-alpine`（Next.js 16はNode.js 20.9.0以上が必要）
+- ESLint設定: flat config形式に移行
+- `.eslintrc.json` 削除
+
+### 最終結果
+
+| 項目 | 値 |
+|------|-----|
+| 修正前 | 18件 |
+| 修正後 | **2件** |
+| 解決率 | **89%** |
+
+### 残存する脆弱性（2件）
+
+| パッケージ | 脆弱性 | 備考 |
+|-----------|--------|------|
+| fast-xml-parser | DoS攻撃 | @google-cloud/storage上流の修正待ち |
+| @google-cloud/storage | fast-xml-parser依存 | 同上 |
+
+これらは上流パッケージ（Google Cloud Storage SDK）の依存関係であり、Google側の修正を待つ必要があります。
