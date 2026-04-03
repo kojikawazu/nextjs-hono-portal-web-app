@@ -31,6 +31,7 @@
 | T-B01 | 残存するnpm脆弱性の対応（8件） | 中 | ESLint/Next.js関連、本番影響は限定的 |
 | T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更 |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
+| T-B04 | npmからpnpmへのパッケージマネージャー移行 | 中 | package.json・Dockerfile・GitHub Actions・ロックファイルの変更が必要。[#25](https://github.com/kojikawazu/nextjs-hono-portal-web-app/issues/25) |
 
 ## 3. マイルストーン
 

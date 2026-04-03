@@ -59,6 +59,7 @@
 
 | 技術 | バージョン | 用途 |
 |------|----------|------|
+| pnpm | ^9 | パッケージマネージャー |
 | ESLint | ^9.39.2 | 静的解析 |
 | Prettier | ^3.4.2 | コードフォーマット |
 | Jest | ^29.7.0 | ユニットテスト |
@@ -124,6 +125,7 @@ nextjs-hono-portal-web-app/
 ├── next.config.mjs            # Next.js設定
 ├── tailwind.config.ts         # Tailwind設定
 ├── package.json
+├── pnpm-lock.yaml
 └── tsconfig.json
 ```
 
@@ -149,6 +151,9 @@ nextjs-hono-portal-web-app/
 ### 5.1 Docker構成
 - マルチステージビルド（builder → production）
 - ベースイメージ: `node:20-alpine`
+- pnpm は `corepack enable && corepack prepare pnpm@latest --activate` でセットアップ
+- コピー対象ファイル: `package.json`, `pnpm-lock.yaml`（`package-lock.json` は使用しない）
+- インストール: `pnpm install --frozen-lockfile`
 - ビルド成果物: `.next/`, `public/`, `node_modules/`, `package.json`, `.env`
 - 環境変数: `NODE_ENV=production`, `PORT=8080`
 
@@ -157,10 +162,11 @@ nextjs-hono-portal-web-app/
 [GitHub Push/PR]
     ↓
 [GitHub Actions - test.yml]
-    ├── install dependencies
-    ├── install Playwright
-    ├── unit test (Jest)
-    └── e2e test (Playwright)
+    ├── pnpm/action-setup でpnpmセットアップ
+    ├── pnpm install --frozen-lockfile
+    ├── pnpm exec playwright install --with-deps chromium
+    ├── unit test (pnpm run test)
+    └── e2e test (pnpm run test:e2e)
         ↓ (mainブランチのみ)
 [GitHub Actions - deploy]
     ├── Docker build (.env生成含む)

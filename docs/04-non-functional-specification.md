@@ -34,6 +34,7 @@
 |------|------|
 | 言語 | TypeScript（型安全性の確保） |
 | コード品質 | ESLint + Prettier |
+| パッケージマネージャー | pnpm（高速インストール・ディスク効率・厳格な依存解決） |
 | テスト | Jest（ユニットテスト）、Playwright（E2Eテスト） |
 | CI/CD | GitHub Actions（テスト→デプロイ）※CIにlint・buildステップはない |
 | コンテナ化 | Dockerマルチステージビルド |
