@@ -23,6 +23,7 @@
 | T-17 | Next.js 16へのアップグレード | 完了 |
 | T-18 | セキュリティ脆弱性修正（npm audit fix） | 完了 |
 | T-19 | 仕様書の作成 | 完了 |
+| T-20 | npmからpnpmへのパッケージマネージャー移行 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -31,7 +32,6 @@
 | T-B01 | 残存するnpm脆弱性の対応（8件） | 中 | ESLint/Next.js関連、本番影響は限定的 |
 | T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更 |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
-| T-B04 | npmからpnpmへのパッケージマネージャー移行 | 中 | package.json・Dockerfile・GitHub Actions・ロックファイルの変更が必要。[#25](https://github.com/kojikawazu/nextjs-hono-portal-web-app/issues/25) |
 
 ## 3. マイルストーン
 
