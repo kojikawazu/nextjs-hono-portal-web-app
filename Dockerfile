@@ -3,20 +3,23 @@
 # =======================================================================
 FROM node:20-alpine AS builder
 
+# pnpm のセットアップ
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # 作業ディレクトリを設定
 WORKDIR /app
 
-# package.json と package-lock.json をコピー
-COPY package*.json ./
+# package.json と pnpm-lock.yaml をコピー
+COPY package.json pnpm-lock.yaml ./
 
 # 依存関係をインストール
-RUN npm install
+RUN pnpm install --frozen-lockfile
 
 # プロジェクトのソースコードをコピー
 COPY . .
 
 # ビルド
-RUN npm run build
+RUN pnpm run build
 
 # =======================================================================
 # 実行フェーズ
@@ -43,6 +46,6 @@ ENV PORT=8080
 EXPOSE 8080
 
 # 実行コマンド
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]
 
 # =======================================================================
