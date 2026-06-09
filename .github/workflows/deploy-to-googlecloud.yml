@@ -48,8 +48,8 @@ jobs:
 
             - name: Create file
               run: |
-                  echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
-                  echo ALLOWED_ORIGIN=${{ secrets.ALLOWED_ORIGIN }} > .env
+                  echo NODE_ENV=${{ secrets.NODE_ENV }} > .env
+                  echo ALLOWED_ORIGIN=${{ secrets.ALLOWED_ORIGIN }} >> .env
                   echo BACKEND_API_URL=${{ secrets.BACKEND_API_URL }} >> .env
                   echo GCS_PRIVATE_BUCKET_NAME=${{ secrets.GCS_PRIVATE_BUCKET_NAME }} >> .env
                   echo GCS_COMMON_DATA_PATH=${{ secrets.GCS_COMMON_DATA_PATH }} >> .env

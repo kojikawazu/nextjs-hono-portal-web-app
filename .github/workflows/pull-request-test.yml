@@ -17,8 +17,8 @@ on:
             - 'pnpm-lock.yaml'
             - 'package.json'
             - 'playwright.config.ts'
-            - 'postcss.config.js'
-            - 'tailwind.config.js'
+            - 'postcss.config.mjs'
+            - 'tailwind.config.ts'
             - 'tsconfig.json'
 
 jobs:
