@@ -37,7 +37,7 @@ cors({
 
 ### トークン検証
 - ミドルウェア `csrfMiddleware` で検証
-- ヘッダー `X-CSRF-Token` の値とCookie `csrfToken` の値を比較
+- ヘッダー `X-CSRF-Token` はJSON文字列として送信されるため、サーバー側で `JSON.parse` してからCookie `csrfToken` の値と比較する
 - 不一致の場合は `403 Forbidden` を返す
 
 ### フロー

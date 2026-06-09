@@ -1,54 +1,47 @@
 # マニュアル集
 
-## パッケージのインストール
+ローカル開発・各種ツール導入の補足手順。日常的なセットアップ手順は [../README.md](../README.md) の「セットアップ（ローカル開発）」を参照。本書は依存追加・再導入時の参考。
+
+## 前提
+
+- Node.js 20+ / pnpm 10.33.0（`corepack enable` で有効化）
+
+## 依存パッケージ
 
 ```bash
-npm i hono @hono/node-server
-npm i @google-cloud/storage
-npm i lucide-react framer-motion
-npm i tailwindcss-animate
-npm i react-spinners
-npm i @fortawesome/react-fontawesome @fortawesome/free-brands-svg-icons
-npm i resend
-npm i zod react-hook-form @hookform/resolvers
+pnpm install          # package.json / pnpm-lock.yaml から復元（通常はこれだけ）
+
+pnpm add <pkg>        # 本体依存を追加
+pnpm add -D <pkg>     # 開発依存を追加
 ```
 
-## shadcnのインストール
+主な依存（参考）:
+
+- ランタイム: `hono`, `@hono/node-server`, `@google-cloud/storage`, `resend`
+- UI: `lucide-react`, `framer-motion`, `react-spinners`, `@fortawesome/*`, `tailwindcss-animate`
+- フォーム: `zod`, `react-hook-form`, `@hookform/resolvers`
+
+## shadcn/ui コンポーネントの追加
+
+初期化済み（`components.json` 参照）。コンポーネント追加は:
 
 ```bash
-npx shadcn@latest init
-npx shadcn@latest add input
-npx shadcn@latest add textarea
-npx shadcn@latest add label
+pnpm dlx shadcn@latest add <component>   # 例: input / textarea / label
 ```
 
-## テストの導入
-
-### パッケージのインストール
+## テスト
 
 ```bash
-# jestテスト
-npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom ts-jest node-mocks-http\n
-npm install -D @types/jest
+pnpm test          # Jest（ユニット）
+pnpm test:e2e      # Playwright（E2E）
 
-# e2eテスト
-npm install -D @playwright/test
-npx playwright install
-npx playwright install-deps
+# E2E ブラウザの初回インストール
+pnpm exec playwright install --with-deps chromium
 ```
 
-### 初期設定
+## 関連マニュアル
 
-### jestテスト
-
-```bash
-npx ts-jest config:init
-touch jest.setup.ts
-```
-
-### e2eテスト
-
-```bash
-touch playwright.config.ts
-mkdir -p e2e/tests
-```
+- [environments.md](./environments.md) — 環境変数・シークレット
+- [google_cloud.md](./google_cloud.md) — GCP 構築
+- [cloudflare.md](./cloudflare.md) — Cloudflare
+- [terraform.md](./terraform.md) — Terraform
