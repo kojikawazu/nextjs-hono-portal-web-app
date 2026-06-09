@@ -10,6 +10,7 @@
 - インストール: `pnpm install --frozen-lockfile`
 - ビルド成果物: `.next/`, `public/`, `node_modules/`, `package.json`, `.env`
 - 環境変数: `NODE_ENV=production`, `PORT=8080`
+- 起動コマンド: 実行ステージには pnpm/corepack をセットアップしないため、`node_modules/.bin/next start` を直接実行する（パッケージマネージャに依存しない）。ポートは `next start` が `PORT` を読む。
 
 ### 5.2 CI/CDパイプライン
 ```

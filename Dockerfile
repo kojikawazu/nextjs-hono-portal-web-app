@@ -46,6 +46,9 @@ ENV PORT=8080
 EXPOSE 8080
 
 # 実行コマンド
-CMD ["pnpm", "run", "start"]
+# 実行ステージには pnpm/corepack をセットアップしていないため、
+# パッケージマネージャを介さず next バイナリ（node_modules/.bin/next）を直接起動する。
+# ポートは next start が process.env.PORT（= 上の ENV PORT）を読むため指定不要。
+CMD ["node_modules/.bin/next", "start"]
 
 # =======================================================================
