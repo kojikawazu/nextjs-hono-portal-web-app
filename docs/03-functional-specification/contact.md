@@ -1,5 +1,12 @@
 # 機能仕様書 - お問い合わせフロー
 
+## 目次
+
+- [6. お問い合わせフロー](#6-お問い合わせフロー)
+  - [6.1 入力画面 (`/contact/form`)](#61-入力画面-contactform)
+  - [6.2 確認画面 (`/contact/confirm`)](#62-確認画面-contactconfirm)
+  - [6.3 送信完了画面 (`/contact/success`)](#63-送信完了画面-contactsuccess)
+
 ## 6. お問い合わせフロー
 
 ### 6.1 入力画面 (`/contact/form`)

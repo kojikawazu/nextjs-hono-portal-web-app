@@ -1,5 +1,13 @@
 # データ仕様書 - データストア・GCSデータモデル
 
+## 目次
+
+- [1. データストア](#1-データストア)
+- [2. GCSデータモデル](#2-gcsデータモデル)
+  - [2.1 共通データ (`GCS_COMMON_DATA_PATH`)](#21-共通データ-gcs_common_data_path)
+  - [2.2 個人開発データ (`GCS_PERSONAL_DATA_PATH`)](#22-個人開発データ-gcs_personal_data_path)
+  - [2.3 サンプル開発データ (`GCS_SAMPLE_DATA_PATH`)](#23-サンプル開発データ-gcs_sample_data_path)
+
 ## 1. データストア
 
 本プロジェクトではデータベースを使用せず、Google Cloud Storage（GCS）上のJSONファイルでコンテンツデータを管理する。

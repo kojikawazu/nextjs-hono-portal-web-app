@@ -1,5 +1,16 @@
 # 機能仕様書 - 共通データ管理・ユーティリティ
 
+## 目次
+
+- [7. 共通データ管理](#7-共通データ管理)
+  - [7.1 CommonContext (`src/app/contexts/CommonContext.tsx`)](#71-commoncontext-srcappcontextscommoncontexttsx)
+  - [7.2 共通データ型](#72-共通データ型)
+  - [7.3 GCSレスポンスのマッピング](#73-gcsレスポンスのマッピング)
+- [8. ユーティリティ](#8-ユーティリティ)
+  - [8.1 セッションストレージ (`session-utils.ts`)](#81-セッションストレージ-session-utilsts)
+  - [8.2 フォームエラー (`form-utils.ts`)](#82-フォームエラー-form-utilsts)
+  - [8.3 パス判定 (`path-functions.ts`)](#83-パス判定-path-functionsts)
+
 ## 7. 共通データ管理
 
 ### 7.1 CommonContext (`src/app/contexts/CommonContext.tsx`)

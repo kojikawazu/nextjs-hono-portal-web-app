@@ -1,5 +1,13 @@
 # アーキテクチャ仕様書 - ディレクトリ構成・アーキテクチャパターン
 
+## 目次
+
+- [3. ディレクトリ構成](#3-ディレクトリ構成)
+- [4. アーキテクチャパターン](#4-アーキテクチャパターン)
+  - [4.1 フロントエンド - Client Components](#41-フロントエンド---client-components)
+  - [4.2 バックエンド - Hono on Next.js API Routes](#42-バックエンド---hono-on-nextjs-api-routes)
+  - [4.3 データ層 - GCS JSON Files](#43-データ層---gcs-json-files)
+
 ## 3. ディレクトリ構成
 
 ```
