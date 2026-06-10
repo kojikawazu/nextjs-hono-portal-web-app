@@ -1,5 +1,14 @@
 # 機能仕様書 - ページ構成・共通レイアウト
 
+## 目次
+
+- [1. ページ構成](#1-ページ構成)
+- [2. 共通レイアウト](#2-共通レイアウト)
+  - [2.1 RootLayout (`src/app/layout.tsx`)](#21-rootlayout-srcapplayouttsx)
+  - [2.2 Navbar (`src/app/components/nav-bar/Navbar.tsx`)](#22-navbar-srcappcomponentsnav-barnavbartsx)
+  - [2.3 Footer (`src/app/components/layout/Footer.tsx`)](#23-footer-srcappcomponentslayoutfootertsx)
+  - [2.4 PageTransition (`src/app/components/page-transition/PageTransition.tsx`)](#24-pagetransition-srcappcomponentspage-transitionpagetransitiontsx)
+
 ## 1. ページ構成
 
 ```

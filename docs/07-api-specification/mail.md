@@ -1,5 +1,12 @@
 # API仕様書 - Mail系エンドポイント詳細
 
+## 目次
+
+- [3. エンドポイント詳細（Mail系）](#3-エンドポイント詳細mail系)
+  - [3.6 `GET /api/mail/`](#36-get-apimail)
+  - [3.7 `GET /api/mail/csrf`](#37-get-apimailcsrf)
+  - [3.8 `POST /api/mail/send`](#38-post-apimailsend)
+
 ## 3. エンドポイント詳細（Mail系）
 
 ### 3.6 `GET /api/mail/`
