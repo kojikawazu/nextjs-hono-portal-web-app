@@ -106,6 +106,8 @@ Cloudflare（CDN/WAF）→ Cloud Run（コンテナ）。データは GCS、IaC 
 
 ## セットアップ（ローカル開発）
 
+> このリポジトリはモノレポ構成です。アプリ本体（Next.js + Hono）は **`front/`** に集約されており、開発コマンドは `front/` ディレクトリで実行します。
+
 ```bash
 # 1. クローン
 git clone https://github.com/kojikawazu/nextjs-hono-portal-web-app.git
@@ -114,19 +116,24 @@ cd nextjs-hono-portal-web-app
 # 2. pnpm を有効化（未設定の場合）
 corepack enable
 
-# 3. 依存をインストール
+# 3. アプリ本体（front/）へ移動
+cd front
+
+# 4. 依存をインストール
 pnpm install
 
-# 4. 環境変数を用意（.env.example をコピーして値を設定）
+# 5. 環境変数を用意（.env.example をコピーして値を設定）
 cp .env.example .env
 
-# 5. 開発サーバを起動 → http://localhost:3000
+# 6. 開発サーバを起動 → http://localhost:3000
 pnpm dev
 ```
 
 > GCS / Resend の値が未設定でも起動はできます。その場合、コンテンツ一覧は空表示・メール送信は失敗します（[docs/04](./docs/04-non-functional-specification.md) のエラーハンドリング参照）。
 
 ## よく使うコマンド
+
+> いずれも `front/` ディレクトリで実行します。
 
 | コマンド | 内容 |
 |---|---|
@@ -140,7 +147,7 @@ pnpm dev
 
 ## 環境変数
 
-`cp .env.example .env` で雛形を作成し、各値を設定します。アプリが読み込むのは以下の 9 変数です。
+`front/` で `cp .env.example .env` して雛形を作成し、各値を設定します（`.env` は `front/` 直下に置きます）。アプリが読み込むのは以下の 9 変数です。
 
 | 変数 | 必須 | 用途 |
 |---|---|---|

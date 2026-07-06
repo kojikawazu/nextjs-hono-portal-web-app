@@ -10,66 +10,49 @@
 
 ## 3. ディレクトリ構成
 
+モノレポ構成。アプリ本体（Next.js + Hono 一体型）は **`front/`** に集約し、ルート直下には仕様書・IaC・CI・Claude ルールを置く。
+
 ```
-nextjs-hono-portal-web-app/
-├── .github/workflows/         # CI/CD
+nextjs-hono-portal-web-app/         # モノレポのルート
+├── .github/workflows/              # CI/CD（run ステップは front/ を working-directory に実行）
 │   ├── deploy-to-googlecloud.yml
 │   ├── pull-request-test.yml
 │   └── test.yml
-├── __tests__/                 # ユニットテスト
-│   └── api/
-│       └── gcs.test.ts
-├── architecture/              # アーキテクチャ図
-├── docs/                      # 仕様書
-├── e2e/                       # E2Eテスト
-│   └── tests/
-│       ├── api/
-│       ├── mock/
-│       └── pages/
-├── manuals/                   # マニュアル
-│   └── environments.md
-├── public/                    # 静的ファイル
-├── src/
-│   ├── app/
-│   │   ├── api/               # バックエンドAPI
-│   │   │   ├── [[...route]]/  # Hono catch-all route
-│   │   │   │   └── route.ts
-│   │   │   ├── gcs/           # GCSデータ取得
-│   │   │   │   └── gcs.ts
-│   │   │   └── mail/          # メール送信
-│   │   │       └── mail.ts
-│   │   ├── components/        # UIコンポーネント
-│   │   │   ├── hero/
-│   │   │   ├── layout/
-│   │   │   ├── modal/
-│   │   │   ├── nav-bar/
-│   │   │   └── page-transition/
-│   │   ├── contact/           # お問い合わせページ群
-│   │   │   ├── confirm/
-│   │   │   ├── form/
-│   │   │   └── success/
-│   │   ├── contexts/          # React Context
-│   │   ├── hooks/             # カスタムHooks
-│   │   ├── schema/            # Zodスキーマ
-│   │   ├── types/             # 型定義
-│   │   ├── utils/             # ユーティリティ
-│   │   ├── personaldev/       # 個人開発ページ
-│   │   ├── sampledev/         # サンプル開発ページ
-│   │   ├── layout.tsx         # ルートレイアウト
-│   │   ├── page.tsx           # ホームページ
-│   │   └── globals.css        # グローバルCSS
-│   ├── components/ui/         # shadcn/uiコンポーネント
-│   │   ├── input.tsx
-│   │   ├── label.tsx
-│   │   └── textarea.tsx
-│   └── lib/
-│       └── utils.ts           # cn()ユーティリティ
-├── Dockerfile                 # マルチステージビルド
-├── next.config.mjs            # Next.js設定
-├── tailwind.config.ts         # Tailwind設定
-├── package.json
-├── pnpm-lock.yaml
-└── tsconfig.json
+├── .claude/                        # Claude Code ルール（.claude/rules/）
+├── architecture/                   # アーキテクチャ図
+├── docs/                           # 仕様書
+├── manuals/                        # マニュアル（environments.md 等）
+├── terraform/                      # IaC
+├── CLAUDE.md / README.md / LICENSE
+└── front/                          # ★ アプリ本体（Next.js + Hono 一体型）
+    ├── __tests__/api/gcs.test.ts   # ユニットテスト
+    ├── e2e/tests/{api,mock,pages}/ # E2Eテスト
+    ├── public/                     # 静的ファイル
+    ├── src/
+    │   ├── app/
+    │   │   ├── api/                # バックエンドAPI（Hono）
+    │   │   │   ├── [[...route]]/route.ts   # Hono catch-all route
+    │   │   │   ├── gcs/gcs.ts      # GCSデータ取得
+    │   │   │   └── mail/mail.ts    # メール送信
+    │   │   ├── components/         # UI（hero/layout/modal/nav-bar/page-transition）
+    │   │   ├── contact/            # お問い合わせページ群（confirm/form/success）
+    │   │   ├── contexts/           # React Context
+    │   │   ├── hooks/              # カスタムHooks
+    │   │   ├── schema/             # Zodスキーマ
+    │   │   ├── types/              # 型定義
+    │   │   ├── utils/              # ユーティリティ
+    │   │   ├── personaldev/        # 個人開発ページ
+    │   │   ├── sampledev/          # サンプル開発ページ
+    │   │   ├── layout.tsx          # ルートレイアウト
+    │   │   ├── page.tsx            # ホームページ
+    │   │   └── globals.css         # グローバルCSS
+    │   ├── components/ui/          # shadcn/ui（input/label/textarea）
+    │   └── lib/utils.ts            # cn()ユーティリティ
+    ├── Dockerfile                  # マルチステージビルド
+    ├── next.config.mjs             # Next.js設定
+    ├── tailwind.config.ts          # Tailwind設定
+    ├── package.json / pnpm-lock.yaml
+    └── tsconfig.json
 ```
 
 ## 4. アーキテクチャパターン

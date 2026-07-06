@@ -1,6 +1,6 @@
 ---
 description: Hono バックエンド API 設計・ルート構成（Next.js API Routes 一体型）
-globs: "src/app/api/**"
+globs: "front/src/app/api/**"
 ---
 
 # API ルール（Hono on Next.js）
@@ -14,7 +14,7 @@ globs: "src/app/api/**"
 ## ディレクトリ構成（現行）
 
 ```
-src/app/api/
+front/src/app/api/
 ├── [[...route]]/
 │   └── route.ts        # Hono エントリ。basePath: /api、CORS 適用、サブルーターをマウント
 ├── gcs/
@@ -23,7 +23,7 @@ src/app/api/
     └── mail.ts         # mailRouter（CSRF トークン発行・メール送信、csrfMiddleware）
 ```
 
-- ルートが増える場合は機能単位のサブルーター（`src/app/api/<feature>/<feature>.ts`）を追加し、`route.ts` にマウントする。
+- ルートが増える場合は機能単位のサブルーター（`front/src/app/api/<feature>/<feature>.ts`）を追加し、`route.ts` にマウントする。
 - ビジネスロジックが肥大化する場合は service / lib 層へ切り出し、ルートハンドラーは薄く保つ。
 
 ## 共通方針

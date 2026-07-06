@@ -13,6 +13,7 @@
 
 ### 5.1 Docker構成
 - マルチステージビルド（builder → production）
+- **ビルドコンテキストは `front/`**: `Dockerfile` はモノレポ配下の `front/` に置き、`docker build … front/`（deploy ジョブの `working-directory: front` で実現）。`.env` も `front/` 直下に生成する。
 - ベースイメージ: `node:20-alpine`
 - pnpm は `corepack enable && corepack prepare pnpm@latest --activate` でセットアップ
 - コピー対象ファイル: `package.json`, `pnpm-lock.yaml`（`package-lock.json` は使用しない）
