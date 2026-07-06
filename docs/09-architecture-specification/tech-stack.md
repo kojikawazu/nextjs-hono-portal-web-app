@@ -70,6 +70,7 @@
 |------|----------|------|
 | pnpm | 10.33.0 | パッケージマネージャー |
 | ESLint | ^9.39.2 | 静的解析 |
+| eslint-plugin-jsdoc | ^63.0.12 | JSDoc(TSDoc) 規約の lint 強制（`front/eslint.config.mjs`） |
 | Prettier | ^3.4.2 | コードフォーマット |
 | Jest | ^29.7.0 | ユニットテスト |
 | Playwright | ^1.50.1 | E2Eテスト |

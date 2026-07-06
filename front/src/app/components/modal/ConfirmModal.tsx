@@ -1,15 +1,14 @@
 interface ConfirmModalProps {
+    /** モーダルの開閉状態 */
     isOpen: boolean;
+    /** モーダルを閉じる処理 */
     onClose: () => void;
+    /** モーダルでの「送信する」ボタン押下時の処理 */
     onConfirm: () => void;
 }
 
 /**
- * 確認モーダル
- * @param isOpen モーダルの開閉状態
- * @param onClose モーダルの閉じる処理
- * @param onConfirm モーダルでの「送信する」ボタン押下時の処理
- * @returns 確認モーダル
+ * 確認モーダル。props の詳細は {@link ConfirmModalProps} を参照。
  */
 const ConfirmModal = ({ isOpen, onClose, onConfirm }: ConfirmModalProps) => {
     if (!isOpen) return null;

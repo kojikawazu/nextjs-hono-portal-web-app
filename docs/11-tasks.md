@@ -32,6 +32,8 @@
 | T-20 | npmからpnpmへのパッケージマネージャー移行 | 完了 |
 | T-21 | モノレポ化（アプリ本体を `front/` に集約。一体型は維持） | 完了 |
 | T-22 | メール送信の HTML インジェクション修正（入力の HTML エスケープ + text 併送 + Mail API ユニットテスト追加） | 完了 |
+| T-23 | ESLint に JSDoc(TSDoc) lint を導入（eslint-plugin-jsdoc。`youtube-my-collection` を参考） | 完了 |
+| T-24 | JSDoc 未記載の公開シンボルを補強（hook / Provider / shadcn UI / cn / route・metadata 等） | 完了 |
 
 ## 2. 未対応・検討中タスク
 

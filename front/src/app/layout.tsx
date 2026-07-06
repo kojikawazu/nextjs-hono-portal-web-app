@@ -4,6 +4,7 @@ import { CommonDataProvider } from './contexts/CommonContext';
 // styles
 import './globals.css';
 
+/** ページの既定メタデータ（`<title>` / `<meta name="description">`）。 */
 export const metadata: Metadata = {
     title: 'My Developers Hub',
     description: 'My Developers Hub',

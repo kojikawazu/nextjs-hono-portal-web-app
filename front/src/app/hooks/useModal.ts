@@ -17,6 +17,7 @@ export const useModal = () => {
 
     /**
      * モーダルでの「送信する」ボタン押下時の処理
+     * @param handleSubmit - モーダルを閉じた後に実行する送信処理
      */
     const handleExecute = (handleSubmit: () => void) => {
         setIsModalOpen(false);

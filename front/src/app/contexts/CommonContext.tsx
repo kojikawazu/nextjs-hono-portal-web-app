@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, ReactNode, useEffect } from
 // types
 import type { CommonDataType } from '@/app/types/common-data-types';
 
-// type
+/** 共通データ Context の状態。`isLoading` は取得中フラグ、`commonData` は取得結果（未取得時は null）。 */
 type CommonDataState = {
     isLoading: boolean;
     commonData: CommonDataType | null;
@@ -13,7 +13,12 @@ type CommonDataState = {
 // Context
 const CommonDataContext = createContext<CommonDataState | null>(null);
 
-// hooks
+/**
+ * 共通データ Context を取得するフック。
+ *
+ * @returns 共通データの状態（`isLoading` / `commonData`）
+ * @throws {Error} `CommonDataProvider` の外側で呼び出された場合
+ */
 export const useCommonData = () => {
     const context = useContext(CommonDataContext);
     if (!context) {
@@ -24,10 +29,14 @@ export const useCommonData = () => {
 
 // Props
 interface CommonDataProviderProps {
+    /** Provider 配下に共通データを供給する子要素 */
     children: ReactNode;
 }
 
-// Provider
+/**
+ * 共通データ（ポートフォリオ / ブログ / SNS リンク）を GCS から取得して配下に供給する Provider。
+ * マウント時に `/api/gcs/common` を fetch し、`CommonDataContext` 経由で提供する。
+ */
 export const CommonDataProvider: React.FC<CommonDataProviderProps> = ({ children }) => {
     // state
     const [commonData, setCommonData] = useState<CommonDataType | null>(null);

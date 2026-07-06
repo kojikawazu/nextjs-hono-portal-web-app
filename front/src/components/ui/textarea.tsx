@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/** 複数行テキスト入力（shadcn/ui）。ネイティブ `textarea` の props をそのまま受け取り、ref を転送する。 */
 const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<'textarea'>>(
     ({ className, ...props }, ref) => {
         return (
