@@ -4,22 +4,7 @@ on:
     pull_request:
         paths:
             - '.github/**'
-            - '__tests__/**'
-            - 'e2e/**'
-            - 'public/**'
-            - 'src/**'
-            - '.prettierrc'
-            - 'eslint.config.mjs'
-            - 'Dockerfile'
-            - 'jest.config.js'
-            - 'jest.setup.ts'
-            - 'next.config.mjs'
-            - 'pnpm-lock.yaml'
-            - 'package.json'
-            - 'playwright.config.ts'
-            - 'postcss.config.mjs'
-            - 'tailwind.config.ts'
-            - 'tsconfig.json'
+            - 'front/**'
 
 jobs:
     test:

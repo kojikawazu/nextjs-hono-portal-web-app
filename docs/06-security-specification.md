@@ -21,7 +21,7 @@
 ## 1. CORS（Cross-Origin Resource Sharing）
 
 ### 実装箇所
-`src/app/api/[[...route]]/route.ts`
+`front/src/app/api/[[...route]]/route.ts`
 
 ### 仕様
 - 環境変数 `ALLOWED_ORIGIN` で許可オリジンを指定（デフォルト: `http://localhost:3000`）
@@ -43,7 +43,7 @@ cors({
 ## 2. CSRF（Cross-Site Request Forgery）対策
 
 ### 実装箇所
-`src/app/api/mail/mail.ts`
+`front/src/app/api/mail/mail.ts`
 
 ### トークン発行
 - エンドポイント: `GET /api/mail/csrf`
@@ -57,6 +57,7 @@ cors({
 - ミドルウェア `csrfMiddleware` で検証
 - ヘッダー `X-CSRF-Token` はJSON文字列として送信されるため、サーバー側で `JSON.parse` してからCookie `csrfToken` の値と比較する
 - 不一致の場合は `403 Forbidden` を返す
+- ヘッダーが不正な JSON の場合も検証失敗（`403`）として扱い、`JSON.parse` の例外を `500` として漏らさない
 
 ### フロー
 ```
@@ -83,6 +84,7 @@ cors({
 ### サーバーサイド
 - メール送信APIで必須フィールドのnullチェック
 - 不足時は `400 Bad Request` を返す
+- **HTML エスケープ（メール本文）**: メール HTML に埋め込む入力値（`name` / `email` / `messages`）は `escapeHtml` で HTML エンティティ化してから埋め込み、受信者（サイト運営者）宛の **HTML インジェクション**（偽装・フィッシング）を防止する。プレーンテキスト版（`text`）も併せて送信する。
 
 ## 4. 外部リンクのセキュリティ
 

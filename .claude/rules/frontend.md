@@ -1,6 +1,6 @@
 ---
 description: Next.js (App Router) フロントエンド設計・コンポーネント規約
-globs: "src/app/**,src/components/**,src/lib/**"
+globs: "front/src/app/**,front/src/components/**,front/src/lib/**"
 ---
 
 # フロントエンドルール（Next.js App Router）

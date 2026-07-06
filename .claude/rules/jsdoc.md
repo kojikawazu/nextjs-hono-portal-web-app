@@ -1,6 +1,6 @@
 ---
 description: JSDoc（TSDoc）ドキュメンテーションコメント規約 — TypeScript の公開シンボルに必須
-globs: src/**
+globs: front/src/**
 ---
 
 # JSDoc 規約（TypeScript）
