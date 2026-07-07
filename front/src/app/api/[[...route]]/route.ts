@@ -4,6 +4,7 @@ import { cors } from 'hono/cors';
 // router
 import gcsRouter from '@/app/api/gcs/gcs';
 import mailRouter from '@/app/api/mail/mail';
+/** Route Handler のランタイム。GCS SDK 等 Node 依存の API を使うため nodejs を指定する。 */
 export const runtime = 'nodejs';
 
 // Honoのインスタンスを作成
@@ -37,5 +38,7 @@ app.get('/hello', (c) => {
 app.route('/gcs', gcsRouter);
 app.route('/mail', mailRouter);
 
+/** Hono アプリを Next.js Route Handler として公開する（GET）。 */
 export const GET = handle(app);
+/** Hono アプリを Next.js Route Handler として公開する（POST）。 */
 export const POST = handle(app);

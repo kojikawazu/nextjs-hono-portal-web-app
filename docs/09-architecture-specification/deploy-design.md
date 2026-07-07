@@ -29,6 +29,8 @@
 [GitHub Actions - test.yml]
     ├── pnpm/action-setup でpnpmセットアップ
     ├── pnpm install --frozen-lockfile
+    ├── format:check (pnpm run format:check)
+    ├── lint (pnpm run lint)
     ├── pnpm exec playwright install --with-deps chromium
     ├── unit test (pnpm run test)
     └── e2e test (pnpm run test:e2e)
@@ -40,7 +42,7 @@
     └── Cleanup old images
 ```
 
-**注意**: CIにlint・buildステップは含まれていない。ビルドはDockerビルド内で実行される。
+**注意**: CI に `format:check`・`lint` を追加済み（install 直後、fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。
 
 ## 6. デザインシステム
 

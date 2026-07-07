@@ -34,7 +34,6 @@ const PersonalHistoryDevPage = () => {
 
                     if (data.personaldev && Array.isArray(data.personaldev)) {
                         setPersonalDevDataList(
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             data.personaldev.map((item: any) => ({
                                 title: item.title,
                                 description: item.description,

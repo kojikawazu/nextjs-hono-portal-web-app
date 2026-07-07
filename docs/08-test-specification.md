@@ -108,10 +108,10 @@ GitHub Actionsワークフロー:
 
 ### テストパイプライン（test.yml）
 ```
-install → unit test (Jest) → e2e test (Playwright) → (deploy)
+install → format:check → lint → unit test (Jest) → e2e test (Playwright) → (deploy)
 ```
 
-**注意**: CIワークフローに `npm run lint` や `npm run build` のステップは含まれていない。lint・buildはローカル開発時に手動で実行する。
+**注意**: `format:check`（Prettier）・`lint`（ESLint）を install 直後に実行し、失敗時は後続の重いテストへ進まない（fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。
 
 ## 6. テスト環境
 

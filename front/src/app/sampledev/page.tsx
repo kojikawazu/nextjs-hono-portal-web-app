@@ -35,7 +35,6 @@ const SampleHistoryDevPage = () => {
 
                     if (data.sampledev && Array.isArray(data.sampledev)) {
                         setSampleDevDataList(
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             data.sampledev.map((item: any) => ({
                                 title: item.title,
                                 description: item.description,

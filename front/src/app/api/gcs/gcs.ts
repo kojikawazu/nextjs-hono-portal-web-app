@@ -12,7 +12,6 @@ const gcsRouter = new Hono();
  * @param fileName GCSのJSONファイルのパス
  * @returns JSONファイルの内容
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function fetchJsonFromGCS(bucketName: string, fileName: string): Promise<any> {
     try {
         const bucket = storage.bucket(bucketName);

@@ -10,6 +10,7 @@ const labelVariants = cva(
     'text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70',
 );
 
+/** フォームラベル（shadcn/ui、Radix Label ベース）。関連付けは `htmlFor` で行う。 */
 const Label = React.forwardRef<
     React.ElementRef<typeof LabelPrimitive.Root>,
     React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & VariantProps<typeof labelVariants>

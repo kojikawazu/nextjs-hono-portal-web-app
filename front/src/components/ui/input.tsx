@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/** テキスト入力フィールド（shadcn/ui）。ネイティブ `input` の props をそのまま受け取り、ref を転送する。 */
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
     ({ className, type, ...props }, ref) => {
         return (

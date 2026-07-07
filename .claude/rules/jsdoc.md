@@ -54,6 +54,12 @@ export async function resolveDisplayName(
 }
 ```
 
-## Lint による強制（推奨）
+## Lint による強制
 
-`eslint-plugin-jsdoc` を導入し、公開シンボルへの JSDoc 欠落・`@param` / `@returns` 漏れを CI で検出する。TypeScript プロジェクトでは型ブレース系ルールを無効化する（`jsdoc/require-param-type` / `jsdoc/require-returns-type` を off）。
+`eslint-plugin-jsdoc` を `front/eslint.config.mjs` に導入済み（`src/**/*.{ts,tsx}` 対象）。機械的に判定できる部分を `pnpm lint`（`front/` で実行）で強制する。※本プロジェクトの CI に lint ステップはないため、ローカルで実行する。
+
+- `settings.jsdoc.mode: "typescript"` + `jsdoc/no-types`: 型の再掲を禁止（型は TS シグネチャが唯一の真実）。
+- `jsdoc/require-param` / `require-param-description` / `check-param-names`: `@param` の名前ズレ・説明漏れ・過不足を検出。**分割代入 props は展開しない**（`checkDestructured: false`。props は型 `XxxProps` 側で説明する）。
+- `jsdoc/require-returns` / `require-returns-description`: 返り値のある関数に `@returns` を要求。ただし JSX を返す `.tsx`（コンポーネント）は除外。
+- `jsdoc/check-alignment` / `jsdoc/no-multi-asterisks`: 体裁を `warn`。
+- `require-jsdoc` は未採用（JSDoc ブロックの**有無**はレビューで確認。ルールは書かれた JSDoc の**質**のみを強制する）。
