@@ -74,3 +74,4 @@
 | Prettier | ^3.4.2 | コードフォーマット |
 | Jest | ^29.7.0 | ユニットテスト |
 | Playwright | ^1.50.1 | E2Eテスト |
+| fake-gcs-server | latest (Docker) | GCS 統合テスト用エミュレータ（`docker-compose.test.yml`） |

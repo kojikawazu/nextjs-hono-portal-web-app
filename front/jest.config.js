@@ -8,8 +8,8 @@ module.exports = {
   testEnvironment: 'node',
   // モジュール名マッパー
   moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
-  // テストパス除外
-  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/e2e/'],
+  // テストパス除外（__tests__/it は統合テスト用。jest.it.config.js で別途実行する）
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/e2e/', '/__tests__/it/'],
   // モジュールディレクトリ
   moduleDirectories: ['node_modules', '<rootDir>/__tests__'],
   // セットアップファイル

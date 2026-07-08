@@ -71,6 +71,17 @@ jobs:
           name: jest-report
           path: front/jest-report/
 
+      # GCS 統合テスト（IT）: fake-gcs-server エミュレータを起動し、実 SDK で結合検証する
+      - name: Start GCS emulator (fake-gcs-server)
+        run: docker compose -f docker-compose.test.yml up -d --wait
+
+      - name: Run integration tests (IT)
+        run: pnpm run test:it
+
+      - name: Stop GCS emulator
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
+
       - name: Run Playwright e2e tests
         run: pnpm run test:e2e
 

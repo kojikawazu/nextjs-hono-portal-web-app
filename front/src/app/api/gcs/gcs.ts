@@ -2,7 +2,13 @@ import { Hono } from 'hono';
 import { Storage } from '@google-cloud/storage';
 
 // GCSのインスタンスを作成
-const storage = new Storage();
+// GCS クライアント。統合テスト（IT）ではエミュレータ（fake-gcs-server）へ向けるため、
+// GCS_API_ENDPOINT が設定されていれば apiEndpoint として使う。本番では未設定＝通常の GCP 接続。
+const storage = new Storage(
+    process.env.GCS_API_ENDPOINT
+        ? { apiEndpoint: process.env.GCS_API_ENDPOINT, projectId: 'local-emulator' }
+        : undefined,
+);
 // Honoのインスタンスを作成
 const gcsRouter = new Hono();
 
