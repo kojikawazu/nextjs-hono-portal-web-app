@@ -46,32 +46,31 @@ pnpm run format          # Prettier自動修正
 
 ### 3.1 GCS APIテスト (`__tests__/api/gcs.test.ts`)
 
-GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを検証する。
+GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを検証する。`file().download()` はテストから制御できる共有モックにし、異常系（500）も再現する。
 
-| テストケース | 期待結果 |
-|------------|---------|
-| `GET /common` - 正常系 | 200 + モックデータ |
-| `GET /common` - 環境変数未設定 | 400 + エラーメッセージ |
-| `GET /personaldev` - 正常系 | 200 + モックデータ |
-| `GET /personaldev` - 環境変数未設定 | 400 + エラーメッセージ |
-| `GET /sampledev` - 正常系 | 200 + モックデータ |
-| `GET /sampledev` - 環境変数未設定 | 400 + エラーメッセージ |
+| 分類 | テストケース | 期待結果 |
+|------|------------|---------|
+| 正常系 | `GET /common` `/personaldev` `/sampledev` | 200 + モックデータ |
+| 準正常系 | 各エンドポイント - 環境変数未設定 | 400 + `Bucket name or file name is not set` |
+| 異常系 | `GET /common` - download 例外 / 不正 JSON | 500 + `Failed to fetch data from GCS` |
+| 異常系 | `GET /personaldev` `/sampledev` - download 例外 | 500 + `Failed to fetch data from GCS` |
 
-合計: 6テストケース
+合計: 10テストケース（正常 3 / 準正常 3 / 異常 4）
 
 ### 3.2 メール送信APIテスト (`__tests__/api/mail.test.ts`)
 
-`resend`（メール送信）と `nanoid` をモックし、Hono Router のレスポンス・CSRF 検証・入力バリデーション・HTML エスケープを検証する。
+`resend`（メール送信）と `nanoid` をモックし、Hono Router のレスポンス・CSRF 検証・入力バリデーション・HTML エスケープ・失敗時の安全な失敗を検証する。
 
-| テストケース | 期待結果 |
-|------------|---------|
-| `POST /send` - 正常系 | 200 + `success: true`（Resend 呼び出し 1 回） |
-| `POST /send` - HTMLエスケープ（準正常系） | 入力の HTML をエスケープして送信（`<script>` 等が生のまま含まれない） |
-| `POST /send` - CSRFトークンなし（異常系） | 403 + `Invalid CSRF token` |
-| `POST /send` - トークン不一致（異常系） | 403 |
-| `POST /send` - 必須フィールド欠落（異常系） | 400 + `Missing required fields` |
+| 分類 | テストケース | 期待結果 |
+|------|------------|---------|
+| 正常系 | `POST /send` - 正常入力 | 200 + `success: true`（Resend 呼び出し 1 回） |
+| 準正常系 | HTML を含む入力 | エスケープして送信（`<script>` 等が生のまま含まれない） |
+| 準正常系 | CSRFトークンなし / 不一致 | 403 + `Invalid CSRF token` |
+| 準正常系 | 必須フィールド欠落 | 400 + `Missing required fields` |
+| 異常系 | Resend 例外 | 500 + `Failed to send email` |
+| 異常系 | 不正 JSON ボディ | 500 + `Failed to send email` |
 
-合計: 5テストケース
+合計: 7テストケース（正常 1 / 準正常 4 / 異常 2）
 
 ### 3.3 モックデータ
 
