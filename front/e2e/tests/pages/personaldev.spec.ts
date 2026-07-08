@@ -68,6 +68,21 @@ test('Personal Dev Page (No Data)', async ({ page }) => {
     await expect(page.getByText('No personal development data available.')).toBeVisible();
 });
 
+// 異常系: API が 500 を返してもクラッシュせず No Data 表示にフォールバックする
+test('Personal Dev Page (API Error 500 → graceful fallback)', async ({ page }) => {
+    await page.route('**/api/gcs/personaldev', async (route) => {
+        await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: 'Failed to fetch data from GCS' }),
+        });
+    });
+
+    await page.goto('/personaldev');
+
+    await expect(page.getByText('No personal development data available.')).toBeVisible();
+});
+
 test('Footer', async ({ page }) => {
     await page.goto('/personaldev');
 

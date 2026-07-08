@@ -57,6 +57,23 @@ test('Top Page', async ({ page }) => {
     );
 });
 
+// 異常系: 共通データ取得が 500 でもページはクラッシュせずヒーローが描画される
+test('Top Page (common data error → graceful render)', async ({ page }) => {
+    await page.route('**/api/gcs/common', async (route) => {
+        await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: 'Failed to fetch data from GCS' }),
+        });
+    });
+
+    await page.goto('/');
+
+    // commonData が null でも静的なヒーローは表示される
+    await expect(page.getByText('Developers Hub')).toBeVisible();
+    await expect(page.getByText(/Crafting Digital\s*Experiences/)).toBeVisible();
+});
+
 test('My Tech Hub Page', async ({ page }) => {
     await page.goto('/');
 
