@@ -42,6 +42,8 @@
 | `RESEND_API_KEY` | Resend APIキー | はい |
 | `RESEND_SEND_DOMAIN` | Resend送信ドメイン | はい |
 
+> `GCS_API_ENDPOINT` は**統合テスト（IT）専用の任意変数**。設定時のみ GCS SDK をエミュレータ（fake-gcs-server）へ向ける。本番・通常開発では未設定（上記 9 変数には含めない）。詳細は [08-test-specification.md](./08-test-specification.md) の統合テスト節を参照。
+
 ### 未使用（レガシー）環境変数
 
 以下は GitHub Actions による `.env` / `.env.test` 生成（`deploy-to-googlecloud.yml`, `test.yml`）や `manuals/environments.md` に登場するが、**現行のアプリケーションコード（`src/`）からは一切参照されていない**。旧フロント/バック分離構成の名残と考えられる。新規にこれらへ依存しないこと（不要であれば CI シークレットごと削除を推奨）。

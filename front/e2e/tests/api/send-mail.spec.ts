@@ -22,27 +22,9 @@ test.describe('Mail API tests', () => {
         expect(data.csrfToken).toHaveLength(32);
     });
 
-    test('POST /api/mail/send - send mail', async ({ request }) => {
-        const { csrfToken, cookie } = await getCsrfToken(request);
-
-        const response = await request.post('/api/mail/send', {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-Token': JSON.stringify(csrfToken),
-                Cookie: cookie,
-            },
-            data: {
-                name: 'Test User',
-                email: 'testuser@example.com',
-                subjects: 'Test Subject',
-                messages: 'Test Message',
-            },
-        });
-
-        const result = await response.json();
-        expect(response.ok()).toBeTruthy();
-        expect(result).toHaveProperty('success', true);
-    });
+    // 送信成功（200 + success:true）の検証は __tests__/api/mail.test.ts（UT・Resend をモック）で行う。
+    // ここで実サーバー経由の成功系を検証すると CI 実行のたびに実メールが送信されるため、
+    // このレイヤでは「送信に至らない」CSRF/バリデーションの結合のみを検証する。
 
     test('POST /api/mail/send - no csrfToken', async ({ request }) => {
         const response = await request.post('/api/mail/send', {

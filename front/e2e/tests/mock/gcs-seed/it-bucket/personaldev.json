@@ -1,0 +1,16 @@
+{
+    "personaldev": [
+        {
+          "title": "個人開発プロジェクト①",
+          "description": "プロジェクト①の説明文",
+          "tech": ["React", "TypeScript", "Tailwind CSS"],
+          "url": "https://example.com/project1"
+        },
+        {
+            "title": "個人開発プロジェクト②",
+            "description": "プロジェクト②の説明文",
+            "tech": ["Next.js", "Playwright", "Zod"],
+            "url": "https://example.com/project2"
+        }
+    ]
+}

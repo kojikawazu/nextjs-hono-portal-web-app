@@ -33,6 +33,7 @@
     ├── lint (pnpm run lint)
     ├── pnpm exec playwright install --with-deps chromium
     ├── unit test (pnpm run test)
+    ├── IT: fake-gcs-server 起動 → pnpm run test:it → 停止
     └── e2e test (pnpm run test:e2e)
         ↓ (mainブランチのみ)
 [GitHub Actions - deploy]
