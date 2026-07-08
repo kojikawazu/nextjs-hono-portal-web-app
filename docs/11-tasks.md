@@ -35,6 +35,7 @@
 | T-23 | ESLint に JSDoc(TSDoc) lint を導入（eslint-plugin-jsdoc。`youtube-my-collection` を参考） | 完了 |
 | T-24 | JSDoc 未記載の公開シンボルを補強（hook / Provider / shadcn UI / cn / route・metadata 等） | 完了 |
 | T-25 | CI（test.yml）に format:check・lint ステップを追加（install 直後・fail fast） | 完了 |
+| T-26 | API ユニットテストに異常系（500 パス）を補強（GCS download 例外・不正 JSON / Resend 例外・不正ボディ） | 完了 |
 
 ## 2. 未対応・検討中タスク
 

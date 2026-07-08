@@ -26,8 +26,14 @@ function buildSendRequest(body: unknown, token = 'valid-token') {
 }
 
 describe('Mail Router - /send', () => {
+    beforeEach(() => {
+        // 異常系で意図的に発生する console.error はテスト出力から抑制する
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
+        jest.restoreAllMocks();
     });
 
     // 正常系
@@ -123,6 +129,40 @@ describe('Mail Router - /send', () => {
 
         expect(res.status).toBe(400);
         expect(await res.json()).toEqual({ error: 'Missing required fields' });
+        expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    // 異常系: Resend 送信が例外を投げたら 500（安全な失敗）
+    test('POST /send - Abnormal: Resend 例外は 500', async () => {
+        mockSend.mockRejectedValueOnce(new Error('Resend unavailable'));
+        const res = await mailRouter.fetch(
+            buildSendRequest({
+                name: 'Taro',
+                email: 'taro@example.com',
+                subjects: 'Hello',
+                messages: 'Hi',
+            }),
+        );
+
+        expect(res.status).toBe(500);
+        expect(await res.json()).toEqual({ error: 'Failed to send email' });
+    });
+
+    // 異常系: リクエストボディが不正 JSON なら 500（CSRF は通過するが json() が投げる）
+    test('POST /send - Abnormal: 不正 JSON ボディは 500', async () => {
+        const req = new Request('http://localhost/send', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': JSON.stringify('valid-token'),
+                Cookie: 'csrfToken=valid-token',
+            },
+            body: '{ this is not valid json',
+        });
+        const res = await mailRouter.fetch(req);
+
+        expect(res.status).toBe(500);
+        expect(await res.json()).toEqual({ error: 'Failed to send email' });
         expect(mockSend).not.toHaveBeenCalled();
     });
 });
