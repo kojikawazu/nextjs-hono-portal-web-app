@@ -64,3 +64,14 @@ test('Sample Dev Page (No Data)', async ({ page }) => {
     await page.goto('/sampledev');
     await expect(page.getByText('No sample development data available.')).toBeVisible();
 });
+
+// 異常系: ネットワークエラー（abort）でもクラッシュせず No Data 表示にフォールバックする
+test('Sample Dev Page (Network Error → graceful fallback)', async ({ page }) => {
+    await page.route('**/api/gcs/sampledev', async (route) => {
+        await route.abort();
+    });
+
+    await page.goto('/sampledev');
+
+    await expect(page.getByText('No sample development data available.')).toBeVisible();
+});

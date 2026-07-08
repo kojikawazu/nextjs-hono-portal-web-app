@@ -38,6 +38,7 @@
 | T-26 | API ユニットテストに異常系（500 パス）を補強（GCS download 例外・不正 JSON / Resend 例外・不正ボディ） | 完了 |
 | T-27 | メール送信 API テストの実 Resend 依存を除去（CI で実メール送信しない。成功系は UT でカバー） | 完了 |
 | T-28 | GCS 統合テスト（IT）を新設（fake-gcs-server + `GCS_API_ENDPOINT`。docker-compose + CI ステップ） | 完了 |
+| T-29 | E2E に異常系を補強（API 500 / ネットワーク断時のグレースフル劣化・送信失敗のエラー表示） | 完了 |
 
 ## 2. 未対応・検討中タスク
 

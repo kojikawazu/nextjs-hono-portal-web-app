@@ -110,6 +110,32 @@ test('Contact Confirm Page - send process check', async ({ page }) => {
     await expect(page).toHaveURL('/contact/success');
 });
 
+// 異常系: 送信が 500 で失敗したら success へ遷移せず、確認画面にエラーを表示する
+test('Contact Confirm Page - send failure shows error', async ({ page }) => {
+    // beforeEach の成功モックを 500 で上書きする
+    await page.route('**/api/mail/send', async (route) => {
+        await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: 'Failed to send email' }),
+        });
+    });
+
+    await page.goto('/contact/confirm');
+    await page.waitForSelector('text=確認画面');
+
+    await page.getByRole('button', { name: '確認して送信' }).click();
+    await page.waitForSelector('text=本当に送信してもよろしいでしょうか？');
+    await page.getByRole('button', { name: '送信する' }).click();
+
+    // エラー表示 & success へ遷移しない
+    // （dev のエラーオーバーレイがソース文字列を含むため、実 UI の <p> を class で特定する）
+    await expect(
+        page.locator('p.text-red-500', { hasText: 'エラーが発生しました。' }),
+    ).toBeVisible();
+    await expect(page).toHaveURL('/contact/confirm');
+});
+
 // 送信しないテスト
 test('Contact Confirm Page - send not', async ({ page }) => {
     await page.goto('/contact/confirm');
