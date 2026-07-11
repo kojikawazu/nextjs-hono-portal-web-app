@@ -133,17 +133,21 @@ pnpm dev
 
 ## よく使うコマンド
 
-> いずれも `front/` ディレクトリで実行します。
+> `pnpm` コマンドは `front/` ディレクトリで実行します。`make` コマンドは **ルート直下**で実行でき、内部で `front/` に委譲するため `cd` は不要です（全ターゲットは `make help` を参照）。
 
-| コマンド | 内容 |
-|---|---|
-| `pnpm dev` | 開発サーバ起動（http://localhost:3000） |
-| `pnpm build` | 本番ビルド |
-| `pnpm start` | ビルド成果物を起動 |
-| `pnpm lint` | ESLint（`src/`） |
-| `pnpm format` | Prettier で自動整形 / `pnpm format:check` でチェック |
-| `pnpm test` | Jest ユニットテスト（`test:watch` / `test:coverage` も可） |
-| `pnpm test:e2e` | Playwright E2E（`test:e2e:ui` / `test:e2e:headed` も可） |
+| pnpm（`front/`） | make（ルート） | 内容 |
+|---|---|---|
+| `pnpm install` | `make install` | 依存をインストール |
+| `pnpm dev` | `make dev` | 開発サーバ起動（http://localhost:3000） |
+| `pnpm build` | `make build` | 本番ビルド |
+| `pnpm start` | `make start` | ビルド成果物を起動 |
+| `pnpm lint` | `make lint` | ESLint（`src/`） |
+| `pnpm format` / `format:check` | `make format` / `make format-check` | Prettier で整形 / チェック |
+| `pnpm test` | `make test` | Jest ユニットテスト（`test-watch` / `test-coverage` も可） |
+| `pnpm test:it:docker` | `make test-it-docker` | 統合テスト（fake-gcs-server 自動起動〜停止） |
+| `pnpm test:e2e` | `make e2e` | Playwright E2E（`e2e-ui` / `e2e-headed` も可） |
+| — | `make ci` | CI 相当を一括実行（format:check → lint → UT → IT） |
+| — | `make tf-init` / `tf-plan` / `tf-apply` | Terraform（`terraform/`） |
 
 ## 環境変数
 
