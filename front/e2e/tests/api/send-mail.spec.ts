@@ -63,6 +63,8 @@ test.describe('Mail API tests', () => {
 
         const result = await response.json();
         expect(response.status()).toBe(400);
-        expect(result).toHaveProperty('error', 'Missing required fields');
+        // 送信 API は contactSchema（Zod）で検証し、最初の違反メッセージを返す。
+        // name が空のため name の min(1) メッセージが返る。
+        expect(result).toHaveProperty('error', '名前を入力してください');
     });
 });
