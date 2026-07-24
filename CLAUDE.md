@@ -14,8 +14,10 @@ Next.js + Hono によるポータルWebアプリケーション（フロント�
 | documentation.md | 全体 | ドキュメント更新ルール |
 | doc-structure.md | 全体 | docs ファイルサイズ上限（150行）・分割・index |
 | git.md | 全体 | GitHub Flow・ブランチ命名・push 禁止物 |
+| github-issue.md | 全体 | GitHub issue 運用（ブランチと対で起票・open/close で進捗管理・PR で自動クローズ） |
 | testing.md | 全体 | テスト分類・原則・テストツール（Jest / Playwright） |
 | coding-standards.md | 全体 | コーディング規約（TypeScript strict・pnpm・ESLint/Prettier） |
+| typescript.md | `front/src/**` | TypeScript 固有規約（type/interface 使い分け・型/定数の配置・any 禁止・enum 回避・import type） |
 | error-handling.md | 全体 | エラーハンドリング方針（バリデーション・例外・ログ） |
 | security.md | 全体 | セキュリティ設計方針（認証・CORS・インジェクション対策・シークレット管理） |
 | jsdoc.md | `front/src/**` | JSDoc（TSDoc）規約（公開シンボルに必須） |
