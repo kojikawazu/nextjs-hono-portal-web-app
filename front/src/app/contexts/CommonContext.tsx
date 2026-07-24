@@ -1,8 +1,21 @@
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import type { ReactNode } from 'react';
+import { z } from 'zod';
 // types
 import type { CommonDataType } from '@/app/types/common-data-types';
+
+/** `/api/gcs/common` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
+const commonResponseSchema = z.object({
+    portfolio: z.object({ url: z.string() }),
+    blog: z.object({ url: z.string() }),
+    link: z.object({
+        github: z.string(),
+        x: z.string(),
+        linkedin: z.string(),
+    }),
+});
 
 /** 共通データ Context の状態。`isLoading` は取得中フラグ、`commonData` は取得結果（未取得時は null）。 */
 type CommonDataState = {
@@ -48,16 +61,23 @@ export const CommonDataProvider: React.FC<CommonDataProviderProps> = ({ children
                 const result = await fetch(`/api/gcs/common`);
 
                 if (result.ok) {
-                    const data = await result.json();
-                    setCommonData({
-                        portfolioUrl: data.portfolio.url,
-                        blogUrl: data.blog.url,
-                        linkUrl: {
-                            githubUrl: data.link.github,
-                            xUrl: data.link.x,
-                            linkedinUrl: data.link.linkedin,
-                        },
-                    });
+                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
+                    const data: unknown = await result.json();
+                    const parsed = commonResponseSchema.safeParse(data);
+                    if (parsed.success) {
+                        const { portfolio, blog, link } = parsed.data;
+                        setCommonData({
+                            portfolioUrl: portfolio.url,
+                            blogUrl: blog.url,
+                            linkUrl: {
+                                githubUrl: link.github,
+                                xUrl: link.x,
+                                linkedinUrl: link.linkedin,
+                            },
+                        });
+                    } else {
+                        console.error('Unexpected common data format:', data);
+                    }
                 }
             } catch (error) {
                 console.error('Error fetching common data:', error);

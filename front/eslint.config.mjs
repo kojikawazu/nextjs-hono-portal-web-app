@@ -3,6 +3,18 @@ import jsdoc from "eslint-plugin-jsdoc";
 
 export default [
   ...nextConfig,
+  // 型のみの import を `import type` に強制する（typescript.md「import type 強制」）。
+  // verbatimModuleSyntax（tsc オプション）は CI で tsc を実行しないため強制できないので、
+  // CI が実行する lint 側で機械強制する。
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        { prefer: "type-imports", fixStyle: "separate-type-imports" },
+      ],
+    },
+  },
   // JSDoc（TSDoc スタイル）規約の、機械的に判定できる部分を強制する。
   // 有効ルールの唯一の真実はこのブロック。方針の根拠は .claude/rules/jsdoc.md。
   {

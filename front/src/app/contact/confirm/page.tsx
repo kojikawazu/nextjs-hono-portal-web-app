@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 // types
-import { contactFormData } from '@/app/types/contact-types';
+import type { contactFormData } from '@/app/types/contact-types';
 // schema
 import { contactSchema } from '@/app/schema/contact-schema';
 // utils

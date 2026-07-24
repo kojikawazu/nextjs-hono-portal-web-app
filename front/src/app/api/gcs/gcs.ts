@@ -16,9 +16,9 @@ const gcsRouter = new Hono();
  * GCSからJSONファイルを取得する
  * @param bucketName GCSのバケット名
  * @param fileName GCSのJSONファイルのパス
- * @returns JSONファイルの内容
+ * @returns JSONファイルの内容（任意の JSON のため unknown。呼び出し側で検証する）
  */
-async function fetchJsonFromGCS(bucketName: string, fileName: string): Promise<any> {
+async function fetchJsonFromGCS(bucketName: string, fileName: string): Promise<unknown> {
     try {
         const bucket = storage.bucket(bucketName);
         const file = bucket.file(fileName);

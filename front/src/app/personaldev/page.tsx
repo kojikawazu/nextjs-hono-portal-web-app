@@ -5,10 +5,23 @@ import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
+import { z } from 'zod';
 // types
-import { PersonalDevDataType } from '@/app/types/personal-data-types';
+import type { PersonalDevDataType } from '@/app/types/personal-data-types';
 // utils
 import { useIsHomePath } from '@/app/utils/path/path-functions';
+
+/** `/api/gcs/personaldev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
+const personalDevResponseSchema = z.object({
+    personaldev: z.array(
+        z.object({
+            title: z.string(),
+            description: z.string(),
+            tech: z.array(z.string()),
+            url: z.string(),
+        }),
+    ),
+});
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';
@@ -30,17 +43,11 @@ const PersonalHistoryDevPage = () => {
                 const result = await fetch('/api/gcs/personaldev');
 
                 if (result.ok) {
-                    const data = await result.json();
-
-                    if (data.personaldev && Array.isArray(data.personaldev)) {
-                        setPersonalDevDataList(
-                            data.personaldev.map((item: any) => ({
-                                title: item.title,
-                                description: item.description,
-                                tech: item.tech,
-                                url: item.url,
-                            })),
-                        );
+                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
+                    const data: unknown = await result.json();
+                    const parsed = personalDevResponseSchema.safeParse(data);
+                    if (parsed.success) {
+                        setPersonalDevDataList(parsed.data.personaldev);
                     } else {
                         console.error('Unexpected API response format:', data);
                     }

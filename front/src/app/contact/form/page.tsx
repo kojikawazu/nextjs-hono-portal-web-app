@@ -7,12 +7,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 // shadcn
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 // types
-import { contactFormData } from '@/app/types/contact-types';
+import type { contactFormData } from '@/app/types/contact-types';
 // schema
 import { contactSchema } from '@/app/schema/contact-schema';
 // utils
@@ -27,6 +28,9 @@ import { setFormError } from '@/app/utils/form/form-utils';
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';
 import Footer from '@/app/components/layout/Footer';
+
+/** `/api/mail/csrf` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
+const csrfResponseSchema = z.object({ csrfToken: z.string() });
 
 /**
  * お問い合わせペォームページ
@@ -55,8 +59,13 @@ const ContactFormPage = () => {
                 const response = await fetch('/api/mail/csrf', {
                     credentials: 'include', // クッキーを送信するために必要
                 });
-                const data = await response.json();
-                setCsrfToken(data.csrfToken);
+                const data: unknown = await response.json();
+                const parsed = csrfResponseSchema.safeParse(data);
+                if (parsed.success) {
+                    setCsrfToken(parsed.data.csrfToken);
+                } else {
+                    console.error('Unexpected CSRF response format:', data);
+                }
             } catch (error) {
                 console.error('CSRF token fetch error:', error);
             }
