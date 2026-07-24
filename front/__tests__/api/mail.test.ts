@@ -167,7 +167,9 @@ describe('Mail Router - /send', () => {
         );
 
         expect(res.status).toBe(400);
-        expect(await res.json()).toEqual({ error: 'お問い合わせ内容は5000文字以内で入力してください' });
+        expect(await res.json()).toEqual({
+            error: 'お問い合わせ内容は5000文字以内で入力してください',
+        });
         expect(mockSend).not.toHaveBeenCalled();
     });
 

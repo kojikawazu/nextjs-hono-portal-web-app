@@ -8,13 +8,19 @@ import { z } from 'zod';
  * クライアント・サーバー双方で同一の制約を保証する。
  */
 export const contactSchema = z.object({
-    name: z.string().min(1, '名前を入力してください').max(100, '名前は100文字以内で入力してください'),
+    name: z
+        .string()
+        .min(1, '名前を入力してください')
+        .max(100, '名前は100文字以内で入力してください'),
     // RFC 5321 のメールアドレス最大長（254 文字）を上限とする
     email: z
         .string()
         .email('有効なメールアドレスを入力してください')
         .max(254, 'メールアドレスが長すぎます'),
-    subjects: z.string().min(1, '件名を入力してください').max(200, '件名は200文字以内で入力してください'),
+    subjects: z
+        .string()
+        .min(1, '件名を入力してください')
+        .max(200, '件名は200文字以内で入力してください'),
     messages: z
         .string()
         .min(1, 'お問い合わせ内容を入力してください')

@@ -72,7 +72,10 @@ mailRouter.post('/send', csrfMiddleware, async (c) => {
         const parsed = contactSchema.safeParse(await c.req.json());
         if (!parsed.success) {
             // 最初のバリデーションエラーメッセージを返す（統一エラーレスポンス）
-            return c.json({ error: parsed.error.issues[0]?.message ?? 'Invalid request body' }, 400);
+            return c.json(
+                { error: parsed.error.issues[0]?.message ?? 'Invalid request body' },
+                400,
+            );
         }
         const { name, email, subjects, messages } = parsed.data;
 
