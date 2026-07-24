@@ -26,6 +26,18 @@ function buildSendRequest(body: unknown, token = 'valid-token') {
 }
 
 describe('Mail Router - /send', () => {
+    // ハンドラーは送信前に必須 env を検証し、未設定なら 400 を返す。
+    // 正常系を通すため、テスト全体で必須 env を設定し、終了後に元へ戻す。
+    const ORIGINAL_ENV = { ...process.env };
+    beforeAll(() => {
+        process.env.RESEND_API_KEY = 'test-resend-key';
+        process.env.RESEND_SEND_DOMAIN = 'test-domain';
+        process.env.MY_MAIL_ADDRESS = 'owner@example.com';
+    });
+    afterAll(() => {
+        process.env = ORIGINAL_ENV;
+    });
+
     beforeEach(() => {
         // 異常系で意図的に発生する console.error はテスト出力から抑制する
         jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -121,15 +133,66 @@ describe('Mail Router - /send', () => {
         expect(mockSend).not.toHaveBeenCalled();
     });
 
-    // 異常系: 必須フィールド欠落 → 400
+    // 異常系: 必須フィールド欠落 → 400（Zod のバリデーションメッセージを返す）
     test('POST /send - Abnormal: 必須フィールド欠落は 400', async () => {
         const res = await mailRouter.fetch(
             buildSendRequest({ name: '', email: 'a@b.com', subjects: 's', messages: '' }),
         );
 
         expect(res.status).toBe(400);
-        expect(await res.json()).toEqual({ error: 'Missing required fields' });
+        expect(await res.json()).toEqual({ error: '名前を入力してください' });
         expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    // 異常系: メールアドレス形式が不正 → 400（Zod の email 検証）
+    test('POST /send - Abnormal: 不正なメールアドレスは 400', async () => {
+        const res = await mailRouter.fetch(
+            buildSendRequest({ name: 'Taro', email: 'not-an-email', subjects: 's', messages: 'm' }),
+        );
+
+        expect(res.status).toBe(400);
+        expect(await res.json()).toEqual({ error: '有効なメールアドレスを入力してください' });
+        expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    // 異常系: 本文が上限（5000 文字）超過 → 400（過大ペイロード抑止）
+    test('POST /send - Abnormal: 上限超過の本文は 400', async () => {
+        const res = await mailRouter.fetch(
+            buildSendRequest({
+                name: 'Taro',
+                email: 'taro@example.com',
+                subjects: 'Hello',
+                messages: 'a'.repeat(5001),
+            }),
+        );
+
+        expect(res.status).toBe(400);
+        expect(await res.json()).toEqual({
+            error: 'お問い合わせ内容は5000文字以内で入力してください',
+        });
+        expect(mockSend).not.toHaveBeenCalled();
+    });
+
+    // 異常系: 送信に必要な env が未設定 → 400（暗黙フォールバックしない）
+    test('POST /send - Abnormal: 必須 env 未設定は 400', async () => {
+        const saved = process.env.RESEND_SEND_DOMAIN;
+        delete process.env.RESEND_SEND_DOMAIN;
+        try {
+            const res = await mailRouter.fetch(
+                buildSendRequest({
+                    name: 'Taro',
+                    email: 'taro@example.com',
+                    subjects: 'Hello',
+                    messages: 'Hi',
+                }),
+            );
+
+            expect(res.status).toBe(400);
+            expect(await res.json()).toEqual({ error: 'Mail service is not configured' });
+            expect(mockSend).not.toHaveBeenCalled();
+        } finally {
+            process.env.RESEND_SEND_DOMAIN = saved;
+        }
     });
 
     // 異常系: Resend 送信が例外を投げたら 500（安全な失敗）

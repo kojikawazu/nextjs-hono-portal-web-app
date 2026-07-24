@@ -1,8 +1,9 @@
 import { Hono } from 'hono';
-import { MiddlewareHandler } from 'hono';
+import type { MiddlewareHandler } from 'hono';
 import { Resend } from 'resend';
 import { nanoid } from 'nanoid';
 import { getCookie, setCookie } from 'hono/cookie';
+import { contactSchema } from '@/app/schema/contact-schema';
 
 // Honoのインスタンスを作成
 const mailRouter = new Hono();
@@ -67,14 +68,27 @@ mailRouter.get('/', (c) => {
 // メール送信のエンドポイント
 mailRouter.post('/send', csrfMiddleware, async (c) => {
     try {
-        const { name, email, subjects, messages } = await c.req.json();
-        if (!name || !email || !subjects || !messages) {
-            return c.json({ error: 'Missing required fields' }, 400);
+        // c.req.json() は any を返すため unknown 相当で受け、共有スキーマ（クライアントと同一）で検証する。
+        const parsed = contactSchema.safeParse(await c.req.json());
+        if (!parsed.success) {
+            // 最初のバリデーションエラーメッセージを返す（統一エラーレスポンス）
+            return c.json(
+                { error: parsed.error.issues[0]?.message ?? 'Invalid request body' },
+                400,
+            );
+        }
+        const { name, email, subjects, messages } = parsed.data;
+
+        // 送信に必要な環境変数が未設定なら暗黙フォールバックせず明示的に 400 を返す（GCS ルートと対称）。
+        const sendDomain = process.env.RESEND_SEND_DOMAIN;
+        const toAddress = process.env.MY_MAIL_ADDRESS;
+        if (!process.env.RESEND_API_KEY || !sendDomain || !toAddress) {
+            return c.json({ error: 'Mail service is not configured' }, 400);
         }
 
         const response = await resend.emails.send({
-            from: `Resend <${process.env.RESEND_SEND_DOMAIN}@resend.dev>`,
-            to: process.env.MY_MAIL_ADDRESS || 'no-reply@example.com',
+            from: `Resend <${sendDomain}@resend.dev>`,
+            to: toAddress,
             subject: subjects,
             // 入力値は HTML エスケープしてから埋め込む（HTML インジェクション対策）。
             // 本文の改行は <br> に変換して表示を保つ。
@@ -87,8 +101,10 @@ mailRouter.post('/send', csrfMiddleware, async (c) => {
 
         return c.json({ success: true, response: response });
     } catch (error) {
+        // スタックトレースを残すため error オブジェクト自体を渡す（GCS ルートと対称）。
+        // メール本文・APIキー等のセンシティブ情報はログに含めない。
         if (error instanceof Error) {
-            console.error('Resend Error:', error.message);
+            console.error('Resend Error:', error.message, error);
         } else {
             console.error('Resend Error:', error);
         }
