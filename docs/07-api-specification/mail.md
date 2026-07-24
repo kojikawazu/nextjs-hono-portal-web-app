@@ -53,12 +53,15 @@ Cookie: csrfToken=<CSRFトークン>
 ```
 
 **リクエストボディ**
+
+クライアントと共有する `contactSchema`（Zod）で検証する。各フィールドは必須かつ長さ上限を持つ。
+
 ```json
 {
-  "name": "string (必須)",
-  "email": "string (必須)",
-  "subjects": "string (必須)",
-  "messages": "string (必須)"
+  "name": "string (必須, 1〜100文字)",
+  "email": "string (必須, 有効なメール形式, 最大254文字)",
+  "subjects": "string (必須, 1〜200文字)",
+  "messages": "string (必須, 1〜5000文字)"
 }
 ```
 
@@ -70,10 +73,21 @@ Cookie: csrfToken=<CSRFトークン>
 }
 ```
 
-**エラーレスポンス (400)**
+**エラーレスポンス (400) — バリデーション失敗**
+
+`contactSchema` の検証に失敗した場合、最初の違反メッセージを返す（例）。
 ```json
 {
-  "error": "Missing required fields"
+  "error": "有効なメールアドレスを入力してください"
+}
+```
+
+**エラーレスポンス (400) — メール設定の欠落**
+
+送信に必要な環境変数（`RESEND_API_KEY` / `RESEND_SEND_DOMAIN` / `MY_MAIL_ADDRESS`）が未設定の場合、暗黙のフォールバックはせず明示的に返す。
+```json
+{
+  "error": "Mail service is not configured"
 }
 ```
 
