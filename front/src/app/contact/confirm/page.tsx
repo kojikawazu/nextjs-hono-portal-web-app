@@ -10,6 +10,8 @@ import { ArrowLeft } from 'lucide-react';
 import type { contactFormData } from '@/app/types/contact-types';
 // schema
 import { contactSchema } from '@/app/schema/contact-schema';
+// constants
+import { STORAGE_KEYS } from '@/app/constants/storage';
 // utils
 import {
     getDataBySessionStorage,
@@ -51,10 +53,10 @@ const ContactConfirmPage = () => {
 
     useEffect(() => {
         // sessionStorage から CSRFトークンを取得
-        const storedToken = sessionStorage.getItem('csrfToken');
+        const storedToken = sessionStorage.getItem(STORAGE_KEYS.CSRF_TOKEN);
         setCsrfToken(storedToken || null);
 
-        const data = getDataBySessionStorage('contactFormData');
+        const data = getDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
         if (!data) {
             router.push('/contact/form');
             return;
@@ -80,7 +82,7 @@ const ContactConfirmPage = () => {
             });
 
             if (response.ok) {
-                removeDataBySessionStorage('contactFormData');
+                removeDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
                 router.push('/contact/success');
             } else {
                 setFormError(response.statusText, setError);
@@ -93,8 +95,8 @@ const ContactConfirmPage = () => {
     const handleBackToForm = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        removeDataBySessionStorage('contactFormData');
-        removeDataBySessionStorage('csrfToken');
+        removeDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
+        removeDataBySessionStorage(STORAGE_KEYS.CSRF_TOKEN);
         sessionStorage.clear();
         router.replace('/contact/form');
     };

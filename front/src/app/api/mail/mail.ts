@@ -7,6 +7,11 @@ import { contactSchema } from '@/app/schema/contact-schema';
 
 /** CSRF トークン発行とメール送信を担うサブルーター（`/api/mail` 配下にマウント）。 */
 const mailRouter = new Hono();
+
+/** CSRF トークンの長さ（文字数）。推測を困難にするのに十分な長さ。 */
+const CSRF_TOKEN_LENGTH = 32;
+/** CSRF トークンを保持する Cookie 名。送信検証時に同名 Cookie と照合する。 */
+const CSRF_COOKIE_NAME = 'csrfToken';
 // Resendクライアントの初期化
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -34,8 +39,8 @@ const escapeHtml = (value: string): string =>
  * @returns 発行した CSRF トークン（200）。同トークンを HttpOnly Cookie にもセットする。
  */
 mailRouter.get('/csrf', (c) => {
-    const csrfToken = nanoid(32);
-    setCookie(c, 'csrfToken', csrfToken, {
+    const csrfToken = nanoid(CSRF_TOKEN_LENGTH);
+    setCookie(c, CSRF_COOKIE_NAME, csrfToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'Strict',
@@ -47,7 +52,7 @@ mailRouter.get('/csrf', (c) => {
 // トークンを検証するミドルウェア
 const csrfMiddleware: MiddlewareHandler = async (c, next) => {
     const csrfTokenFromHeader = c.req.header('x-csrf-token')?.trim();
-    const csrfTokenFromCookie = getCookie(c, 'csrfToken')?.trim();
+    const csrfTokenFromCookie = getCookie(c, CSRF_COOKIE_NAME)?.trim();
 
     // ヘッダーは JSON 文字列で送られてくる。不正な JSON は検証失敗（403）として扱い、
     // JSON.parse の例外が 500 として漏れないようにする。

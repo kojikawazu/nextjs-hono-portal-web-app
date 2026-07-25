@@ -1,11 +1,11 @@
-interface ConfirmModalProps {
+type ConfirmModalProps = {
     /** モーダルの開閉状態 */
     isOpen: boolean;
     /** モーダルを閉じる処理 */
     onClose: () => void;
     /** モーダルでの「送信する」ボタン押下時の処理 */
     onConfirm: () => void;
-}
+};
 
 /**
  * 確認モーダル。props の詳細は {@link ConfirmModalProps} を参照。

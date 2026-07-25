@@ -41,10 +41,10 @@ export const useCommonData = () => {
 };
 
 // Props
-interface CommonDataProviderProps {
+type CommonDataProviderProps = {
     /** Provider 配下に共通データを供給する子要素 */
     children: ReactNode;
-}
+};
 
 /**
  * 共通データ（ポートフォリオ / ブログ / SNS リンク）を GCS から取得して配下に供給する Provider。
