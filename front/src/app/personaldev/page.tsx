@@ -1,27 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
-import { z } from 'zod';
 // types
 import type { PersonalDevDataType } from '@/app/types/personal-data-types';
-// utils
-import { useIsHomePath } from '@/app/utils/path/path-functions';
-
-/** `/api/gcs/personaldev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const personalDevResponseSchema = z.object({
-    personaldev: z.array(
-        z.object({
-            title: z.string(),
-            description: z.string(),
-            tech: z.array(z.string()),
-            url: z.string(),
-        }),
-    ),
-});
+// hooks
+import { useIsHomePath } from '@/app/hooks/useIsHomePath';
+import { usePersonalDevData } from '@/app/hooks/usePersonalDevData';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';
@@ -32,34 +19,7 @@ import PageTransition from '@/app/components/page-transition/PageTransition';
  */
 const PersonalHistoryDevPage = () => {
     const isHome: boolean = useIsHomePath();
-    const [isLoading, setIsLoading] = useState(true);
-    const [personalDevDataList, setPersonalDevDataList] = useState<PersonalDevDataType[]>([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const result = await fetch('/api/gcs/personaldev');
-
-                if (result.ok) {
-                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
-                    const data: unknown = await result.json();
-                    const parsed = personalDevResponseSchema.safeParse(data);
-                    if (parsed.success) {
-                        setPersonalDevDataList(parsed.data.personaldev);
-                    } else {
-                        console.error('Unexpected API response format:', data);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching personal development data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+    const { personalDevDataList, isLoading } = usePersonalDevData();
 
     const containerVariants = {
         hidden: { opacity: 0 },
