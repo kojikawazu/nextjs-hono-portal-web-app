@@ -3,14 +3,14 @@
 import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 
+/** ページ遷移アニメーションのラッパーが受け取る props。 */
 interface PageTransitionProps {
+    /** アニメーションを適用する子要素 */
     children: ReactNode;
 }
 
 /**
- * ページ遷移時のアニメーション
- * @param children 子要素
- * @returns JSX.Element
+ * ページ遷移時にフェードアニメーションを子要素へ適用するラッパー。
  */
 const PageTransition = ({ children }: PageTransitionProps) => {
     return (

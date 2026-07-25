@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
 /**
- * モーダルのカスタムhooks
- * @returns モーダルのhooks
+ * 確認モーダルの開閉状態と操作ハンドラーを提供するカスタムフック。
+ *
+ * @returns モーダルの開閉状態（`isModalOpen`）と、開く/実行/閉じるの各ハンドラー
  */
 export const useModal = () => {
     // モーダルの開閉状態

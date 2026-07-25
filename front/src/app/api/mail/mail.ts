@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 import { getCookie, setCookie } from 'hono/cookie';
 import { contactSchema } from '@/app/schema/contact-schema';
 
-// Honoのインスタンスを作成
+/** CSRF トークン発行とメール送信を担うサブルーター（`/api/mail` 配下にマウント）。 */
 const mailRouter = new Hono();
 // Resendクライアントの初期化
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -27,7 +27,12 @@ const escapeHtml = (value: string): string =>
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 
-// CSRFトークンを発行するエンドポイント
+/**
+ * CSRF トークンを発行し、HttpOnly Cookie にセットして返す。
+ *
+ * @param c - Hono コンテキスト
+ * @returns 発行した CSRF トークン（200）。同トークンを HttpOnly Cookie にもセットする。
+ */
 mailRouter.get('/csrf', (c) => {
     const csrfToken = nanoid(32);
     setCookie(c, 'csrfToken', csrfToken, {
@@ -60,12 +65,25 @@ const csrfMiddleware: MiddlewareHandler = async (c, next) => {
     await next();
 };
 
-// 動作確認用のエンドポイント
+/**
+ * Mail API の疎通確認用エンドポイント。
+ *
+ * @param c - Hono コンテキスト
+ * @returns 接続確認メッセージ（200）
+ */
 mailRouter.get('/', (c) => {
     return c.json({ message: 'Connected to Mail API' });
 });
 
-// メール送信のエンドポイント
+/**
+ * お問い合わせ内容をメール送信する（CSRF ミドルウェアで保護）。
+ *
+ * リクエストは共有スキーマ（contactSchema）で検証し、HTML 本文はエスケープして
+ * インジェクションを防ぐ。
+ *
+ * @param c - Hono コンテキスト
+ * @returns 送信結果（200）。入力不正・メール設定欠落は 400、CSRF 不正は 403、送信失敗は 500。
+ */
 mailRouter.post('/send', csrfMiddleware, async (c) => {
     try {
         // c.req.json() は any を返すため unknown 相当で受け、共有スキーマ（クライアントと同一）で検証する。

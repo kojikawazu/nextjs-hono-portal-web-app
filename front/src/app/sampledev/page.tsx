@@ -31,7 +31,6 @@ import Footer from '@/app/components/layout/Footer';
 
 /**
  * サンプル開発履歴ページ
- * @returns JSX.Element
  */
 const SampleHistoryDevPage = () => {
     const isHome: boolean = useIsHomePath();

@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * ルートレイアウト
- * @param children 子要素
- * @returns JSX.Element
+ * ルートレイアウト。全ページ共通の HTML 骨格と共通データ Provider を提供する。
+ *
+ * @param children - ページ本体の要素
  */
 export default function RootLayout({
     children,

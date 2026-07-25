@@ -12,7 +12,6 @@ import PageTransition from '@/app/components/page-transition/PageTransition';
 
 /**
  * 送信成功画面
- * @returns JSX.Element
  */
 const ContactSuccessPage = () => {
     const isHome: boolean = useIsHomePath();

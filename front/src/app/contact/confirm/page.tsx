@@ -28,7 +28,6 @@ import ConfirmModal from '@/app/components/modal/ConfirmModal';
 
 /**
  * お問い合わせ確認ページ
- * @returns JSX.Element
  */
 const ContactConfirmPage = () => {
     const isHome: boolean = useIsHomePath();

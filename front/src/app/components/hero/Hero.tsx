@@ -6,7 +6,6 @@ import { useCommonData } from '@/app/contexts/CommonContext';
 
 /**
  * ヒーローセクション
- * @returns JSX.Element
  */
 const Hero = () => {
     const { isLoading, commonData } = useCommonData();
