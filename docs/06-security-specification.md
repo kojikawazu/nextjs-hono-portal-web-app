@@ -14,9 +14,10 @@
   - [クライアントサイド](#クライアントサイド)
   - [サーバーサイド](#サーバーサイド)
 - [4. 外部リンクのセキュリティ](#4-外部リンクのセキュリティ)
-- [5. インフラレベルのセキュリティ](#5-インフラレベルのセキュリティ)
-- [6. 環境変数（セキュリティ関連）](#6-環境変数セキュリティ関連)
-- [7. セキュリティ監査](#7-セキュリティ監査)
+- [5. HTTP セキュリティヘッダー](#5-http-セキュリティヘッダー)
+- [6. インフラレベルのセキュリティ](#6-インフラレベルのセキュリティ)
+- [7. 環境変数（セキュリティ関連）](#7-環境変数セキュリティ関連)
+- [8. セキュリティ監査](#8-セキュリティ監査)
 
 ## 1. CORS（Cross-Origin Resource Sharing）
 
@@ -91,7 +92,25 @@ cors({
 - すべての外部リンク（`target="_blank"`）に `rel="noopener noreferrer"` を付与
 - 外部URLのXSS防止
 
-## 5. インフラレベルのセキュリティ
+## 5. HTTP セキュリティヘッダー
+
+`front/next.config.mjs` の `headers()` で全レスポンス（`/:path*`）に付与する（多層防御）。
+
+| ヘッダー | 値（要約） | 目的 |
+|---------|-----------|------|
+| `Content-Security-Policy` | `default-src 'self'` を基点。script/style は `'unsafe-inline'`（Next.js ハイドレーション・framer-motion 由来）、img は `'self' data: https:` | XSS の緩和 |
+| `X-Frame-Options` | `DENY` | クリックジャッキング防止（CSP `frame-ancestors 'none'` と二重化） |
+| `X-Content-Type-Options` | `nosniff` | MIME スニッフィング防止 |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | リファラ漏洩の抑制 |
+| `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | HTTPS 強制（HSTS） |
+| `Permissions-Policy` | `camera=(), microphone=(), geolocation=()` | 不要な機能 API の無効化 |
+
+### 補足
+
+- CSP は nonce 方式ではなく `'unsafe-inline'` を許容する妥協実装（Next.js のインラインスクリプト/スタイル都合）。`'unsafe-eval'` は開発時（HMR）のみ許可し、本番では外す。
+- HSTS は http 応答では無視されるため、開発・E2E には影響しない。
+
+## 6. インフラレベルのセキュリティ
 
 | レイヤー | 対策 |
 |---------|------|
@@ -101,7 +120,7 @@ cors({
 | Docker | alpineベースの最小イメージ |
 | GitHub Actions | Secretsによる機密情報管理 |
 
-## 6. 環境変数（セキュリティ関連）
+## 7. 環境変数（セキュリティ関連）
 
 | 変数名 | 説明 |
 |--------|------|
@@ -110,7 +129,7 @@ cors({
 | `MY_MAIL_ADDRESS` | メール送信先アドレス |
 | `RESEND_SEND_DOMAIN` | Resend送信ドメイン |
 
-## 7. セキュリティ監査
+## 8. セキュリティ監査
 
 2026-01-31にnpm auditを実施。18件の脆弱性を検出し、10件を修正済み。
 残存する8件はNext.js/ESLintのメジャーアップグレードが必要。
