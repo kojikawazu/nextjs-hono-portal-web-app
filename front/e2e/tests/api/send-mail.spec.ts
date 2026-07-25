@@ -4,7 +4,7 @@ import type { APIRequestContext } from '@playwright/test';
 // CSRFトークン取得用の関数
 async function getCsrfToken(request: APIRequestContext) {
     const response = await request.get('/api/mail/csrf');
-    expect(response.ok()).toBeTruthy();
+    expect(response.status()).toBe(200);
     const data = await response.json();
     return {
         csrfToken: data.csrfToken,
@@ -15,7 +15,7 @@ async function getCsrfToken(request: APIRequestContext) {
 test.describe('Mail API tests', () => {
     test('GET /api/mail/csrf - get csrfToken', async ({ request }) => {
         const response = await request.get('/api/mail/csrf');
-        expect(response.ok()).toBeTruthy();
+        expect(response.status()).toBe(200);
 
         const data = await response.json();
         expect(data).toHaveProperty('csrfToken');

@@ -42,4 +42,20 @@ test.describe('Contact Success Page', () => {
         await page.getByRole('link', { name: '再度お問い合わせ' }).click();
         await expect(page).toHaveURL('/contact/form');
     });
+
+    // 異常系: 共通データ取得が 500 でも完了画面はクラッシュせず表示される
+    test('共通データ取得失敗（500）でも表示される', async ({ page }) => {
+        await page.route('**/api/gcs/common', async (route) => {
+            await route.fulfill({
+                status: 500,
+                contentType: 'application/json',
+                body: JSON.stringify({ error: 'Failed to fetch data from GCS' }),
+            });
+        });
+
+        await page.goto('/contact/success');
+
+        await page.waitForSelector('text=送信が完了しました！');
+        await expect(page.getByRole('heading', { name: '送信が完了しました！' })).toBeVisible();
+    });
 });

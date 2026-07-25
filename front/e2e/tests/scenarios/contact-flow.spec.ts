@@ -67,6 +67,33 @@ test('お問い合わせ: 入力 → 確認 → 送信完了 の一連フロー'
     await expect(page.getByRole('heading', { name: '送信が完了しました！' })).toBeVisible();
 });
 
+// 異常系: 一連フローで送信が 500 失敗したら、完了画面へ遷移せず確認画面にエラーを表示する
+test('お問い合わせ: 入力 → 確認 → 送信失敗（500）は完了画面へ遷移しない', async ({ page }) => {
+    // beforeEach の成功モックを 500 で上書きする
+    await page.route('**/api/mail/send', async (route) => {
+        await route.fulfill({
+            status: 500,
+            contentType: 'application/json',
+            body: JSON.stringify({ error: 'Failed to send email' }),
+        });
+    });
+
+    await page.goto('/contact/form');
+    await fillForm(page);
+    await page.click('button[type="submit"]');
+    await page.waitForURL('**/contact/confirm');
+
+    await page.getByRole('button', { name: '確認して送信' }).click();
+    await page.waitForSelector('text=本当に送信してもよろしいでしょうか？');
+    await page.getByRole('button', { name: '送信する' }).click();
+
+    // エラー表示 & success へ遷移しない
+    await expect(
+        page.locator('p.text-red-500', { hasText: 'エラーが発生しました。' }),
+    ).toBeVisible();
+    await expect(page).toHaveURL('/contact/confirm');
+});
+
 test('お問い合わせ: 入力 → 確認 → 修正 → 再入力 → 送信完了 の往復フロー', async ({ page }) => {
     // 1. 入力して確認画面へ
     await page.goto('/contact/form');

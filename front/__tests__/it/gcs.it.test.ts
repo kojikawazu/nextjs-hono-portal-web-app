@@ -55,4 +55,26 @@ describe('GCS Router (IT: fake-gcs-server 実結合)', () => {
         expect(res.status).toBe(500);
         expect(await res.json()).toEqual({ error: 'Failed to fetch data from GCS' });
     });
+
+    test('GET /personaldev - 異常系: 存在しないオブジェクト → 500', async () => {
+        process.env.GCS_PERSONAL_DATA_PATH = 'does-not-exist.json';
+        const res = await gcsRouter.fetch(new Request('http://localhost/personaldev'));
+        expect(res.status).toBe(500);
+        expect(await res.json()).toEqual({ error: 'Failed to fetch data from GCS' });
+    });
+
+    test('GET /sampledev - 異常系: 存在しないオブジェクト → 500', async () => {
+        process.env.GCS_SAMPLE_DATA_PATH = 'does-not-exist.json';
+        const res = await gcsRouter.fetch(new Request('http://localhost/sampledev'));
+        expect(res.status).toBe(500);
+        expect(await res.json()).toEqual({ error: 'Failed to fetch data from GCS' });
+    });
+
+    // ---- 準正常系（Semi-Normal）: 個別ルートの環境変数未設定 → 400 ----
+    test('GET /personaldev - 準正常系: 環境変数未設定 → 400', async () => {
+        delete process.env.GCS_PERSONAL_DATA_PATH;
+        const res = await gcsRouter.fetch(new Request('http://localhost/personaldev'));
+        expect(res.status).toBe(400);
+        expect(await res.json()).toEqual({ error: 'Bucket name or file name is not set' });
+    });
 });
