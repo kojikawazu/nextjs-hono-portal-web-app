@@ -3,8 +3,9 @@
 import { usePathname } from 'next/navigation';
 
 /**
- * ホームパスかどうかを判断する
- * @returns true: ホームパス, false: ホームパス以外
+ * 現在のパスがホーム（`/`）以外かどうかを判断する。
+ *
+ * @returns ホーム以外なら true（Footer 等の表示制御に使う）
  */
 export const useIsHomePath = () => {
     const pathname = usePathname();

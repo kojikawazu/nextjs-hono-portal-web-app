@@ -1,29 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
 import Image from 'next/image';
-import { z } from 'zod';
 // types
 import type { SampleDevDataType } from '@/app/types/sample-data-types';
-// utils
-import { useIsHomePath } from '@/app/utils/path/path-functions';
-
-/** `/api/gcs/sampledev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const sampleDevResponseSchema = z.object({
-    sampledev: z.array(
-        z.object({
-            title: z.string(),
-            description: z.string(),
-            tech: z.array(z.string()),
-            imageUrl: z.string(),
-            url: z.string(),
-        }),
-    ),
-});
+// hooks
+import { useIsHomePath } from '@/app/hooks/useIsHomePath';
+import { useSampleDevData } from '@/app/hooks/useSampleDevData';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';
@@ -34,34 +20,7 @@ import Footer from '@/app/components/layout/Footer';
  */
 const SampleHistoryDevPage = () => {
     const isHome: boolean = useIsHomePath();
-    const [isLoading, setIsLoading] = useState(true);
-    const [sampleDevDataList, setSampleDevDataList] = useState<SampleDevDataType[]>([]);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const result = await fetch('/api/gcs/sampledev');
-
-                if (result.ok) {
-                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
-                    const data: unknown = await result.json();
-                    const parsed = sampleDevResponseSchema.safeParse(data);
-                    if (parsed.success) {
-                        setSampleDevDataList(parsed.data.sampledev);
-                    } else {
-                        console.error('Unexpected API response format:', data);
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching sample development data:', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
+    const { sampleDevDataList, isLoading } = useSampleDevData();
 
     const containerVariants = {
         hidden: { opacity: 0 },

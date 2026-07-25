@@ -1,85 +1,26 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 // shadcn
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-// types
-import type { contactFormData } from '@/app/types/contact-types';
-// schema
-import { contactSchema } from '@/app/schema/contact-schema';
-// constants
-import { STORAGE_KEYS } from '@/app/constants/storage';
-// utils
-import { useIsHomePath } from '@/app/utils/path/path-functions';
-// utils
-import {
-    getDataBySessionStorage,
-    setDataBySessionStorage,
-} from '@/app/utils/session/session-utils';
-import { setFormError } from '@/app/utils/form/form-utils';
+// hooks
+import { useIsHomePath } from '@/app/hooks/useIsHomePath';
+import { useContactForm } from '@/app/hooks/useContactForm';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';
 import Footer from '@/app/components/layout/Footer';
 
-/** `/api/mail/csrf` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const csrfResponseSchema = z.object({ csrfToken: z.string() });
-
 /**
- * お問い合わせペォームページ
+ * お問い合わせフォームページ。フォームの状態・送信ロジックは useContactForm に委譲する。
  */
 const ContactFormPage = () => {
     const isHome: boolean = useIsHomePath();
-    // ルーティング
-    const router = useRouter();
-    // CSRFトークン
-    const [csrfToken, setCsrfToken] = useState<string | null>(null);
-    // フォーム
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        setError,
-        reset,
-    } = useForm<contactFormData>({
-        resolver: zodResolver(contactSchema),
-    });
-
-    useEffect(() => {
-        const fetchCsrfToken = async () => {
-            try {
-                const response = await fetch('/api/mail/csrf', {
-                    credentials: 'include', // クッキーを送信するために必要
-                });
-                const data: unknown = await response.json();
-                const parsed = csrfResponseSchema.safeParse(data);
-                if (parsed.success) {
-                    setCsrfToken(parsed.data.csrfToken);
-                } else {
-                    console.error('Unexpected CSRF response format:', data);
-                }
-            } catch (error) {
-                console.error('CSRF token fetch error:', error);
-            }
-        };
-
-        fetchCsrfToken();
-
-        // セッションストレージからデータを取得
-        const data = getDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
-        if (data) {
-            reset(data);
-        }
-    }, [router, reset]);
+    const { register, handleSubmit, errors, onSubmit } = useContactForm();
 
     const formVariants = {
         hidden: { opacity: 0 },
@@ -89,27 +30,6 @@ const ContactFormPage = () => {
                 staggerChildren: 0.1,
             },
         },
-    };
-
-    /**
-     * 送信
-     * @param data - フォームデータ
-     */
-    const onSubmit = async (data: contactFormData) => {
-        try {
-            if (!csrfToken) {
-                throw new Error('CSRF token is missing.');
-            }
-
-            // セッションストレージにデータを保存
-            setDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM, data);
-            setDataBySessionStorage(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
-
-            // 確認画面へ遷移
-            router.push('/contact/confirm');
-        } catch (error) {
-            setFormError(error, setError);
-        }
     };
 
     const itemVariants = {

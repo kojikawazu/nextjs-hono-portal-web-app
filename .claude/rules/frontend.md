@@ -14,6 +14,8 @@ globs: "front/src/app/**,front/src/components/**,front/src/lib/**"
 | **アトミックデザイン** | Atoms / Molecules / Organisms / Pages | 小〜中規模・ドメインが少ない |
 | **ドメイン別構成** | features/ 配下にドメイン単位で分割 | 中〜大規模・ドメインが多い |
 
+> 補足: 現状は小規模（コンポーネント数が少ない）ため、`app/components/` 配下を**機能種類別のフラット構成**（`hero/` `layout/` `modal/` `nav-bar/` 等）とし、汎用 UI プリミティブは `components/ui/`（shadcn）に置く。規模拡大時は上記いずれかのパターンへ移行する。
+
 ## サーバー/クライアント分離
 
 - **server-first** を基本とする。データ取得・SEO はサーバーコンポーネントで行う。
