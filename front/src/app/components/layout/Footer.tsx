@@ -7,7 +7,6 @@ import { useCommonData } from '@/app/contexts/CommonContext';
 
 /**
  * フッター
- * @returns JSX.Element
  */
 const Footer = () => {
     const currentYear = new Date().getFullYear();

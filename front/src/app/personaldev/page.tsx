@@ -29,7 +29,6 @@ import PageTransition from '@/app/components/page-transition/PageTransition';
 
 /**
  * 個人開発履歴ページ
- * @returns JSX.Element
  */
 const PersonalHistoryDevPage = () => {
     const isHome: boolean = useIsHomePath();

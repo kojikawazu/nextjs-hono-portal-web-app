@@ -34,7 +34,6 @@ const csrfResponseSchema = z.object({ csrfToken: z.string() });
 
 /**
  * お問い合わせペォームページ
- * @returns JSX.Element
  */
 const ContactFormPage = () => {
     const isHome: boolean = useIsHomePath();
@@ -92,7 +91,7 @@ const ContactFormPage = () => {
 
     /**
      * 送信
-     * @param data フォームデータ
+     * @param data - フォームデータ
      */
     const onSubmit = async (data: contactFormData) => {
         try {

@@ -9,7 +9,6 @@ import { useCommonData } from '@/app/contexts/CommonContext';
 
 /**
  * ナビゲーションバー
- * @returns JSX.Element
  */
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);

@@ -1,6 +1,6 @@
 /**
  * セッションストレージからデータを取得
- * @param key キー
+ * @param key - キー
  * @returns データ
  */
 export const getDataBySessionStorage = (key: string) => {
@@ -13,8 +13,8 @@ export const getDataBySessionStorage = (key: string) => {
 
 /**
  * セッションストレージにデータを保存
- * @param key キー
- * @param data データ
+ * @param key - キー
+ * @param data - データ
  */
 export const setDataBySessionStorage = (key: string, data: unknown) => {
     sessionStorage.setItem(key, JSON.stringify(data));
@@ -22,7 +22,7 @@ export const setDataBySessionStorage = (key: string, data: unknown) => {
 
 /**
  * セッションストレージからデータを削除
- * @param key キー
+ * @param key - キー
  */
 export const removeDataBySessionStorage = (key: string) => {
     sessionStorage.removeItem(key);

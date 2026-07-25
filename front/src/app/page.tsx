@@ -11,7 +11,6 @@ import PageTransition from '@/app/components/page-transition/PageTransition';
 
 /**
  * ホームページ
- * @returns JSX.Element
  */
 export default function Home() {
     const isHome: boolean = useIsHomePath();
