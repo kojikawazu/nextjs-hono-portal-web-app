@@ -6,10 +6,24 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
 import Image from 'next/image';
+import { z } from 'zod';
 // types
-import { SampleDevDataType } from '@/app/types/sample-data-types';
+import type { SampleDevDataType } from '@/app/types/sample-data-types';
 // utils
 import { useIsHomePath } from '@/app/utils/path/path-functions';
+
+/** `/api/gcs/sampledev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
+const sampleDevResponseSchema = z.object({
+    sampledev: z.array(
+        z.object({
+            title: z.string(),
+            description: z.string(),
+            tech: z.array(z.string()),
+            imageUrl: z.string(),
+            url: z.string(),
+        }),
+    ),
+});
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';
@@ -31,18 +45,11 @@ const SampleHistoryDevPage = () => {
                 const result = await fetch('/api/gcs/sampledev');
 
                 if (result.ok) {
-                    const data = await result.json();
-
-                    if (data.sampledev && Array.isArray(data.sampledev)) {
-                        setSampleDevDataList(
-                            data.sampledev.map((item: any) => ({
-                                title: item.title,
-                                description: item.description,
-                                tech: item.tech,
-                                imageUrl: item.imageUrl,
-                                url: item.url,
-                            })),
-                        );
+                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
+                    const data: unknown = await result.json();
+                    const parsed = sampleDevResponseSchema.safeParse(data);
+                    if (parsed.success) {
+                        setSampleDevDataList(parsed.data.sampledev);
                     } else {
                         console.error('Unexpected API response format:', data);
                     }

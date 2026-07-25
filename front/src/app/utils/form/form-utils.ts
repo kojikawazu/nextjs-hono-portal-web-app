@@ -1,4 +1,4 @@
-import { FieldValues, UseFormSetError } from 'react-hook-form';
+import type { FieldValues, UseFormSetError } from 'react-hook-form';
 
 /**
  * フォームエラーを設定
