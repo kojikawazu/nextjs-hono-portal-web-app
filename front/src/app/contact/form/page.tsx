@@ -16,6 +16,8 @@ import { Label } from '@/components/ui/label';
 import type { contactFormData } from '@/app/types/contact-types';
 // schema
 import { contactSchema } from '@/app/schema/contact-schema';
+// constants
+import { STORAGE_KEYS } from '@/app/constants/storage';
 // utils
 import { useIsHomePath } from '@/app/utils/path/path-functions';
 // utils
@@ -73,7 +75,7 @@ const ContactFormPage = () => {
         fetchCsrfToken();
 
         // セッションストレージからデータを取得
-        const data = getDataBySessionStorage('contactFormData');
+        const data = getDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
         if (data) {
             reset(data);
         }
@@ -100,8 +102,8 @@ const ContactFormPage = () => {
             }
 
             // セッションストレージにデータを保存
-            setDataBySessionStorage('contactFormData', data);
-            setDataBySessionStorage('csrfToken', csrfToken);
+            setDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM, data);
+            setDataBySessionStorage(STORAGE_KEYS.CSRF_TOKEN, csrfToken);
 
             // 確認画面へ遷移
             router.push('/contact/confirm');
