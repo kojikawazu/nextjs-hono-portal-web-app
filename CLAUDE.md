@@ -17,9 +17,9 @@ Next.js + Hono によるポータルWebアプリケーション（フロント�
 | github-issue.md | 全体 | GitHub issue 運用（ブランチと対で起票・open/close で進捗管理・PR で自動クローズ） |
 | testing.md | 全体 | テスト分類・原則・テストツール（Jest / Playwright） |
 | coding-standards.md | 全体 | コーディング規約（TypeScript strict・pnpm・ESLint/Prettier） |
-| typescript.md | `front/src/**` | TypeScript 固有規約（type/interface 使い分け・型/定数の配置・any 禁止・enum 回避・import type） |
+| typescript.md | `front/src/**` | TypeScript 固有規約（type/interface 使い分け・Zod 統一・型/定数/スキーマの配置・any 禁止・enum 回避・import type） |
 | error-handling.md | 全体 | エラーハンドリング方針（バリデーション・例外・ログ） |
 | security.md | 全体 | セキュリティ設計方針（認証・CORS・インジェクション対策・シークレット管理） |
 | jsdoc.md | `front/src/**` | JSDoc（TSDoc）規約（公開シンボルに必須） |
-| frontend.md | `front/src/app/**`, `front/src/components/**`, `front/src/lib/**` | Next.js フロントエンド設計・コンポーネント規約 |
+| frontend.md | `front/src/app/**`, `front/src/components/**`, `front/src/hooks/**`, `front/src/repositories/**`, `front/src/schemas/**`, `front/src/lib/**` 等 | Next.js フロントエンド設計・コンポーネント規約・関心別ディレクトリ |
 | api.md | `front/src/app/api/**` | Hono API 設計・ルート構成（Next.js 一体型） |

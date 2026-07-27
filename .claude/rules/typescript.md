@@ -52,6 +52,25 @@ type OnSelect = (id: string) => void;
 
 **補足**: NestJS の DTO は `class-validator` デコレータを付けるため **class** で定義する（type/interface ではない）。本節は「型定義」に対する指針であり、バリデーション用 DTO クラスは対象外。
 
+## スキーマバリデーションは Zod に統一する
+
+**TypeScript のスキーマバリデーションは Zod を使う。** フロントエンド（フォーム）と API ルート（Hono）で**同じ 1 つのライブラリに揃える**（`yup` / `joi` / 自前の検証関数を混在させない）。
+
+- **理由**: 層ごとに検証ライブラリが変わると、同じ入力ルールを別の書き方で二重に定義することになる。Zod なら**スキーマそのものを共有でき**、片方から他方を導出できる。
+- **型はスキーマから導出する**。`z.infer<typeof schema>` を使い、**同じ形を手書きで二重定義しない**。**スキーマが単一の真実**であり、型はその影である。
+- 外部入力（API レスポンス・`JSON.parse`・フォーム入力）は `unknown` で受け、**Zod で `parse` してからドメインに入れる**。
+- クライアント（`contactSchema`）と API ルートの検証は、信頼境界が違うため**両方に必要**だが、**定義は 1 つ**にして双方から参照する。
+- 用途別のアダプタを使う（`react-hook-form` の `zodResolver` / `@hono/zod-validator`）。**アダプタは変わってもスキーマは変わらない**。
+
+### スキーマの配置（`schemas/` 集約）
+
+- スキーマは**ソースルート直下の `schemas/` ディレクトリ**に集約する（本プロジェクトでは `front/src/schemas/`）。
+- **`lib/validation.ts` のような単一ファイルにまとめない。** ディレクトリを切り、ドメイン単位でファイルを分ける（`schemas/contact.ts` 等）。`lib/` `utils/` の下に置かない（「関数の置き場」と分離する）。
+- 命名は**ディレクトリが複数形の `schemas`**。`schema/` のような単数形にしない。
+- **スキーマから導出した型は `types/` に再定義しない。** `z.infer<typeof contactSchema>` を `schemas/contact.ts` から `export` し、それを参照する。
+- **検証を伴わない純粋な型は `schemas/` に置かない**（`types/` へ）。`schemas/` に置くのは「実行時に `parse` するもの」だけ。
+- barrel（`schemas/index.ts`）は作らない（理由は型・定数と同じ）。
+
 ## 型定義の配置（コロケーション / `types/` 集約）
 
 型を各ファイルに散在させず、**参照範囲**で置き場所を決める。判断軸は「**その型を参照するファイルが 1 つに閉じるか**」。
@@ -60,6 +79,27 @@ type OnSelect = (id: string) => void;
 |---|---|
 | **1 ファイルに閉じる** | その定義ファイル内にコロケーション（`export` しない） |
 | **2 ファイル以上** / レイヤ・機能をまたぐ | `types/` に集約して `export` |
+
+### 置き場所（ディレクトリを切る）
+
+- 集約先は**ソースルート直下の `types/` ディレクトリ**とする。本プロジェクト（Next.js `src/` 構成）では **`front/src/types/`**。
+- **単一ファイルにまとめない。** `lib/type.ts` / `src/type.ts` のように 1 ファイルへ全型を詰め込む形は禁止。必ず**ディレクトリを切り、ドメイン単位でファイルを分ける**。
+- **`lib/` `utils/` の下に型ファイルを置かない。** `lib/` は「関数の置き場」、`types/` は「型の置き場」で分離する（定数も同様。「定数の配置」参照）。
+- 命名は**ディレクトリが複数形の `types`、ファイルはドメイン名の単数形**（`types/contact.ts` 等）。`type.ts` / `Types.ts` のような単数形・PascalCase のディレクトリ名は使わない。
+
+```
+front/src/
+├── repositories/   # API アクセス（通信はここだけ）
+├── schemas/        # Zod スキーマ
+├── lib/            # 純粋ユーティリティ（通信しない）
+├── constants/      # 値
+└── types/          # 型
+    └── contact.ts
+```
+
+❌ `src/lib/type.ts` に全型を詰め込む / ✅ `src/types/contact.ts` にドメイン単位で分ける
+
+> 現状: 本プロジェクトは `front/src/app/types/` `front/src/app/schema/` `front/src/app/constants/` `front/src/app/utils/` 配置で、上記の目標構成と乖離がある。**新規追加・リファクタ時は上記を目標とする**。
 
 ### 運用ルール
 
@@ -98,6 +138,16 @@ export type Task = { id: string; title: string; status: TaskStatus };
 |---|---|
 | **1 ファイルに閉じる** | その定義ファイルの先頭で `const` 宣言（`export` しない） |
 | **2 ファイル以上** / レイヤ・機能をまたぐ | `constants/` に集約して `export` |
+
+### 置き場所（ディレクトリを切る）
+
+型と同じ方針で置き場所を決める（詳細は「型定義の配置」の同名節）。
+
+- 集約先は**ソースルート直下の `constants/` ディレクトリ**（本プロジェクトでは `front/src/constants/`）。
+- **単一ファイルにまとめない。** `lib/constants.ts` / `src/constants.ts` のように 1 ファイルへ全定数を詰め込む形は禁止。**ディレクトリを切り、ドメイン単位でファイルを分ける**。
+- 命名は**ディレクトリが複数形の `constants`**（`constant.ts` のような単数形の単一ファイルにしない）。
+
+❌ `src/lib/constants.ts` に全定数を詰め込む / ✅ `src/constants/contact.ts` にドメイン単位で分ける
 
 ### 運用ルール
 
