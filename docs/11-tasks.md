@@ -50,16 +50,17 @@
 | T-38 | 全ワークフローに `permissions: contents: read` を明示（既定の広い権限に依存しない）。GCP 認証は SA キーで `GITHUB_TOKEN` を使わないため最小権限で足りる | 完了 |
 | T-39 | シークレット混入検出ジョブ `secret-scan.yml` を追加（鍵・`.env`・`*.tfvars` が Git 管理下に入っていないか `git ls-files` で検査。パスフィルタなしで常時実行） | 完了 |
 | T-40 | `docs/06-security-specification.md` が 150 行を超えたため `docs/06-security-specification/` へ分割（application / infrastructure / audit + README 索引）。参照 3 箇所を更新 | 完了 |
+| T-41 | 依存パッケージの脆弱性対応（106件 → 38件・critical 2 → 0）。`next` 16.3.5 / `hono` 4.13.8 / `nanoid` 5.1.16 / `@google-cloud/storage` 7.22.0 / `postcss` 8.5.28 へ更新し、未使用の `@hono/node-server` を削除 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
 | ID | タスク | 優先度 | 備考 |
 |----|-------|--------|------|
-| T-B01 | 依存パッケージの脆弱性対応（2026-09-20 実測: ユニーク 106 件 / critical 2・high 44・moderate 53・low 7） | 高 | 「8件」は Next.js 16 化以前の古い数字だったため実測値に更新。適用可否の評価は issue #108。critical 2 件（Next.js RCE）は Windows ホスト／画像最適化 API 有効が条件で本構成は非該当、Hono の CORS 脆弱性も `origin` を明示指定しているため非該当。ただし next が 16.2.1 と 16.3.3 に大きく遅れており追随が必要 |
-| T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更 |
+| T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更。**有効化すると Image Optimization API が動き出す**ため、`next` のバージョン追随を怠らないこと（2026-09 監査時点の critical RCE は 16.3.3 で修正済み） |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
 | T-B04 | CI に型チェック（`tsc --noEmit`）を追加 | 中 | `static-analysis.md`「型チェックはビルドとは別に明示実行する」に未対応。`package.json` に `typecheck` スクリプトがなく、`test.yml` も format:check / lint / test のみ |
 | T-B06 | デプロイに `environment:` の承認ゲートと `concurrency.cancel-in-progress: false` を追加 | 中 | `github-actions.md`「デプロイの発火」に未対応。キャンセルによるデプロイ不整合を防ぐ |
+| T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
 
 ## 3. マイルストーン
 
