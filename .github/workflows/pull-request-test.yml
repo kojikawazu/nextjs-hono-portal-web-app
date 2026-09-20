@@ -1,12 +1,47 @@
 name: Pull Request Test
 
+# ワークフローレベルの paths は使わない。
+# required status check にした場合、ワークフロー自体が起動しないと必須チェックが
+# pending のまま完了せず PR がマージ不能になる。ジョブレベルの if: でスキップすれば
+# 「skipped」＝成功扱いになるため、常に起動して中身だけスキップする形にする。
+# 正本: .claude/rules/github-actions.md「パスフィルタの実装（重要な落とし穴）」
 on:
     pull_request:
-        paths:
-            - '.github/**'
-            - 'front/**'
+        branches: [main]
 
 jobs:
+    # 変更範囲を判定する。アプリに無関係な変更だけの PR では test をスキップする。
+    changes:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            # pull_request では変更ファイル一覧を GitHub API から取得するため必要。
+            # これが無いと changes が落ち、needs: changes の test が丸ごとスキップされる。
+            pull-requests: read
+        outputs:
+            app: ${{ steps.filter.outputs.app }}
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: dorny/paths-filter@v3
+              id: filter
+              with:
+                  # 除外条件は AND で結ぶ必要がある。既定の 'some' では
+                  # NOT A OR NOT B となり、ほぼ全ファイルが true になる。
+                  predicate-quantifier: 'every'
+                  # 「対象リスト」ではなく「除外リスト」で書く。新しいディレクトリが
+                  # 増えたときに黙ってテストが走らなくなるのを防ぐ（安全側に倒す）。
+                  # extglob '!(a|b)' は picomatch で否定にならないため使わない。
+                  filters: |
+                      app:
+                        - '!docs/**'
+                        - '!**/*.md'
+                        - '!.claude/**'
+                        - '!terraform/**'
+                        - '!architecture/**'
+
     test:
+        needs: changes
+        if: needs.changes.outputs.app == 'true'
         uses: ./.github/workflows/test.yml
         secrets: inherit
