@@ -8,6 +8,11 @@ on:
             - '.github/**'
             - 'front/**'
 
+# 既定の広い権限に依存しない。GCP へのデプロイは credentials_json（SA キー）で
+# 認証し GITHUB_TOKEN を使わないため、checkout 用の contents: read で足りる。
+permissions:
+    contents: read
+
 jobs:
   test:
         uses: ./.github/workflows/test.yml

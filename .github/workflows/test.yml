@@ -3,6 +3,12 @@ name: Test Workflow
 on:
   workflow_call:
 
+# 既定の広い権限に依存しない。実効権限は呼び出し元との積集合になる。
+# GCP 認証は credentials_json（SA キー）で行い GITHUB_TOKEN を使わないため、
+# checkout 用の contents: read だけで足りる。
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest

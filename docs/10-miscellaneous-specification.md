@@ -55,7 +55,7 @@
 | `API_SECRET_TOKEN` | deploy / test / .env(.test) | 未使用 |
 | `NEXT_PUBLIC_API_TOKEN` | deploy / test / .env(.test) | 未使用 |
 
-> 本アプリの API は認証を持たない（[06-security-specification.md](./06-security-specification.md) / [07-api-specification/](./07-api-specification/)）。上記トークンは認証機構として機能していない。
+> 本アプリの API は認証を持たない（[06-security-specification/](./06-security-specification/) / [07-api-specification/](./07-api-specification/)）。上記トークンは認証機構として機能していない。
 
 ### Terraform
 

@@ -23,7 +23,7 @@ globs:
 | ページ・画面・機能の追加/変更 | docs/03-functional-specification/ |
 | 非機能要件（性能・可用性・運用）の変更 | docs/04-non-functional-specification.md |
 | データモデル・ストア・スキーマの変更 | docs/05-data-specification/ |
-| 認証・認可・CORS などセキュリティ仕様の変更 | docs/06-security-specification.md |
+| 認証・認可・CORS などセキュリティ仕様の変更 | docs/06-security-specification/ |
 | API エンドポイント（Hono ルート）の追加/変更/削除 | docs/07-api-specification/ |
 | テスト戦略・テスト分類・テスト方針の変更 | docs/08-test-specification.md |
 | システム構成・デプロイ構成（Cloud Run 等）・依存技術の変更 | docs/09-architecture-specification/, CLAUDE.md |
