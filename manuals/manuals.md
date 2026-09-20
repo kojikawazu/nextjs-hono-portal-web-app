@@ -17,7 +17,7 @@ pnpm add -D <pkg>     # 開発依存を追加
 
 主な依存（参考）:
 
-- ランタイム: `hono`, `@hono/node-server`, `@google-cloud/storage`, `resend`
+- ランタイム: `hono`, `@google-cloud/storage`, `resend`
 - UI: `lucide-react`, `framer-motion`, `react-spinners`, `@fortawesome/*`, `tailwindcss-animate`
 - フォーム: `zod`, `react-hook-form`, `@hookform/resolvers`
 

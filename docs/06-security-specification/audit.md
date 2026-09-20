@@ -8,8 +8,11 @@
 |---|---|---|---|---|
 | 2026-01-31 | 18件 | `npm audit fix` で10件、Next.js 16 アップグレードで6件を修正 | 2件（`fast-xml-parser` / `@google-cloud/storage`。上流の修正待ち） | [security-audit-report.md](../security-audit-report.md) |
 | 2026-03-21 | 22件（Dependabot） | `npm audit fix` で21件を修正 | 1件（`@tootallnate/once`。Low・テスト環境限定のため許容） | [security-audit-report-2026-03.md](../security-audit-report-2026-03.md) |
+| 2026-09-20 | 106件（`pnpm audit` 実測） | `next` 16.3.5 / `hono` 4.13.8 / `nanoid` 5.1.16 等へ更新し、未使用の `@hono/node-server` を削除。**critical を 0 に** | 38件（**すべて間接依存**。実行時に載るのは 6 件で、うち 3 件は `@google-cloud/storage` の `fast-xml-parser` 固定による上流待ち） | [security-audit-report-2026-09.md](../security-audit-report-2026-09.md) |
 
 最新の状況は表の最終行を参照する。個々の脆弱性の内訳・対応内容は各レポートが正本。
+
+> **件数をこの表の外へ転記しない。** 2026-01-31 の結論が「残存 8 件・Next.js 16 アップグレード待ち」のままタスク表に写され、実態（残存 2 件・対応済み）と乖離した事例がある。
 
 ## 9. CI によるシークレット混入検出
 

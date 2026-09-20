@@ -30,7 +30,7 @@
 
 | 技術 | バージョン | 用途 |
 |------|----------|------|
-| Next.js | ^16.1.6 | Reactフレームワーク (App Router) |
+| Next.js | ^16.3.5 | Reactフレームワーク (App Router) |
 | React | ^18 | UIライブラリ |
 | TypeScript | ^5 | 型安全性 |
 | Tailwind CSS | ^3.4.1 | ユーティリティファーストCSS |
@@ -46,11 +46,10 @@
 
 | 技術 | バージョン | 用途 |
 |------|----------|------|
-| Hono | ^4.6.19 | 軽量Webフレームワーク |
+| Hono | ^4.13.8 | 軽量Webフレームワーク |
 | hono/vercel | (hono内蔵) | Vercelアダプター（`handle()`でNext.js API Routeに統合） |
-| @hono/node-server | ^1.13.7 | Node.jsアダプター（依存関係として存在、API Routeでは未使用） |
 | Resend | ^4.1.1 | メール送信 |
-| @google-cloud/storage | ^7.14.0 | GCSアクセス |
+| @google-cloud/storage | ^7.22.0 | GCSアクセス |
 
 ### インフラ
 
