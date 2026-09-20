@@ -31,4 +31,4 @@ Next.js + Hono によるポータルWebアプリケーション（フロント�
 | api.md | `front/src/app/api/**` | Hono API 設計・ルート構成（Next.js 一体型）・レイヤ依存の一方向ルール・バリデーションの二重定義禁止 |
 | dry-run.md | `front/src/app/api/**` | DryRun（事前検証）の意味論（経路の形・副作用の禁止範囲・認可・TOCTOU） |
 | domain-layer.md | `front/src/app/api/**` | domain 層に置くもの（値オブジェクトを作る基準・ドメインサービス・入口の検証との分担） |
-| github-actions.md | `.github/workflows/**` | ワークフローの静的解析（actionlint）・発火ルール（関係あるジョブだけ動かす） |
+| github-actions.md | `.github/workflows/**` | ワークフローの静的解析（actionlint）・発火ルール（関係あるジョブだけ動かす）・required status check の組み方 |

@@ -182,6 +182,64 @@ jobs:
 - 必須チェックにしないワークフロー（デプロイ等）は、ワークフローレベルの `paths-ignore` を使ってよい（起動そのものを止める方が安価）。
 - **判定条件は「除外リスト」で書く**（`docs/**` 以外はアプリ変更とみなす）。「対象リスト」で書くと、**新しいディレクトリが増えたときに黙ってテストが走らなくなる**。安全側に倒す。
 
+### reusable workflow を呼ぶジョブを必須チェックに登録しない
+
+**`uses:` で reusable workflow を呼ぶジョブは、報告されるチェック名が状況で変わる。** そのまま required status check に登録すると詰む。
+
+| 状況 | 報告されるチェック名 |
+|---|---|
+| ジョブが実行された | `test / test`（**外側ジョブ / 内側ジョブ**） |
+| ジョブが `if:` でスキップされた | `test`（内側ワークフローが起動しないため**外側だけ**） |
+
+「skipped は必須チェックの成功として扱われる」は正しいが、**そもそもその名前のチェックが報告されない**ため `pending` のまま残る。`test` を登録すれば今度は実行時に `test` が存在せず、同じ理由で詰む。**どちらの名前を選んでも片方のケースでマージ不能になる。**
+
+**対策: 必ず起動して単一の名前で結果を報告する集約ジョブを置き、そちらを必須チェックにする。**
+
+```yaml
+  test:
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    uses: ./.github/workflows/test.yml       # ← これは必須チェックにしない
+    secrets: inherit
+
+  test-result:                               # ← これを必須チェックにする
+    needs: [changes, test]
+    if: always()                             # 上流の結果に関わらず必ず起動する
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - env:
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          # changes が落ちると test は needs 未達でスキップされる。成功扱いに
+          # すると「テストが 1 本も走らないまま通る」状態になる（fail-unsafe）。
+          if [ "$CHANGES_RESULT" != "success" ]; then
+            echo "::error::changes ジョブが success ではありません（$CHANGES_RESULT）"
+            exit 1
+          fi
+          # skipped は「アプリに無関係な変更のみ」を意味するので成功扱いにする。
+          case "$TEST_RESULT" in
+            success | skipped) ;;
+            *) echo "::error::test ジョブが $TEST_RESULT で終了しました"; exit 1 ;;
+          esac
+```
+
+- **判定ジョブ（`changes`）の失敗を必ず失敗として扱う**。上表のコメントのとおり、ここを緩めると検証装置として機能しなくなる。
+- `needs.*.result` は **`env:` 経由で参照する**（`run:` に式を直接埋め込まない）。
+- 集約ジョブ自体はパスフィルタを持たない。**常に起動することが存在意義**である。
+
+### チェック名は推測せず実物で確認する
+
+**必須チェックに登録する名前は、実際に報告されたものを API から読む。** ワークフローの job id から推測すると、上記のような複合名・条件による変化を見落とす。
+
+```bash
+gh api repos/<owner>/<repo>/commits/<sha>/check-runs --jq '.check_runs[].name'
+```
+
+- **「本体が実行された PR」と「スキップされた PR」の両方で確認する。** 片方だけでは名前が変わることに気づけない。
+- ブランチ保護を設定したら、**代表的な変更パターンごとに実際の PR でマージ可否を確認する**（`gh pr view <n> --json mergeable,mergeStateStatus`）。設定しただけでは検証にならない。
+
 ### 除外パターンは extglob で書かない
 
 **除外は「先頭 `!` のパターン」＋ `predicate-quantifier: 'every'` で書く。`'!(a|b|c)'` という extglob で書いてはならない。**
