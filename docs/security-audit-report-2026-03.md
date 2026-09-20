@@ -129,6 +129,6 @@ breaking change を伴わない安全な修正のみを適用。
 
 ## 備考
 
-- 前回監査（2026-01-31）では18件検出 → 10件修正。その後新たに追加されたアラートを含め、今回22件を対処
+- 前回監査（2026-01-31）では18件検出 → `npm audit fix` で10件修正、さらに Next.js 16 へのアップグレードで6件を追加修正し、最終的に残存2件まで削減（詳細は [security-audit-report.md](./security-audit-report.md) の「最終結果」）。その後新たに追加されたアラートを含め、今回22件を対処
 - `npm audit fix` のみで対応し、breaking change は一切含まない
 - 定期的な `npm audit` 実行と Dependabot アラートの監視を継続すること
