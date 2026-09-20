@@ -40,6 +40,7 @@
 | T-28 | GCS 統合テスト（IT）を新設（fake-gcs-server + `GCS_API_ENDPOINT`。docker-compose + CI ステップ） | 完了 |
 | T-29 | E2E に異常系を補強（API 500 / ネットワーク断時のグレースフル劣化・送信失敗のエラー表示） | 完了 |
 | T-30 | E2E シナリオテストを追加（お問い合わせ 入力→確認→送信完了 の一連フロー／修正往復） | 完了 |
+| T-31 | 未整備の共通ルールを追加（duplication / dead-code / static-analysis / github-actions / pr-description / lessons-learned / dry-run / domain-layer / codex）。actionlint ワークフロー・PR テンプレート・AGENTS.md・教訓ログを新設し、api.md に欠落 5 節を追記 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -48,6 +49,12 @@
 | T-B01 | 残存するnpm脆弱性の対応（8件） | 中 | ESLint/Next.js関連、本番影響は限定的 |
 | T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更 |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
+| T-B04 | CI に型チェック（`tsc --noEmit`）を追加 | 中 | `static-analysis.md`「型チェックはビルドとは別に明示実行する」に未対応。`package.json` に `typecheck` スクリプトがなく、`test.yml` も format:check / lint / test のみ |
+| T-B05 | `deploy-to-googlecloud.yml` / `test.yml` に `permissions:` を明示 | 中 | `github-actions.md`「既定の広い権限に依存しない」に未対応。現状 3 ワークフローとも `permissions` 未指定 |
+| T-B06 | デプロイに `environment:` の承認ゲートと `concurrency.cancel-in-progress: false` を追加 | 中 | `github-actions.md`「デプロイの発火」に未対応。キャンセルによるデプロイ不整合を防ぐ |
+| T-B07 | main のブランチ保護を有効化し、actionlint を required status check に登録 | 中 | 現状 main は未保護（`gh api .../branches/main/protection` が 404）。有効化時は T-B08 を同時に対応する |
+| T-B08 | `pull-request-test.yml` のワークフローレベル `paths` をジョブレベル `if:` へ移す | 中 | `github-actions.md`「必須チェックとワークフローレベル `paths` / `paths-ignore` を併用しない」。T-B07 で必須チェック化するとドキュメントのみの PR が pending のままマージ不能になる |
+| T-B09 | `actions/checkout@v3` を v4 へ更新 | 低 | `test.yml` / `deploy-to-googlecloud.yml`。他のアクションは v4 系に揃っている |
 
 ## 3. マイルストーン
 
