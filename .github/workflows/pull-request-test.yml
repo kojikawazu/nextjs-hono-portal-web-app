@@ -45,3 +45,39 @@ jobs:
         if: needs.changes.outputs.app == 'true'
         uses: ./.github/workflows/test.yml
         secrets: inherit
+
+    # required status check の受け皿。必ず起動し、単一の名前で結果を報告する。
+    #
+    # reusable workflow を呼ぶジョブは、報告されるチェック名が状況で変わる:
+    #   実行された   → "test / test"（外側ジョブ / 内側ジョブ）
+    #   スキップされた → "test"（内側が生成されないため外側だけ）
+    # どちらを必須チェックに登録しても、もう一方のケースでそのチェックが
+    # 存在せず pending のまま詰む。名前が変わらないジョブをここで用意する。
+    test-result:
+        needs: [changes, test]
+        if: always()
+        runs-on: ubuntu-latest
+        permissions: {}
+        steps:
+            - name: Check upstream job results
+              env:
+                  CHANGES_RESULT: ${{ needs.changes.result }}
+                  TEST_RESULT: ${{ needs.test.result }}
+              run: |
+                  echo "changes=$CHANGES_RESULT test=$TEST_RESULT"
+
+                  # changes が落ちると test は needs 未達でスキップされる。
+                  # それを成功扱いにするとテストが 1 本も走らないまま通ってしまう。
+                  if [ "$CHANGES_RESULT" != "success" ]; then
+                      echo "::error::changes ジョブが success ではありません（$CHANGES_RESULT）。test が誤ってスキップされた可能性があります"
+                      exit 1
+                  fi
+
+                  # skipped は「アプリに無関係な変更のみ」を意味するので成功扱いにする。
+                  case "$TEST_RESULT" in
+                      success | skipped) ;;
+                      *)
+                          echo "::error::test ジョブが $TEST_RESULT で終了しました"
+                          exit 1
+                          ;;
+                  esac
