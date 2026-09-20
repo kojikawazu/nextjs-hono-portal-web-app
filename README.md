@@ -190,7 +190,9 @@ pnpm test:e2e    # E2E（Playwright / 各ページ・メール送信API）
 | ドキュメント | 内容 |
 |---|---|
 | [docs/README.md](./docs/README.md) | 仕様書の目次 |
-| [.claude/rules/](./.claude/rules/) | 開発ルール（フロー・Git・テスト・ドキュメント運用など） |
+| [.claude/rules/](./.claude/rules/) | 開発ルール（フロー・Git・テスト・ドキュメント運用など）。AI エージェント向けルールの唯一の正本 |
+| [CLAUDE.md](./CLAUDE.md) / [AGENTS.md](./AGENTS.md) | ルールへの入口（Claude Code / Codex）。ルール本文は持たず `.claude/rules/` を参照する |
+| [docs/lessons-learned.md](./docs/lessons-learned.md) | 教訓ログ（事故・レビュー指摘・ハマりの記録） |
 | [manuals/](./manuals/) | 環境変数・インフラ構築マニュアル |
 
 ## アーカイブ
