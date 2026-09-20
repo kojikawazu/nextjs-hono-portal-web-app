@@ -44,6 +44,7 @@
 | T-32 | actionlint が検出した既存ワークフローの指摘 8 件を解消（`actions/checkout@v3`→v4、`google-github-actions/auth@v1`・`setup-gcloud@v1`→v2、SC2129 のリダイレクトまとめ、未使用変数 `KEEP_IMAGES` の削除） | 完了 |
 | T-33 | セキュリティ監査記録の訂正（2026-01-31 監査の結論が「Next.js 16 アップグレード待ち」のままだった。実施済み・残存 2 件に修正し、06-security-specification.md / 2026-03 レポートの整合も取る） | 完了 |
 | T-34 | `pull-request-test.yml` のワークフローレベル `paths` を `dorny/paths-filter` + ジョブレベル `if:` へ移行（必須チェック化しても pending で詰まらない形にする） | 完了 |
+| T-35 | main のブランチ保護を有効化（required status check: `actionlint` / `changes` / `test / test`。strict=false・PR 必須／承認数 0・enforce_admins=false・force push とブランチ削除を禁止） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -55,7 +56,6 @@
 | T-B04 | CI に型チェック（`tsc --noEmit`）を追加 | 中 | `static-analysis.md`「型チェックはビルドとは別に明示実行する」に未対応。`package.json` に `typecheck` スクリプトがなく、`test.yml` も format:check / lint / test のみ |
 | T-B05 | `deploy-to-googlecloud.yml` / `test.yml` に `permissions:` を明示 | 中 | `github-actions.md`「既定の広い権限に依存しない」に未対応。現状 3 ワークフローとも `permissions` 未指定 |
 | T-B06 | デプロイに `environment:` の承認ゲートと `concurrency.cancel-in-progress: false` を追加 | 中 | `github-actions.md`「デプロイの発火」に未対応。キャンセルによるデプロイ不整合を防ぐ |
-| T-B07 | main のブランチ保護を有効化し、required status check を登録 | 中 | 現状 main は未保護（`gh api .../branches/main/protection` が 404）。前提の T-B08 は T-34 で完了済み。登録対象は `actionlint` / `changes` / `test / test` の 3 つ（`changes` を外すと、判定ジョブが落ちたとき test がスキップ＝成功扱いになり、テストが 1 本も走らないまま通る） |
 
 ## 3. マイルストーン
 
