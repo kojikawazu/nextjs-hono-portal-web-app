@@ -9,6 +9,10 @@ on:
     pull_request:
         branches: [main]
 
+# 既定の広い権限に依存しない。個別に上乗せが要るジョブはジョブレベルで指定する。
+permissions:
+    contents: read
+
 jobs:
     # 変更範囲を判定する。アプリに無関係な変更だけの PR では test をスキップする。
     changes:

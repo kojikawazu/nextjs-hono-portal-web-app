@@ -47,16 +47,18 @@
 | T-35 | main のブランチ保護を有効化（strict=false・PR 必須／承認数 0・enforce_admins=false・force push とブランチ削除を禁止） | 完了 |
 | T-36 | 必須チェック用の集約ジョブ `test-result` を追加。reusable workflow を呼ぶジョブは報告名が実行時 `test / test`／スキップ時 `test` と変わり、どちらを必須チェックに登録しても他方で pending のまま詰むため、名前が変わらない受け皿を用意した（required status check: `actionlint` / `changes` / `test-result`） | 完了 |
 | T-37 | 上記の罠を `github-actions.md` へルール昇格（reusable workflow 呼び出しジョブを必須チェックに登録しない／チェック名は check-runs API で実物を確認する） | 完了 |
+| T-38 | 全ワークフローに `permissions: contents: read` を明示（既定の広い権限に依存しない）。GCP 認証は SA キーで `GITHUB_TOKEN` を使わないため最小権限で足りる | 完了 |
+| T-39 | シークレット混入検出ジョブ `secret-scan.yml` を追加（鍵・`.env`・`*.tfvars` が Git 管理下に入っていないか `git ls-files` で検査。パスフィルタなしで常時実行） | 完了 |
+| T-40 | `docs/06-security-specification.md` が 150 行を超えたため `docs/06-security-specification/` へ分割（application / infrastructure / audit + README 索引）。参照 3 箇所を更新 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
 | ID | タスク | 優先度 | 備考 |
 |----|-------|--------|------|
-| T-B01 | 残存するnpm脆弱性の対応（8件） | 中 | ESLint/Next.js関連、本番影響は限定的 |
+| T-B01 | 依存パッケージの脆弱性対応（2026-09-20 実測: ユニーク 106 件 / critical 2・high 44・moderate 53・low 7） | 高 | 「8件」は Next.js 16 化以前の古い数字だったため実測値に更新。適用可否の評価は issue #108。critical 2 件（Next.js RCE）は Windows ホスト／画像最適化 API 有効が条件で本構成は非該当、Hono の CORS 脆弱性も `origin` を明示指定しているため非該当。ただし next が 16.2.1 と 16.3.3 に大きく遅れており追随が必要 |
 | T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更 |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
 | T-B04 | CI に型チェック（`tsc --noEmit`）を追加 | 中 | `static-analysis.md`「型チェックはビルドとは別に明示実行する」に未対応。`package.json` に `typecheck` スクリプトがなく、`test.yml` も format:check / lint / test のみ |
-| T-B05 | `deploy-to-googlecloud.yml` / `test.yml` に `permissions:` を明示 | 中 | `github-actions.md`「既定の広い権限に依存しない」に未対応。現状 3 ワークフローとも `permissions` 未指定 |
 | T-B06 | デプロイに `environment:` の承認ゲートと `concurrency.cancel-in-progress: false` を追加 | 中 | `github-actions.md`「デプロイの発火」に未対応。キャンセルによるデプロイ不整合を防ぐ |
 
 ## 3. マイルストーン

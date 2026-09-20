@@ -1,23 +1,6 @@
-# セキュリティ仕様書（Security Specification）
+# アプリケーションセキュリティ
 
-## 目次
-
-- [1. CORS（Cross-Origin Resource Sharing）](#1-corscross-origin-resource-sharing)
-  - [実装箇所](#実装箇所)
-  - [仕様](#仕様)
-- [2. CSRF（Cross-Site Request Forgery）対策](#2-csrfcross-site-request-forgery対策)
-  - [実装箇所](#実装箇所)
-  - [トークン発行](#トークン発行)
-  - [トークン検証](#トークン検証)
-  - [フロー](#フロー)
-- [3. 入力バリデーション](#3-入力バリデーション)
-  - [クライアントサイド](#クライアントサイド)
-  - [サーバーサイド](#サーバーサイド)
-- [4. 外部リンクのセキュリティ](#4-外部リンクのセキュリティ)
-- [5. HTTP セキュリティヘッダー](#5-http-セキュリティヘッダー)
-- [6. インフラレベルのセキュリティ](#6-インフラレベルのセキュリティ)
-- [7. 環境変数（セキュリティ関連）](#7-環境変数セキュリティ関連)
-- [8. セキュリティ監査](#8-セキュリティ監査)
+CORS・CSRF・入力バリデーション・外部リンク・HTTP セキュリティヘッダー。index は [README.md](./README.md)。
 
 ## 1. CORS（Cross-Origin Resource Sharing）
 
@@ -110,30 +93,3 @@ cors({
 - CSP は nonce 方式ではなく `'unsafe-inline'` を許容する妥協実装（Next.js のインラインスクリプト/スタイル都合）。`'unsafe-eval'` は開発時（HMR）のみ許可し、本番では外す。
 - HSTS は http 応答では無視されるため、開発・E2E には影響しない。
 
-## 6. インフラレベルのセキュリティ
-
-| レイヤー | 対策 |
-|---------|------|
-| Cloudflare | DDoS保護、WAF、SSL/TLS終端 |
-| Cloud Run | IAMによるアクセス制御 |
-| GCS | プライベートバケット（サービスアカウント認証） |
-| Docker | alpineベースの最小イメージ |
-| GitHub Actions | Secretsによる機密情報管理 |
-
-## 7. 環境変数（セキュリティ関連）
-
-| 変数名 | 説明 |
-|--------|------|
-| `ALLOWED_ORIGIN` | CORS許可オリジン |
-| `RESEND_API_KEY` | Resend APIキー |
-| `MY_MAIL_ADDRESS` | メール送信先アドレス |
-| `RESEND_SEND_DOMAIN` | Resend送信ドメイン |
-
-## 8. セキュリティ監査
-
-| 実施日 | 検出 | 対応 | 残存 | レポート |
-|---|---|---|---|---|
-| 2026-01-31 | 18件 | `npm audit fix` で10件、Next.js 16 アップグレードで6件を修正 | 2件（`fast-xml-parser` / `@google-cloud/storage`。上流の修正待ち） | [security-audit-report.md](./security-audit-report.md) |
-| 2026-03-21 | 22件（Dependabot） | `npm audit fix` で21件を修正 | 1件（`@tootallnate/once`。Low・テスト環境限定のため許容） | [security-audit-report-2026-03.md](./security-audit-report-2026-03.md) |
-
-最新の状況は表の最終行を参照する。個々の脆弱性の内訳・対応内容は各レポートが正本。

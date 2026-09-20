@@ -23,7 +23,7 @@ nextjs-hono-portal-web-app の仕様・設計ドキュメント一覧。プロ�
 | 03 | [機能仕様書](./03-functional-specification/) | ページ構成・共通レイアウト・お問い合わせフロー |
 | 04 | [非機能仕様書](./04-non-functional-specification.md) | 性能・可用性・運用 |
 | 05 | [データ仕様書](./05-data-specification/) | GCS データモデル・sessionStorage・データフロー |
-| 06 | [セキュリティ仕様書](./06-security-specification.md) | CORS・CSRF・入力バリデーション |
+| 06 | [セキュリティ仕様書](./06-security-specification/) | CORS・CSRF・入力バリデーション |
 | 07 | [API 仕様書](./07-api-specification/) | Hono ルート・エンドポイント・ミドルウェア |
 | 08 | [テスト仕様書](./08-test-specification.md) | テスト戦略・テスト分類 |
 | 09 | [アーキテクチャ仕様書](./09-architecture-specification/) | 技術スタック・ディレクトリ構成・デプロイ（Cloud Run） |
