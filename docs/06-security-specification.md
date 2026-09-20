@@ -131,6 +131,9 @@ cors({
 
 ## 8. セキュリティ監査
 
-2026-01-31にnpm auditを実施。18件の脆弱性を検出し、10件を修正済み。
-残存する8件はNext.js/ESLintのメジャーアップグレードが必要。
-詳細は `docs/security-audit-report.md` を参照。
+| 実施日 | 検出 | 対応 | 残存 | レポート |
+|---|---|---|---|---|
+| 2026-01-31 | 18件 | `npm audit fix` で10件、Next.js 16 アップグレードで6件を修正 | 2件（`fast-xml-parser` / `@google-cloud/storage`。上流の修正待ち） | [security-audit-report.md](./security-audit-report.md) |
+| 2026-03-21 | 22件（Dependabot） | `npm audit fix` で21件を修正 | 1件（`@tootallnate/once`。Low・テスト環境限定のため許容） | [security-audit-report-2026-03.md](./security-audit-report-2026-03.md) |
+
+最新の状況は表の最終行を参照する。個々の脆弱性の内訳・対応内容は各レポートが正本。

@@ -42,6 +42,7 @@
 | T-30 | E2E シナリオテストを追加（お問い合わせ 入力→確認→送信完了 の一連フロー／修正往復） | 完了 |
 | T-31 | 未整備の共通ルールを追加（duplication / dead-code / static-analysis / github-actions / pr-description / lessons-learned / dry-run / domain-layer / codex）。actionlint ワークフロー・PR テンプレート・AGENTS.md・教訓ログを新設し、api.md に欠落 5 節を追記 | 完了 |
 | T-32 | actionlint が検出した既存ワークフローの指摘 8 件を解消（`actions/checkout@v3`→v4、`google-github-actions/auth@v1`・`setup-gcloud@v1`→v2、SC2129 のリダイレクトまとめ、未使用変数 `KEEP_IMAGES` の削除） | 完了 |
+| T-33 | セキュリティ監査記録の訂正（2026-01-31 監査の結論が「Next.js 16 アップグレード待ち」のままだった。実施済み・残存 2 件に修正し、06-security-specification.md / 2026-03 レポートの整合も取る） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
