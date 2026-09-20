@@ -46,6 +46,7 @@
 | T-34 | `pull-request-test.yml` のワークフローレベル `paths` を `dorny/paths-filter` + ジョブレベル `if:` へ移行（必須チェック化しても pending で詰まらない形にする） | 完了 |
 | T-35 | main のブランチ保護を有効化（strict=false・PR 必須／承認数 0・enforce_admins=false・force push とブランチ削除を禁止） | 完了 |
 | T-36 | 必須チェック用の集約ジョブ `test-result` を追加。reusable workflow を呼ぶジョブは報告名が実行時 `test / test`／スキップ時 `test` と変わり、どちらを必須チェックに登録しても他方で pending のまま詰むため、名前が変わらない受け皿を用意した（required status check: `actionlint` / `changes` / `test-result`） | 完了 |
+| T-37 | 上記の罠を `github-actions.md` へルール昇格（reusable workflow 呼び出しジョブを必須チェックに登録しない／チェック名は check-runs API で実物を確認する） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
