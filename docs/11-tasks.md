@@ -44,7 +44,8 @@
 | T-32 | actionlint が検出した既存ワークフローの指摘 8 件を解消（`actions/checkout@v3`→v4、`google-github-actions/auth@v1`・`setup-gcloud@v1`→v2、SC2129 のリダイレクトまとめ、未使用変数 `KEEP_IMAGES` の削除） | 完了 |
 | T-33 | セキュリティ監査記録の訂正（2026-01-31 監査の結論が「Next.js 16 アップグレード待ち」のままだった。実施済み・残存 2 件に修正し、06-security-specification.md / 2026-03 レポートの整合も取る） | 完了 |
 | T-34 | `pull-request-test.yml` のワークフローレベル `paths` を `dorny/paths-filter` + ジョブレベル `if:` へ移行（必須チェック化しても pending で詰まらない形にする） | 完了 |
-| T-35 | main のブランチ保護を有効化（required status check: `actionlint` / `changes` / `test / test`。strict=false・PR 必須／承認数 0・enforce_admins=false・force push とブランチ削除を禁止） | 完了 |
+| T-35 | main のブランチ保護を有効化（strict=false・PR 必須／承認数 0・enforce_admins=false・force push とブランチ削除を禁止） | 完了 |
+| T-36 | 必須チェック用の集約ジョブ `test-result` を追加。reusable workflow を呼ぶジョブは報告名が実行時 `test / test`／スキップ時 `test` と変わり、どちらを必須チェックに登録しても他方で pending のまま詰むため、名前が変わらない受け皿を用意した（required status check: `actionlint` / `changes` / `test-result`） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
