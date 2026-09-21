@@ -61,6 +61,7 @@
 | T-49 | Dependabot alerts 33 件を `pnpm.overrides` で解消（ユニーク advisory 38 → 1 件、high 22 → 0）。3 回の監査で「上流待ち」だった `fast-xml-parser` も同一メジャー内更新で解決 | 完了 |
 | T-50 | secret-scan の検出漏れを修正（`service-account.json` などの区切り違いが素通りしていた）。`.gitignore` にも鍵・認証情報を追加し 2 層にする | 完了 |
 | T-51 | 「サンプル開発履歴」ページ（`/sampledev`）を削除（issue #27）。ページ・hook・repository 関数・schema / types・Hono ルート `GET /api/gcs/sampledev`・ナビリンク・UT / IT / E2E の該当ケースと、どこからも読まれなくなる環境変数 `GCS_SAMPLE_DATA_PATH`（`.env.example` / ワークフロー / Terraform）まで一括で撤去 | 完了 |
+| T-52 | 個人開発カードに GitHub リンクを追加（issue #125・親 #28）。`githubUrl` を optional + https 限定で検証し、不正値は例外にせず `undefined` へ劣化させる（1 件の壊れた値で一覧全体を落とさない）。データ側は data-app #36 | 完了 |
 
 ## 2. 未対応・検討中タスク
 

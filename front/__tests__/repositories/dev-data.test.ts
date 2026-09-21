@@ -75,4 +75,44 @@ describe('repositories/dev-data', () => {
             expect((error as ApiError).kind).toBe('network');
         });
     });
+
+    describe('fetchPersonalDevData - githubUrl（任意項目）', () => {
+        // 正常系
+        it('githubUrl があればそのまま返す', async () => {
+            const withGithub = { ...personalItem, githubUrl: 'https://github.com/owner/repo' };
+            mockFetch.mockResolvedValueOnce(jsonResponse({ personaldev: [withGithub] }));
+
+            await expect(fetchPersonalDevData()).resolves.toEqual([withGithub]);
+        });
+
+        // 準正常系: 任意項目のため、欠けていても一覧は成立する
+        it('githubUrl が無くても検証を通る（GCS のデータが追いつく前でも一覧が壊れない）', async () => {
+            mockFetch.mockResolvedValueOnce(jsonResponse({ personaldev: [personalItem] }));
+
+            const [item] = await fetchPersonalDevData();
+
+            expect(item.githubUrl).toBeUndefined();
+            expect(item.title).toBe(personalItem.title);
+        });
+
+        // 準正常系: 壊れた値は「一覧ごと落とす」のではなく「リンクを出さない」へ劣化させる
+        it('githubUrl が URL として不正なら undefined に劣化し、他の項目は残る', async () => {
+            const broken = { ...personalItem, githubUrl: 'javascript:alert(1)' };
+            mockFetch.mockResolvedValueOnce(jsonResponse({ personaldev: [broken] }));
+
+            const [item] = await fetchPersonalDevData();
+
+            expect(item.githubUrl).toBeUndefined();
+            expect(item.title).toBe(personalItem.title);
+        });
+
+        it('githubUrl が文字列でなくても undefined に劣化する', async () => {
+            const broken = { ...personalItem, githubUrl: 123 };
+            mockFetch.mockResolvedValueOnce(jsonResponse({ personaldev: [broken] }));
+
+            const [item] = await fetchPersonalDevData();
+
+            expect(item.githubUrl).toBeUndefined();
+        });
+    });
 });
