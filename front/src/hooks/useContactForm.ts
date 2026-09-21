@@ -5,14 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import type { contactFormData } from '@/app/types/contact-types';
-import { contactSchema } from '@/app/schema/contact-schema';
-import { STORAGE_KEYS } from '@/app/constants/storage';
-import {
-    getDataBySessionStorage,
-    setDataBySessionStorage,
-} from '@/app/utils/session/session-utils';
-import { setFormError } from '@/app/utils/form/form-utils';
+import type { contactFormData } from '@/schemas/contact';
+import { contactSchema } from '@/schemas/contact';
+import { STORAGE_KEYS } from '@/constants/storage';
+import { getDataBySessionStorage, setDataBySessionStorage } from '@/lib/session-utils';
+import { setFormError } from '@/lib/form-utils';
 
 /** `/api/mail/csrf` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
 const csrfResponseSchema = z.object({ csrfToken: z.string() });

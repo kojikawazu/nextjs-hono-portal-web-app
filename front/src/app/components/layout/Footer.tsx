@@ -3,7 +3,7 @@ import { PulseLoader } from 'react-spinners';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 // contexts
-import { useCommonData } from '@/app/contexts/CommonContext';
+import { useCommonData } from '@/contexts/CommonContext';
 
 /**
  * フッター

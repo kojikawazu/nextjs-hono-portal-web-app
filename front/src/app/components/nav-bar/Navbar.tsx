@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
 import { PulseLoader } from 'react-spinners';
 // contexts
-import { useCommonData } from '@/app/contexts/CommonContext';
+import { useCommonData } from '@/contexts/CommonContext';
 
 /**
  * ナビゲーションバー

@@ -5,14 +5,11 @@ import type { MouseEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { contactFormData } from '@/app/types/contact-types';
-import { contactSchema } from '@/app/schema/contact-schema';
-import { STORAGE_KEYS } from '@/app/constants/storage';
-import {
-    getDataBySessionStorage,
-    removeDataBySessionStorage,
-} from '@/app/utils/session/session-utils';
-import { setFormError } from '@/app/utils/form/form-utils';
+import type { contactFormData } from '@/schemas/contact';
+import { contactSchema } from '@/schemas/contact';
+import { STORAGE_KEYS } from '@/constants/storage';
+import { getDataBySessionStorage, removeDataBySessionStorage } from '@/lib/session-utils';
+import { setFormError } from '@/lib/form-utils';
 
 /**
  * お問い合わせ確認画面の状態と送信処理を提供するフック。

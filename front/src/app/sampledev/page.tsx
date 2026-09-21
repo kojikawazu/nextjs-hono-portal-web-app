@@ -6,10 +6,10 @@ import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
 import Image from 'next/image';
 // types
-import type { SampleDevDataType } from '@/app/types/sample-data-types';
+import type { SampleDevDataType } from '@/types/sample-data';
 // hooks
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
-import { useSampleDevData } from '@/app/hooks/useSampleDevData';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
+import { useSampleDevData } from '@/hooks/useSampleDevData';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';

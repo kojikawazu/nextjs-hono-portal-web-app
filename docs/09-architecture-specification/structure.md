@@ -28,26 +28,26 @@ nextjs-hono-portal-web-app/         # モノレポのルート
     ├── __tests__/api/gcs.test.ts   # ユニットテスト
     ├── e2e/tests/{api,mock,pages}/ # E2Eテスト
     ├── public/                     # 静的ファイル
-    ├── src/
-    │   ├── app/
+    ├── src/                        # 関心別ディレクトリはソースルート直下（frontend.md / typescript.md）
+    │   ├── app/                    # ルーティング（App Router）と API のみ
     │   │   ├── api/                # バックエンドAPI（Hono）
     │   │   │   ├── [[...route]]/route.ts   # Hono catch-all route
     │   │   │   ├── gcs/gcs.ts      # GCSデータ取得
     │   │   │   └── mail/mail.ts    # メール送信
     │   │   ├── components/         # UI（hero/layout/modal/nav-bar/page-transition）
     │   │   ├── contact/            # お問い合わせページ群（confirm/form/success）
-    │   │   ├── contexts/           # React Context
-    │   │   ├── hooks/              # カスタムHooks
-    │   │   ├── schema/             # Zodスキーマ
-    │   │   ├── types/              # 型定義
-    │   │   ├── utils/              # ユーティリティ
     │   │   ├── personaldev/        # 個人開発ページ
     │   │   ├── sampledev/          # サンプル開発ページ
     │   │   ├── layout.tsx          # ルートレイアウト
     │   │   ├── page.tsx            # ホームページ
     │   │   └── globals.css         # グローバルCSS
     │   ├── components/ui/          # shadcn/ui（input/label/textarea）
-    │   └── lib/utils.ts            # cn()ユーティリティ
+    │   ├── contexts/               # React Context（CommonContext）
+    │   ├── hooks/                  # カスタムHooks（useContactForm 等 6 本）
+    │   ├── schemas/                # Zodスキーマ（contact.ts。導出型もここから export）
+    │   ├── types/                  # 型定義（common-data / personal-data / sample-data）
+    │   ├── constants/              # 共通定数（storage.ts）
+    │   └── lib/                    # 純粋ユーティリティ（utils.ts / form-utils.ts / session-utils.ts）
     ├── Dockerfile                  # マルチステージビルド
     ├── next.config.mjs             # Next.js設定
     ├── tailwind.config.ts          # Tailwind設定

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { z } from 'zod';
 // types
-import type { CommonDataType } from '@/app/types/common-data-types';
+import type { CommonDataType } from '@/types/common-data';
 
 /** `/api/gcs/common` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
 const commonResponseSchema = z.object({

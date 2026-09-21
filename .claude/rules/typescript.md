@@ -99,7 +99,7 @@ front/src/
 
 ❌ `src/lib/type.ts` に全型を詰め込む / ✅ `src/types/contact.ts` にドメイン単位で分ける
 
-> 現状: 本プロジェクトは `front/src/app/types/` `front/src/app/schema/` `front/src/app/constants/` `front/src/app/utils/` 配置で、上記の目標構成と乖離がある。**新規追加・リファクタ時は上記を目標とする**。
+> 本プロジェクトは `front/src/types/` `front/src/schemas/` `front/src/constants/` `front/src/lib/` へ移行済み（issue #94）。`front/src/app/` 配下にはルーティングと API のみを置く。
 
 ### 運用ルール
 

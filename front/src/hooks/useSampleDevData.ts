@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
-import type { SampleDevDataType } from '@/app/types/sample-data-types';
+import type { SampleDevDataType } from '@/types/sample-data';
 
 /** `/api/gcs/sampledev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
 const sampleDevResponseSchema = z.object({

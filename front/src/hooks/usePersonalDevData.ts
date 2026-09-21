@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
-import type { PersonalDevDataType } from '@/app/types/personal-data-types';
+import type { PersonalDevDataType } from '@/types/personal-data';
 
 /** `/api/gcs/personaldev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
 const personalDevResponseSchema = z.object({

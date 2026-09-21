@@ -5,10 +5,10 @@ import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
 // types
-import type { PersonalDevDataType } from '@/app/types/personal-data-types';
+import type { PersonalDevDataType } from '@/types/personal-data';
 // hooks
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
-import { usePersonalDevData } from '@/app/hooks/usePersonalDevData';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
+import { usePersonalDevData } from '@/hooks/usePersonalDevData';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';
