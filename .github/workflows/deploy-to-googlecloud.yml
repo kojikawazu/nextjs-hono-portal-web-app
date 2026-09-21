@@ -13,6 +13,13 @@ on:
 permissions:
     contents: read
 
+# デプロイは cancel-in-progress: false にする（CI とは逆）。実行途中でキャンセル
+# すると Cloud Run のリビジョン切り替えや古いイメージ削除が中断され、不整合が残る。
+# 連続マージ時は後発が前発の完了を待つ。
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: false
+
 jobs:
   test:
         uses: ./.github/workflows/test.yml
@@ -21,6 +28,14 @@ jobs:
   deploy:
         needs: test
         runs-on: ubuntu-latest
+
+        # 本番環境としてデプロイ履歴と URL を GitHub に記録する。
+        # 承認ゲート（required reviewers）は置いていない（issue #113 の判断）。
+        # シークレットは Environment ではなくリポジトリレベルのまま。test.yml が
+        # PR で同じシークレットを使うため、Environment へ移すと PR の CI が落ちる。
+        environment:
+            name: production
+            url: ${{ steps.service-url.outputs.url }}
 
         # アプリ本体は front/ に集約。.env 生成・docker build を front/ を基準に実行する
         defaults:
@@ -76,6 +91,20 @@ jobs:
                     --region ${{ secrets.GCP_REGION }} \
                     --platform managed \
                     --allow-unauthenticated
+
+            # environment.url に表示する実サービス URL を取得する。
+            # デプロイ済みのものを describe で読むので、deploy のログ出力は変えない。
+            - name: Resolve service URL
+              id: service-url
+              env:
+                  SERVICE_NAME: ${{ secrets.GCP_CLOUD_RUN_SERVICE_NAME }}
+                  REGION: ${{ secrets.GCP_REGION }}
+              run: |
+                  url=$(gcloud run services describe "$SERVICE_NAME" \
+                    --region "$REGION" \
+                    --platform managed \
+                    --format='value(status.url)')
+                  echo "url=$url" >> "$GITHUB_OUTPUT"
 
             - name: Cleanup old images
               run: |
