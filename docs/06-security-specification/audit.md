@@ -28,9 +28,11 @@
 | 項目 | 内容 |
 |---|---|
 | 検査方法 | `git ls-files` でインデックスを走査（履歴・ワーキングツリーは見ない。数秒で完了） |
-| 検出対象（鍵） | `*.key` / `*.pem` / `*.p12` / `*.pfx` / `*.jks` / `*.keystore` / `id_rsa` / `id_ed25519` / `id_dsa` / `credentials.json` / `serviceAccountKey.json` |
+| 検出対象（鍵） | `*.key` / `*.pem` / `*.p12` / `*.pfx` / `*.jks` / `*.keystore` / `id_rsa` / `id_ed25519` / `id_dsa` / `credentials.json` / サービスアカウント鍵（`service-account.json` / `service_account.json` / `serviceAccountKey.json` など区切り違いを含む） |
 | 検出対象（設定） | `.env` 系（`.env`, `.env.local`, `.env.production` 等）/ `*.tfvars` |
 | 除外 | `*.example` / `*.sample` / `*.template` / `*.dist` / `*.env.d.ts`（テンプレートと型定義は誤検知になるため） |
 | 発火 | 変更種別を問わず常に実行（パスフィルタをかけない） |
+
+**サービスアカウント鍵は区切り違いをまとめて検出する。** GCP では `service-account.json` が最も一般的だが、当初はキャメルケースの `serviceAccountKey.json` しか見ておらず素通りしていた（issue #122）。`.gitignore` 側にも同名を追加し、2 層で守る。
 
 検出時は該当パスを出力して失敗する。**`.gitignore` への追加や `git rm --cached` では履歴から消えない**ため、発生した場合は鍵・トークンのローテーションを行う。

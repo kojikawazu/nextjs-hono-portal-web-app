@@ -59,6 +59,7 @@
 | T-47 | `fetch` を `repositories/` へ集約（`http` / `common-data` / `dev-data` / `contact`）。共通ヘルパー `fetchJson` / `fetchOk` と `ApiError`（network / status / schema）を導入し、レスポンススキーマを `schemas/` へ移動。リポジトリのユニットテスト 30 件を追加（20 → 50 件） | 完了 |
 | T-48 | 送信系エンドポイントに IP ベースのレートリミットを導入（`POST /api/mail/send` 3 回/分・`GET /api/mail/csrf` 20 回/分）。スライディングウィンドウ方式、超過時 429 + `Retry-After`、追跡クライアント数に上限 | 完了 |
 | T-49 | Dependabot alerts 33 件を `pnpm.overrides` で解消（ユニーク advisory 38 → 1 件、high 22 → 0）。3 回の監査で「上流待ち」だった `fast-xml-parser` も同一メジャー内更新で解決 | 完了 |
+| T-50 | secret-scan の検出漏れを修正（`service-account.json` などの区切り違いが素通りしていた）。`.gitignore` にも鍵・認証情報を追加し 2 層にする | 完了 |
 
 ## 2. 未対応・検討中タスク
 
