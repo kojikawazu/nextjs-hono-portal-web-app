@@ -8,7 +8,7 @@
 |---|---|---|---|---|
 | 2026-01-31 | 18件 | `npm audit fix` で10件、Next.js 16 アップグレードで6件を修正 | 2件（`fast-xml-parser` / `@google-cloud/storage`。上流の修正待ち） | [security-audit-report.md](../security-audit-report.md) |
 | 2026-03-21 | 22件（Dependabot） | `npm audit fix` で21件を修正 | 1件（`@tootallnate/once`。Low・テスト環境限定のため許容） | [security-audit-report-2026-03.md](../security-audit-report-2026-03.md) |
-| 2026-09-20 | 106件（`pnpm audit` 実測） | `next` 16.3.5 / `hono` 4.13.8 / `nanoid` 5.1.16 等へ更新し、未使用の `@hono/node-server` を削除。**critical を 0 に** | 38件（**すべて間接依存**。実行時に載るのは 6 件で、うち 3 件は `@google-cloud/storage` の `fast-xml-parser` 固定による上流待ち） | [security-audit-report-2026-09.md](../security-audit-report-2026-09.md) |
+| 2026-09-20〜21 | 106件（`pnpm audit` 実測） | 直接依存を更新（`next` 16.3.5 / `hono` 4.13.8 等）し未使用の `@hono/node-server` を削除。さらに `pnpm.overrides` で間接依存の解決先を修正版に固定 | **1件**（`uuid` 9.0.1。`@google-cloud/storage` が `uuid@^9` 依存でメジャー 2 段跨ぎのため据え置き） | [security-audit-report-2026-09.md](../security-audit-report-2026-09.md) |
 
 最新の状況は表の最終行を参照する。個々の脆弱性の内訳・対応内容は各レポートが正本。
 
