@@ -6,7 +6,7 @@
 
 | ファイル | 内容 |
 |---|---|
-| [application.md](./application.md) | §1 CORS・§2 CSRF 対策・§3 入力バリデーション・§4 外部リンク・§5 HTTP セキュリティヘッダー |
+| [application.md](./application.md) | §1 CORS・§2 CSRF 対策・§3 入力バリデーション・§4 外部リンク・§5 HTTP セキュリティヘッダー・§6 レートリミット |
 | [infrastructure.md](./infrastructure.md) | §6 インフラレベルのセキュリティ・§7 環境変数（セキュリティ関連） |
 | [audit.md](./audit.md) | §8 セキュリティ監査の履歴・§9 CI によるシークレット混入検出 |
 

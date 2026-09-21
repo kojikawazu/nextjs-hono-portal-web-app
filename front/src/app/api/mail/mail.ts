@@ -4,6 +4,7 @@ import { Resend } from 'resend';
 import { nanoid } from 'nanoid';
 import { getCookie, setCookie } from 'hono/cookie';
 import { contactSchema } from '@/schemas/contact';
+import { createRateLimiter } from '@/app/api/middleware/rate-limit';
 
 /** CSRF トークン発行とメール送信を担うサブルーター（`/api/mail` 配下にマウント）。 */
 const mailRouter = new Hono();
@@ -12,6 +13,26 @@ const mailRouter = new Hono();
 const CSRF_TOKEN_LENGTH = 32;
 /** CSRF トークンを保持する Cookie 名。送信検証時に同名 Cookie と照合する。 */
 const CSRF_COOKIE_NAME = 'csrfToken';
+
+// レートリミットの閾値。送信は 1 通ごとに実メールが飛びコストと迷惑が発生するため厳しく、
+// CSRF 発行はフォームを開くたびに呼ばれる正常操作なので緩くする。
+/** レートリミットのウィンドウ長（ミリ秒）。 */
+const RATE_LIMIT_WINDOW_MS = 60_000;
+/** `POST /send` の 1 分あたり許可回数。連続送信の実用上限を踏まえた値。 */
+const SEND_RATE_LIMIT = 3;
+/** `GET /csrf` の 1 分あたり許可回数。画面遷移や再読み込みでの再取得を妨げない値。 */
+const CSRF_RATE_LIMIT = 20;
+
+/** 送信系のレートリミット。超過時は 429 を返す。 */
+const sendRateLimiter = createRateLimiter({
+    limit: SEND_RATE_LIMIT,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+});
+/** CSRF トークン発行のレートリミット。トークンの大量発行を抑える。 */
+const csrfRateLimiter = createRateLimiter({
+    limit: CSRF_RATE_LIMIT,
+    windowMs: RATE_LIMIT_WINDOW_MS,
+});
 // Resendクライアントの初期化
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -38,7 +59,7 @@ const escapeHtml = (value: string): string =>
  * @param c - Hono コンテキスト
  * @returns 発行した CSRF トークン（200）。同トークンを HttpOnly Cookie にもセットする。
  */
-mailRouter.get('/csrf', (c) => {
+mailRouter.get('/csrf', csrfRateLimiter, (c) => {
     const csrfToken = nanoid(CSRF_TOKEN_LENGTH);
     setCookie(c, CSRF_COOKIE_NAME, csrfToken, {
         httpOnly: true,
@@ -89,7 +110,7 @@ mailRouter.get('/', (c) => {
  * @param c - Hono コンテキスト
  * @returns 送信結果（200）。入力不正・メール設定欠落は 400、CSRF 不正は 403、送信失敗は 500。
  */
-mailRouter.post('/send', csrfMiddleware, async (c) => {
+mailRouter.post('/send', sendRateLimiter, csrfMiddleware, async (c) => {
     try {
         // c.req.json() は any を返すため unknown 相当で受け、共有スキーマ（クライアントと同一）で検証する。
         const parsed = contactSchema.safeParse(await c.req.json());

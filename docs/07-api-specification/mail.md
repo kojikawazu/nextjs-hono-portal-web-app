@@ -26,6 +26,8 @@ Mail API接続確認用エンドポイント。
 
 CSRFトークンを発行する。
 
+**レートリミット**: 20 回 / 分（IP ベース）。超過時は 429（`docs/06-security-specification/application.md` §6）。
+
 **レスポンスヘッダー**
 ```
 Set-Cookie: csrfToken=<32文字のnanoidトークン>; HttpOnly; SameSite=Strict
@@ -44,6 +46,8 @@ Set-Cookie: csrfToken=<32文字のnanoidトークン>; HttpOnly; SameSite=Strict
 ### 3.8 `POST /api/mail/send`
 
 メールを送信する。CSRFミドルウェアで保護。
+
+**レートリミット**: 3 回 / 分（IP ベース）。超過時は 429。**CSRF 検証より前**に適用するため、不正トークンでの連打も制限対象になる（`docs/06-security-specification/application.md` §6）。
 
 **リクエストヘッダー**
 ```
@@ -95,6 +99,15 @@ Cookie: csrfToken=<CSRFトークン>
 ```json
 {
   "error": "Invalid CSRF token"
+}
+```
+
+**エラーレスポンス (429)**
+
+レートリミット超過。`Retry-After` ヘッダーに再試行までの秒数を返す。
+```json
+{
+  "error": "Too many requests. Please try again later."
 }
 ```
 

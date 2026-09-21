@@ -13,13 +13,25 @@ jest.mock('resend', () => ({
 import mailRouter from '@/app/api/mail/mail';
 
 // 有効な CSRF トークン（ヘッダーは JSON 文字列 / Cookie は生値）を付けた /send リクエストを作る
+/**
+ * テストごとに異なるクライアント IP を割り当てる連番。
+ *
+ * `/send` にはレートリミット（1 分あたり 3 回）が掛かっており、リミッターの状態は
+ * モジュールレベルで共有される。全テストが同じ IP だと 4 件目以降が 429 になり、
+ * 本来検証したい CSRF やバリデーションの結果が見えなくなる。テストごとに別クライアント
+ * として扱うことで分離する（レートリミット自体の検証は `rate-limit.test.ts`）。
+ */
+let clientIpSeq = 0;
+
 function buildSendRequest(body: unknown, token = 'valid-token') {
+    clientIpSeq += 1;
     return new Request('http://localhost/send', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRF-Token': JSON.stringify(token),
             Cookie: `csrfToken=${token}`,
+            'CF-Connecting-IP': `203.0.113.${clientIpSeq}`,
         },
         body: JSON.stringify(body),
     });
