@@ -54,6 +54,7 @@
 | T-42 | CI に型チェック（`tsc --noEmit`）を追加。`typecheck` スクリプトを新設し、lint 直後・Playwright install より前に配置（fail fast）。従来は型エラーが `next build`（= main マージ後のデプロイ）まで検出されなかった | 完了 |
 | T-43 | `docs/08-test-specification.md` が 150 行を超えたため `docs/08-test-specification/` へ分割（strategy / levels / ci + README 索引）。参照 4 箇所を更新 | 完了 |
 | T-44 | デプロイに `concurrency`（`cancel-in-progress: false`）と `environment: production`（Cloud Run の実 URL を記録）を設定。承認ゲートは置かない | 完了 |
+| T-45 | `environment.url` が記録されない不具合を修正。Cloud Run URL の動的取得をやめ公開サイトの固定値にした（サービス名・リージョンがシークレットのため URL がマスクされていた） | 完了 |
 
 ## 2. 未対応・検討中タスク
 

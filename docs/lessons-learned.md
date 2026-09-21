@@ -4,6 +4,27 @@
 
 新しいエントリはこの見出しの直下に追記する（新しいものが上）。
 
+## 2026-09-21 environment.url にシークレット由来の値を入れると GitHub は記録しない
+
+### 概要
+
+`deploy` ジョブの `environment.url` に、`gcloud` から動的取得した Cloud Run のサービス URL を渡したが、デプロイ成功後も `environment_url` が空のままだった。URL にシークレット（サービス名・リージョン）が含まれ、マスク対象になったため。
+
+### 詳細
+
+- **何が起きたか**: `environment: { name: production, url: ${{ steps.service-url.outputs.url }} }` と設定し、`gcloud run services describe --format='value(status.url)'` の結果を渡した。ワークフローもステップも success で終わるが、`deployments/<id>/statuses` API の `environment_url` は空。**どこにもエラーが出ない**ため、API を叩くまで失敗に気づけない。
+
+- **なぜ起きたか（根本原因）**: 2 つ重なっていた。
+  1. **`environment.url` はシークレットを含む値を受け付けない。** Cloud Run URL は `https://<service>-<hash>.<region>.run.app` の形で、本リポジトリは `GCP_CLOUD_RUN_SERVICE_NAME` と `GCP_REGION` をシークレット管理しているため、URL 全体がマスク対象になる。ステップのログでも `SERVICE_NAME: ***` と表示されていた。
+  2. **そもそも設計が誤り。** `environment.url` に置くべきは**利用者が実際に開く URL**。本サイトは Cloudflare を挟んでおり、Cloud Run の直 URL は利用者向けではない。公開サイト URL は `README.md` とリポジトリの homepage に既にあり、**動的取得する必要がなかった**。
+
+- **教訓 / 次からどうする**:
+  - **`environment.url` にシークレット由来の値を組み立てない。** 公開しても差し支えない固定値（公開サイト URL）を使う。ドメインがシークレットなら、そもそも `url` を設定しない。
+  - **「エラーが出ない失敗」は API で結果を確認する。** 設定したら `gh api repos/<owner>/<repo>/deployments?environment=<env>` と `.../deployments/<id>/statuses` で `environment_url` が入っているかを見る。ワークフローの success は URL 記録の成否を意味しない。
+  - **動的に組み立てる前に「その値は本当に必要か」を問う。** 今回は固定値のほうが正しく、かつ壊れなかった。
+
+- **関連**: issue #113（`environment` 導入）/ issue #115（本件）/ PR #114・#116 / `docs/09-architecture-specification/deploy-design.md`
+
 ## 2026-09-20 reusable workflow を呼ぶジョブは、実行時とスキップ時で報告されるチェック名が変わる
 
 ### 概要
