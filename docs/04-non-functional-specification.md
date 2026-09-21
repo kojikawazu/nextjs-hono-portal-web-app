@@ -25,7 +25,7 @@
 | ホスティング | Google Cloud Run（マネージドサービス） |
 | CDN/WAF | Cloudflare経由でのアクセス |
 | 自動スケーリング | Cloud Runの自動スケーリング機能を活用 |
-| エラーハンドリング | API呼び出し失敗時はconsole.errorでログ出力。GCSデータ取得失敗時はcommonDataがnullのままとなり、Navbar・Hero・Footerのリンクは空href（`''`）で描画される。個人開発・サンプル開発ページではデータ未取得時に空配列となり「No data available」メッセージを表示 |
+| エラーハンドリング | API呼び出し失敗時はconsole.errorでログ出力。GCSデータ取得失敗時はcommonDataがnullのままとなり、Navbar・Hero・Footerのリンクは空href（`''`）で描画される。個人開発ページではデータ未取得時に空配列となり「No data available」メッセージを表示 |
 
 ## 3. セキュリティ
 

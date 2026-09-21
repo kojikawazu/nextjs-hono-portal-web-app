@@ -12,7 +12,7 @@
 |----|-------|------|
 | T-01 | ホームページ（Hero + Navbar）の実装 | 完了 |
 | T-02 | 個人開発履歴ページの実装 | 完了 |
-| T-03 | サンプル開発履歴ページの実装 | 完了 |
+| T-03 | サンプル開発履歴ページの実装 | 完了（T-51 で削除） |
 | T-04 | お問い合わせフォーム（入力→確認→完了）の実装 | 完了 |
 | T-05 | GCSデータ取得APIの実装 | 完了 |
 | T-06 | メール送信API（Resend）の実装 | 完了 |
@@ -60,12 +60,13 @@
 | T-48 | 送信系エンドポイントに IP ベースのレートリミットを導入（`POST /api/mail/send` 3 回/分・`GET /api/mail/csrf` 20 回/分）。スライディングウィンドウ方式、超過時 429 + `Retry-After`、追跡クライアント数に上限 | 完了 |
 | T-49 | Dependabot alerts 33 件を `pnpm.overrides` で解消（ユニーク advisory 38 → 1 件、high 22 → 0）。3 回の監査で「上流待ち」だった `fast-xml-parser` も同一メジャー内更新で解決 | 完了 |
 | T-50 | secret-scan の検出漏れを修正（`service-account.json` などの区切り違いが素通りしていた）。`.gitignore` にも鍵・認証情報を追加し 2 層にする | 完了 |
+| T-51 | 「サンプル開発履歴」ページ（`/sampledev`）を削除（issue #27）。ページ・hook・repository 関数・schema / types・Hono ルート `GET /api/gcs/sampledev`・ナビリンク・UT / IT / E2E の該当ケースと、どこからも読まれなくなる環境変数 `GCS_SAMPLE_DATA_PATH`（`.env.example` / ワークフロー / Terraform）まで一括で撤去 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
 | ID | タスク | 優先度 | 備考 |
 |----|-------|--------|------|
-| T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更。**有効化すると Image Optimization API が動き出す**ため、`next` のバージョン追随を怠らないこと（2026-09 監査時点の critical RCE は 16.3.3 で修正済み） |
+| T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更。**有効化すると Image Optimization API が動き出す**ため、`next` のバージョン追随を怠らないこと（2026-09 監査時点の critical RCE は 16.3.3 で修正済み）。T-51（`/sampledev` 削除）で `next/image` の利用箇所が無くなったため、現状この設定は無効果。**画像を再導入する issue #28 と同時に判断する** |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
 | T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
 | T-B12 | Cloudflare 側のレートリミット導入（エッジで止める） | 中 | アプリ側のレートリミット（T-48）は**インスタンス単位**で、実効上限が「閾値 × インスタンス数」になり、`cf-connecting-ip` / `x-forwarded-for` も詐称しうる（Cloud Run が `--allow-unauthenticated` で直接到達可能なため）。分散・詐称を伴う攻撃にはエッジ側が必要（[application.md §6](./06-security-specification/application.md)） |

@@ -37,7 +37,6 @@
 | `GCS_PRIVATE_BUCKET_NAME` | GCSプライベートバケット名 | はい |
 | `GCS_COMMON_DATA_PATH` | 共通データJSONのパス | はい |
 | `GCS_PERSONAL_DATA_PATH` | 個人開発データJSONのパス | はい |
-| `GCS_SAMPLE_DATA_PATH` | サンプル開発データJSONのパス | はい |
 | `MY_MAIL_ADDRESS` | メール送信先アドレス | はい |
 | `RESEND_API_KEY` | Resend APIキー | はい |
 | `RESEND_SEND_DOMAIN` | Resend送信ドメイン | はい |

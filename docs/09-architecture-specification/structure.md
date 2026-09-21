@@ -37,7 +37,6 @@ nextjs-hono-portal-web-app/         # モノレポのルート
     │   │   ├── components/         # UI（hero/layout/modal/nav-bar/page-transition）
     │   │   ├── contact/            # お問い合わせページ群（confirm/form/success）
     │   │   ├── personaldev/        # 個人開発ページ
-    │   │   ├── sampledev/          # サンプル開発ページ
     │   │   ├── layout.tsx          # ルートレイアウト
     │   │   ├── page.tsx            # ホームページ
     │   │   └── globals.css         # グローバルCSS
@@ -45,7 +44,7 @@ nextjs-hono-portal-web-app/         # モノレポのルート
     │   ├── contexts/               # React Context（CommonContext）
     │   ├── hooks/                  # カスタムHooks（useContactForm 等 6 本）
     │   ├── repositories/           # API アクセス（fetch はここだけ。http/common-data/dev-data/contact）
-    │   ├── schemas/                # Zodスキーマ（contact / common-data / personal-data / sample-data）
+    │   ├── schemas/                # Zodスキーマ（contact / common-data / personal-data）
     │   ├── types/                  # 型定義（スキーマから z.infer で導出）
     │   ├── constants/              # 共通定数（storage.ts）
     │   └── lib/                    # 純粋ユーティリティ（utils.ts / form-utils.ts / session-utils.ts）

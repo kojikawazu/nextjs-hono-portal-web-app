@@ -8,10 +8,6 @@
   - [4.1 データ取得](#41-データ取得)
   - [4.2 表示](#42-表示)
   - [4.3 データ型](#43-データ型)
-- [5. サンプル開発履歴ページ (`/sampledev`)](#5-サンプル開発履歴ページ-sampledev)
-  - [5.1 データ取得](#51-データ取得)
-  - [5.2 表示](#52-表示)
-  - [5.3 データ型](#53-データ型)
 
 ## 3. ホームページ (`/`)
 
@@ -43,28 +39,6 @@ type PersonalDevDataType = {
     title: string;
     description: string;
     tech: string[];
-    url: string;
-};
-```
-
-## 5. サンプル開発履歴ページ (`/sampledev`)
-
-### 5.1 データ取得
-- マウント時に `/api/gcs/sampledev` からデータを取得
-- レスポンス形式: `{ sampledev: SampleDevDataType[] }`
-
-### 5.2 表示
-- 2列グリッドレイアウト（`grid-cols-1 md:grid-cols-2`）
-- 各カード: 画像（`next/image`、`h-48`、`object-cover`）、タイトル、説明文、技術スタックタグ、"View Sample Code" リンク
-- ホバーエフェクト: `scale: 1.03`
-
-### 5.3 データ型
-```typescript
-type SampleDevDataType = {
-    title: string;
-    description: string;
-    tech: string[];
-    imageUrl: string;
     url: string;
 };
 ```

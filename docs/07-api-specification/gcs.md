@@ -7,7 +7,6 @@
   - [3.2 `GET /api/gcs/`](#32-get-apigcs)
   - [3.3 `GET /api/gcs/common`](#33-get-apigcscommon)
   - [3.4 `GET /api/gcs/personaldev`](#34-get-apigcspersonaldev)
-  - [3.5 `GET /api/gcs/sampledev`](#35-get-apigcssampledev)
 
 ## 3. エンドポイント詳細（GCS系）
 
@@ -90,33 +89,6 @@ GCSから個人開発データを取得する。
       "title": "string",
       "description": "string",
       "tech": ["string"],
-      "url": "string"
-    }
-  ]
-}
-```
-
-**エラーレスポンス**: 3.3と同様
-
----
-
-### 3.5 `GET /api/gcs/sampledev`
-
-GCSからサンプル開発データを取得する。
-
-**必要な環境変数**
-- `GCS_PRIVATE_BUCKET_NAME`
-- `GCS_SAMPLE_DATA_PATH`
-
-**レスポンス (200)**
-```json
-{
-  "sampledev": [
-    {
-      "title": "string",
-      "description": "string",
-      "tech": ["string"],
-      "imageUrl": "string",
       "url": "string"
     }
   ]

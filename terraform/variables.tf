@@ -69,10 +69,6 @@ variable "gcs_personal_data_path" {
   type = string
 }
 
-variable "gcs_sample_data_path" {
-  type = string
-}
-
 variable "node_env" {
   type = string
 }
