@@ -37,12 +37,25 @@
     ├── IT: fake-gcs-server 起動 → pnpm run test:it → 停止
     └── e2e test (pnpm run test:e2e)
         ↓ (mainブランチのみ)
-[GitHub Actions - deploy]
+[GitHub Actions - deploy]  ※ environment: production
     ├── Docker build (.env生成含む)
     ├── Push to Artifact Registry
     ├── Deploy to Cloud Run
+    ├── Resolve service URL (environment.url に記録)
     └── Cleanup old images
 ```
+
+### デプロイの発火制御
+
+| 設定 | 値 | 理由 |
+|---|---|---|
+| トリガ | `push` to `main`（`paths`: `.github/**`, `front/**`） | PR ではデプロイしない |
+| `concurrency.group` | `${{ github.workflow }}-${{ github.ref }}` | 同一ブランチのデプロイを直列化する |
+| `concurrency.cancel-in-progress` | **`false`** | **CI とは逆**。実行途中でキャンセルすると Cloud Run のリビジョン切り替えや古いイメージ削除が中断され、不整合が残る。連続マージ時は後発が前発の完了を待つ |
+| `environment` | `production`（`url` に Cloud Run の実サービス URL） | デプロイ履歴と URL を GitHub に記録する |
+| 承認ゲート | **なし** | main マージでそのままデプロイする運用を維持（issue #113 の判断） |
+
+**シークレットは Environment ではなくリポジトリレベルで管理している。** `github-actions.md` は「シークレットは Environment 単位で管理し、PR からは参照できないようにする」と定めるが、`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、`production` Environment へ移すと PR の CI が動かなくなる。分離にはテスト用と本番用でシークレットを別立てにする必要があり、未対応として `docs/11-tasks.md` に残している。
 
 **注意**: CI に `format:check`・`lint`・`typecheck` を追加済み（install 直後、fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。型チェックを CI に独立して置いているのは、これが無いと型エラーが main マージ後のデプロイまで検出されないため。
 
