@@ -31,6 +31,7 @@
     ├── pnpm install --frozen-lockfile
     ├── format:check (pnpm run format:check)
     ├── lint (pnpm run lint)
+    ├── typecheck (pnpm run typecheck)
     ├── pnpm exec playwright install --with-deps chromium
     ├── unit test (pnpm run test)
     ├── IT: fake-gcs-server 起動 → pnpm run test:it → 停止
@@ -43,7 +44,7 @@
     └── Cleanup old images
 ```
 
-**注意**: CI に `format:check`・`lint` を追加済み（install 直後、fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。
+**注意**: CI に `format:check`・`lint`・`typecheck` を追加済み（install 直後、fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。型チェックを CI に独立して置いているのは、これが無いと型エラーが main マージ後のデプロイまで検出されないため。
 
 ## 6. デザインシステム
 

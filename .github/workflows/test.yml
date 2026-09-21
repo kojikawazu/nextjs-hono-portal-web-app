@@ -60,12 +60,18 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # フォーマット・lint は install 直後に実行し、失敗時は後続の重いテストに進まない（fail fast）。
+      # フォーマット・lint・型チェックは install 直後に実行し、失敗時は後続の重いテストに進まない（fail fast）。
       - name: Format check (Prettier)
         run: pnpm run format:check
 
       - name: Lint (ESLint)
         run: pnpm run lint
+
+      # ビルドとは別に型チェックを明示実行する（.claude/rules/static-analysis.md）。
+      # ここが無いと型エラーは next build（= main マージ後のデプロイ）まで検出されない。
+      # E2E は webServer が `pnpm dev` のため型エラーで止まらず、ESLint は型を見ない。
+      - name: Type check (tsc)
+        run: pnpm run typecheck
 
       - name: Install Playwright
         run: pnpm exec playwright install --with-deps chromium

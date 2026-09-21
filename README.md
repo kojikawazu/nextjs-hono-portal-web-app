@@ -174,7 +174,7 @@ pnpm test        # ユニット（Jest / GCS API）
 pnpm test:e2e    # E2E（Playwright / 各ページ・メール送信API）
 ```
 
-テスト方針・分類は [docs/08-test-specification.md](./docs/08-test-specification.md) を参照。
+テスト方針・分類は [docs/08-test-specification/](./docs/08-test-specification/) を参照。
 
 ## デプロイ
 
