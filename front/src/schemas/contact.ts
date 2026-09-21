@@ -34,3 +34,11 @@ export const contactSchema = z.object({
  * （`typescript.md`「スキーマから導出した型は `types/` に再定義しない」）。
  */
 export type contactFormData = z.infer<typeof contactSchema>;
+
+/**
+ * `GET /api/mail/csrf` の応答形状。
+ *
+ * 外部入力のため `unknown` で受け、このスキーマで検証する。検証は
+ * `repositories/contact.ts` で行う。
+ */
+export const csrfResponseSchema = z.object({ csrfToken: z.string() });

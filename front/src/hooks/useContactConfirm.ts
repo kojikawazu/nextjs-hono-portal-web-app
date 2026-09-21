@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { contactFormData } from '@/schemas/contact';
 import { contactSchema } from '@/schemas/contact';
+import { sendContactMail } from '@/repositories/contact';
 import { STORAGE_KEYS } from '@/constants/storage';
 import { getDataBySessionStorage, removeDataBySessionStorage } from '@/lib/session-utils';
 import { setFormError } from '@/lib/form-utils';
@@ -59,22 +60,10 @@ export const useContactConfirm = () => {
                 throw new Error('CSRF token is missing.');
             }
 
-            const response = await fetch('/api/mail/send', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': csrfToken,
-                },
-                credentials: 'include',
-                body: JSON.stringify(data),
-            });
+            await sendContactMail(data, csrfToken);
 
-            if (response.ok) {
-                removeDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
-                router.push('/contact/success');
-            } else {
-                setFormError(response.statusText, setError);
-            }
+            removeDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);
+            router.push('/contact/success');
         } catch (error) {
             setFormError(error, setError);
         }

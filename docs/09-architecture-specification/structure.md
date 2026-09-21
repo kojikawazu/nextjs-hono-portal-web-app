@@ -44,8 +44,9 @@ nextjs-hono-portal-web-app/         # モノレポのルート
     │   ├── components/ui/          # shadcn/ui（input/label/textarea）
     │   ├── contexts/               # React Context（CommonContext）
     │   ├── hooks/                  # カスタムHooks（useContactForm 等 6 本）
-    │   ├── schemas/                # Zodスキーマ（contact.ts。導出型もここから export）
-    │   ├── types/                  # 型定義（common-data / personal-data / sample-data）
+    │   ├── repositories/           # API アクセス（fetch はここだけ。http/common-data/dev-data/contact）
+    │   ├── schemas/                # Zodスキーマ（contact / common-data / personal-data / sample-data）
+    │   ├── types/                  # 型定義（スキーマから z.infer で導出）
     │   ├── constants/              # 共通定数（storage.ts）
     │   └── lib/                    # 純粋ユーティリティ（utils.ts / form-utils.ts / session-utils.ts）
     ├── Dockerfile                  # マルチステージビルド

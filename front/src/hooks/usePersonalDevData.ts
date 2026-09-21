@@ -1,23 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { z } from 'zod';
+import { fetchPersonalDevData } from '@/repositories/dev-data';
 import type { PersonalDevDataType } from '@/types/personal-data';
 
-/** `/api/gcs/personaldev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const personalDevResponseSchema = z.object({
-    personaldev: z.array(
-        z.object({
-            title: z.string(),
-            description: z.string(),
-            tech: z.array(z.string()),
-            url: z.string(),
-        }),
-    ),
-});
-
 /**
- * 個人開発データを GCS API から取得するフック。
+ * 個人開発データを取得するフック。
+ *
+ * 通信とスキーマ検証は `repositories/dev-data.ts` が担う。本フックは状態管理と
+ * 副作用の制御に専念する（`frontend.md`「`fetch` を書いてよいのは `repositories/` だけ」）。
  *
  * @returns 取得したデータ一覧（`personalDevDataList`）と読み込み状態（`isLoading`）
  */
@@ -26,20 +17,10 @@ export const usePersonalDevData = () => {
     const [personalDevDataList, setPersonalDevDataList] = useState<PersonalDevDataType[]>([]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const load = async () => {
             setIsLoading(true);
             try {
-                const result = await fetch('/api/gcs/personaldev');
-                if (result.ok) {
-                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
-                    const data: unknown = await result.json();
-                    const parsed = personalDevResponseSchema.safeParse(data);
-                    if (parsed.success) {
-                        setPersonalDevDataList(parsed.data.personaldev);
-                    } else {
-                        console.error('Unexpected API response format:', data);
-                    }
-                }
+                setPersonalDevDataList(await fetchPersonalDevData());
             } catch (error) {
                 console.error('Error fetching personal development data:', error);
             } finally {
@@ -47,7 +28,7 @@ export const usePersonalDevData = () => {
             }
         };
 
-        fetchData();
+        load();
     }, []);
 
     return { personalDevDataList, isLoading };

@@ -32,7 +32,29 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 
 合計: 7テストケース（正常 1 / 準正常 4 / 異常 2）
 
-### 3.3 モックデータ
+### 3.3 リポジトリテスト (`__tests__/repositories/*.test.ts`)
+
+`src/repositories/` の API アクセス層を検証する。外部 I/O（`fetch`）のみモックし、スキーマ検証とエラー分類のロジックはモックしない（`testing.md`「ビジネスロジックをモックしない」）。
+
+| ファイル | 対象 | 主な検証 |
+|---|---|---|
+| `http.test.ts` | `fetchJson` / `fetchOk` | 共通ヘルパー。`ApiError` の `kind` 分類（`network` / `status` / `schema`）とステータス保持 |
+| `common-data.test.ts` | `fetchCommonData` | API 応答から画面用の形への詰め替え |
+| `dev-data.test.ts` | `fetchPersonalDevData` / `fetchSampleDevData` | 配列の取り出し、必須項目欠落の検出 |
+| `contact.test.ts` | `fetchCsrfToken` / `sendContactMail` | `credentials: 'include'` と `X-CSRF-Token` ヘッダーの付与 |
+
+| 分類 | テストケース | 期待結果 |
+|------|------------|---------|
+| 正常系 | スキーマに一致する 2xx 応答 | 検証済みデータを返す |
+| 正常系 | 空配列の応答（データ未登録） | 空配列を返す（異常としない） |
+| 準正常系 | 非 2xx（403 / 404 / 500 / 503） | `ApiError`（`kind='status'`）+ ステータス保持 |
+| 準正常系 | 必須項目の欠落・キー名違い・型違い | `ApiError`（`kind='schema'`） |
+| 準正常系 | JSON として解釈できない応答 | `ApiError`（`kind='schema'`） |
+| 異常系 | `fetch` が reject（通信断） | `ApiError`（`kind='network'`） |
+
+**`kind` を検証するのは呼び出し側の分岐を保証するため。** 単に「throw する」だけを確認すると、通信断とスキーマ不一致を取り違えても気づけない。
+
+### 3.4 モックデータ
 
 テスト用のモックJSONファイルは `e2e/tests/mock/` に配置:
 - `common.json`
