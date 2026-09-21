@@ -32,6 +32,9 @@
 - ロゴ "My Tech Hub" → `/` にリンク
 - メニュー項目:
 
+外部リンク（ポートフォリオ / ブログ）は**URL が未設定・不正なら項目ごと表示しない**
+（[06-security-specification/application.md](../06-security-specification/application.md) §4）。
+
 | メニュー名 | 遷移先 | データソース |
 |-----------|--------|-------------|
 | ポートフォリオ | 外部URL | GCS共通データ |

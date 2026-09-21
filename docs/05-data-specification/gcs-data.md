@@ -52,6 +52,10 @@ type CommonDataType = {
 };
 ```
 
+**URL 系フィールドの検証**: `portfolio.url` / `blog.url` / `link.*` は `schemas/url.ts` の
+`optionalHttpsUrlSchema` で検証する。`https` 以外（`javascript:` 等）と未設定は `undefined` へ劣化し、
+**描画側はリンクごと表示しない**。詳細は [06-security-specification/application.md](../06-security-specification/application.md) §4。
+
 ### 2.2 個人開発データ (`GCS_PERSONAL_DATA_PATH`)
 
 GCS上のJSONファイル構造:
@@ -85,7 +89,7 @@ type PersonalDevDataType = {
 
 `githubUrl` は**任意項目**。非公開リポジトリ・複数リポジトリ構成のプロジェクトには値が無いため、キーごと省略できる。
 
-検証は `schemas/personal-data.ts` で行い、**`https:` 以外は `undefined` に劣化させる**（`.catch(undefined)`）:
-
-- zod の `.url()` は内部が `new URL()` のため **`javascript:` を妥当と判定する**。`href` に入ると XSS の経路になるので `https://` で始まることを別途 `.refine()` で要求する
-- 1 件の値が壊れただけで一覧全体が `ApiError(kind='schema')` になりページが「No data」に落ちるのを避けるため、例外にせず**リンクを出さない側へ劣化**させる
+`url` / `githubUrl` はいずれも `schemas/url.ts` の `optionalHttpsUrlSchema` で検証し、
+**`https` 以外・未設定は `undefined` へ劣化**する（リンクを描画しない）。`url` が劣化した場合も
+**カードごと消さず、タイトル・説明・技術スタックは表示する**。方針の詳細は
+[06-security-specification/application.md](../06-security-specification/application.md) §4。

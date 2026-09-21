@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { optionalHttpsUrlSchema } from './url';
 
 /**
  * 個人開発データ 1 件の形状。`types/personal-data.ts` の `PersonalDevDataType` は
@@ -8,26 +9,19 @@ export const personalDevItemSchema = z.object({
     title: z.string(),
     description: z.string(),
     tech: z.array(z.string()),
-    url: z.string(),
+    /**
+     * 公開サイトの URL。カード全体のリンク先。
+     *
+     * 必須データだが、検証に通らない場合も**カードごと消さずリンクだけ落とす**
+     * （タイトル・説明・技術スタックは URL が無くても表示する価値がある）。
+     */
+    url: optionalHttpsUrlSchema,
     /**
      * GitHub リポジトリの URL。任意項目。
      *
-     * - 非公開リポジトリ・複数リポジトリ構成のプロジェクトには値が無いため optional にする。
-     * - **`.url()` だけでは `javascript:` を通す**（内部が `new URL()` のため、スキーム付き
-     *   URI ならすべて妥当と判定される）。`href` に入ると XSS の経路になるので、
-     *   `https:` のみに絞る（GitHub の URL は常に https）。
-     * - `.catch(undefined)` は「不正な値が 1 件混じっただけで一覧全体が
-     *   `ApiError(kind='schema')` になり、ページが No data 表示に落ちる」のを避けるため。
-     *   表示専用の任意項目なので、リンクを出さない側へ劣化させる。
+     * 非公開リポジトリ・複数リポジトリ構成のプロジェクトには値が無いため optional。
      */
-    githubUrl: z
-        .string()
-        .url()
-        .refine((value) => value.startsWith('https://'), {
-            message: 'githubUrl は https の URL のみ許可する',
-        })
-        .optional()
-        .catch(undefined),
+    githubUrl: optionalHttpsUrlSchema,
 });
 
 /**

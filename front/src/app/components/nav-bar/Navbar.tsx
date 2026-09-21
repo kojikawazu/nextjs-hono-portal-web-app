@@ -14,12 +14,14 @@ const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { isLoading, commonData } = useCommonData();
 
+    // 外部リンクは URL が無ければ項目ごと出さない。href="" にすると
+    // 「押すと同じページがリロードされるだけのリンク」になるため（`schemas/url.ts`）。
     const menuItems = [
-        { name: 'ポートフォリオ', path: commonData?.portfolioUrl || '' },
+        { name: 'ポートフォリオ', path: commonData?.portfolioUrl },
         { name: '個人開発履歴', path: '/personaldev' },
-        { name: 'ブログ', path: commonData?.blogUrl || '' },
+        { name: 'ブログ', path: commonData?.blogUrl },
         { name: 'お問い合わせ', path: '/contact/form' },
-    ];
+    ].filter((item): item is { name: string; path: string } => Boolean(item.path));
 
     return (
         <nav className="fixed w-full z-50 bg-dark/80 backdrop-blur-sm border-b border-primary/10 h-16">

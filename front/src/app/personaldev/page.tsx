@@ -14,6 +14,24 @@ import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';
 import PageTransition from '@/app/components/page-transition/PageTransition';
 
+/** `CardBody` の props。 */
+type CardBodyProps = {
+    /** リンク先。未設定なら子要素をそのまま描画する */
+    href?: string;
+    /** カードの中身 */
+    children: React.ReactNode;
+};
+
+/**
+ * カードの中身を、リンク先がある場合だけ `Link` で包む。
+ *
+ * `href=""` のリンク（押すと同じページがリロードされる）を作らないための出し分け。
+ *
+ * @param props - リンク先と子要素
+ */
+const CardBody = ({ href, children }: CardBodyProps) =>
+    href ? <Link href={href}>{children}</Link> : <>{children}</>;
+
 /**
  * 個人開発履歴ページ
  */
@@ -91,7 +109,9 @@ const PersonalHistoryDevPage = () => {
                                         }}
                                         className="bg-dark-lighter p-6 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 group"
                                     >
-                                        <Link href={personalDev.url}>
+                                        {/* url が無ければリンクにせず中身だけ描画する
+                                            （href="" のリンクを作らない） */}
+                                        <CardBody href={personalDev.url}>
                                             <h3 className="text-xl font-semibold text-white transition-colors duration-200 group-hover:text-primary mb-2">
                                                 {personalDev.title}
                                             </h3>
@@ -108,7 +128,7 @@ const PersonalHistoryDevPage = () => {
                                                     </span>
                                                 ))}
                                             </div>
-                                        </Link>
+                                        </CardBody>
                                         {/* 公開サイトへの Link の「外」に置く。内側に入れると <a> の
                                             入れ子になり HTML として不正（ブラウザが分解する）。
                                             githubUrl が無い要素では要素ごと描画しない（レイアウトは
