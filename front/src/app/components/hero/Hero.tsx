@@ -40,13 +40,16 @@ const Hero = () => {
                     </div>
                 ) : (
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link
-                            href={commonData?.portfolioUrl || ''}
-                            className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-dark font-medium rounded-full transition-colors duration-200"
-                        >
-                            View Portfolio
-                            <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
+                        {/* URL が無ければボタンごと出さない（href="" のリンクを作らない） */}
+                        {commonData?.portfolioUrl && (
+                            <Link
+                                href={commonData.portfolioUrl}
+                                className="inline-flex items-center px-6 py-3 bg-primary hover:bg-primary/90 text-dark font-medium rounded-full transition-colors duration-200"
+                            >
+                                View Portfolio
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        )}
                         <Link
                             href="/contact/form"
                             className="inline-flex items-center px-6 py-3 bg-secondary hover:bg-secondary/80 text-white font-medium rounded-full transition-colors duration-200"

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { optionalHttpsUrlSchema } from './url';
 
 /**
  * `GET /api/gcs/common` の応答形状。
@@ -7,12 +8,12 @@ import { z } from 'zod';
  * 検証は `repositories/common-data.ts` で行う。
  */
 export const commonDataResponseSchema = z.object({
-    portfolio: z.object({ url: z.string() }),
-    blog: z.object({ url: z.string() }),
+    portfolio: z.object({ url: optionalHttpsUrlSchema }),
+    blog: z.object({ url: optionalHttpsUrlSchema }),
     link: z.object({
-        github: z.string(),
-        x: z.string(),
-        linkedin: z.string(),
+        github: optionalHttpsUrlSchema,
+        x: optionalHttpsUrlSchema,
+        linkedin: optionalHttpsUrlSchema,
     }),
 });
 

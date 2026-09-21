@@ -51,7 +51,8 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 | 準正常系 | 必須項目の欠落・キー名違い・型違い | `ApiError`（`kind='schema'`） |
 | 準正常系 | JSON として解釈できない応答 | `ApiError`（`kind='schema'`） |
 | 異常系 | `fetch` が reject（通信断） | `ApiError`（`kind='network'`） |
-| 準正常系 | 任意項目が不正（`javascript:` URL・型違い） | 例外にせず `undefined` へ劣化（一覧は表示される） |
+| 準正常系 | URL が不正（`javascript:` / `data:` / `http` / 非 URL 文字列） | 例外にせず `undefined` へ劣化（他の項目は巻き添えにならない） |
+| 準正常系 | 構造そのものの破損（オブジェクトの欠落・必須項目の欠落） | `ApiError`（`kind='schema'`） |
 
 **`kind` を検証するのは呼び出し側の分岐を保証するため。** 単に「throw する」だけを確認すると、通信断とスキーマ不一致を取り違えても気づけない。
 
@@ -99,5 +100,6 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 - 共通データ取得が 500 → ヒーローはクラッシュせず描画される（`commonData` が null でも耐える）
 - 個人開発の取得が 500 / ネットワーク断 → 「No data available」にフォールバック
 - `githubUrl` を持つカードにのみ GitHub リンクが出る（持たないカードでは出ない・`target` / `rel` も検証）
+- 不正な URL は Navbar 項目・Hero ボタン・Footer アイコン・カードのリンクごと描画されない。**`a[href=""]` がページ内に 1 つも無いこと**を不変条件として検証する
 - お問い合わせ送信が 500 → success へ遷移せず、確認画面にエラー（「エラーが発生しました。」）を表示
 

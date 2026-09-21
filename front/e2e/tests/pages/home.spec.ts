@@ -90,3 +90,39 @@ test('Contact Form Page', async ({ page }) => {
     await page.click('a[href="/contact/form"]');
     await expect(page).toHaveURL('/contact/form');
 });
+
+// 不正な URL（javascript: / http / 壊れた文字列）はリンクごと描画しない。
+// href="" の「押すとリロードされるだけのリンク」を作らないことの回帰テスト。
+test('Top Page (不正な URL はリンクごと非表示)', async ({ page }) => {
+    await page.route('**/api/gcs/common', async (route) => {
+        await route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify({
+                portfolio: { url: 'javascript:alert(1)' },
+                blog: { url: 'http://mock-blog.com' },
+                link: {
+                    github: 'https://github.com/mock-user',
+                    x: 'not a url',
+                    linkedin: 'https://linkedin.com/mock-user',
+                },
+            }),
+        });
+    });
+
+    await page.goto('/');
+
+    // Navbar: ポートフォリオ（javascript:）とブログ（http）は項目ごと消える
+    await expect(page.getByRole('link', { name: 'ポートフォリオ' })).toHaveCount(0);
+    await expect(page.getByRole('link', { name: 'ブログ' })).toHaveCount(0);
+    // Hero のボタンも消える
+    await expect(page.getByRole('link', { name: 'View Portfolio' })).toHaveCount(0);
+
+    // 内部リンクは影響を受けない
+    await expect(page.getByRole('link', { name: '個人開発履歴' })).toHaveAttribute(
+        'href',
+        '/personaldev',
+    );
+
+    // href="" のリンクがページ内に 1 つも無い
+    await expect(page.locator('a[href=""]')).toHaveCount(0);
+});

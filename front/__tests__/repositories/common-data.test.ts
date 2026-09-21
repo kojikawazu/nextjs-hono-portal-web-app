@@ -39,10 +39,35 @@ describe('repositories/common-data', () => {
         expect(mockFetch).toHaveBeenCalledWith('/api/gcs/common', undefined);
     });
 
-    // 準正常系
-    it('link の一部が欠けていれば kind=schema の ApiError を投げる', async () => {
+    // 準正常系: URL 単体の欠落・不正は例外にせず undefined へ劣化させる（描画側がリンクを出さない）
+    it('link の一部が欠けていても他の URL は返る（欠けた分だけ undefined）', async () => {
         const { linkedin: _omitted, ...incompleteLink } = apiShape.link;
         mockFetch.mockResolvedValueOnce(jsonResponse({ ...apiShape, link: incompleteLink }));
+
+        const data = await fetchCommonData();
+
+        expect(data.linkUrl.linkedinUrl).toBeUndefined();
+        expect(data.linkUrl.githubUrl).toBe('https://github.com/example');
+    });
+
+    it.each([
+        ['javascript: スキーム', 'javascript:alert(1)'],
+        ['data: スキーム', 'data:text/html,<script>alert(1)</script>'],
+        ['http（https でない）', 'http://portfolio.example.com'],
+        ['URL ではない文字列', 'not a url'],
+    ])('portfolio.url が %s なら undefined へ劣化する', async (_label, value) => {
+        mockFetch.mockResolvedValueOnce(jsonResponse({ ...apiShape, portfolio: { url: value } }));
+
+        const data = await fetchCommonData();
+
+        expect(data.portfolioUrl).toBeUndefined();
+        // 他のフィールドは巻き添えにならない
+        expect(data.blogUrl).toBe('https://blog.example.com');
+    });
+
+    it('link オブジェクトごと欠けていれば kind=schema の ApiError を投げる（構造の破損は例外）', async () => {
+        const { link: _omitted, ...withoutLink } = apiShape;
+        mockFetch.mockResolvedValueOnce(jsonResponse(withoutLink));
 
         const error = await fetchCommonData().catch((e: unknown) => e);
 

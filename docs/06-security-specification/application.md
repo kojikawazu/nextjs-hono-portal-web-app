@@ -72,8 +72,21 @@ cors({
 
 ## 4. 外部リンクのセキュリティ
 
+### 実装箇所
+`front/src/schemas/url.ts`（検証）/ 各コンポーネント（描画）
+
 - すべての外部リンク（`target="_blank"`）に `rel="noopener noreferrer"` を付与
-- 外部URLのXSS防止
+- **`href` に入る外部由来の URL は `https` に限定する**。`z.string().url()` は内部が
+  `new URL()` のため `javascript:` / `data:` / `vbscript:` を通す（実測: zod 3.24.1）。
+  スキーム限定は `schemas/url.ts` の `httpsUrlSchema` に 1 箇所だけ定義し、各スキーマはそれを合成する
+- **検証に通らない URL・未設定の URL はリンクごと描画しない**（`optionalHttpsUrlSchema` が
+  `undefined` へ劣化させ、描画側が要素を出し分ける）。`href=""` のリンクを作らない
+  — 「押すと同じページがリロードされるだけのリンク」になり、壊れていることが利用者に伝わらないため
+- **1 件の不正値でページ全体を落とさない**。応答全体を `ApiError` にすると、リンク以外の
+  本文・アイコンまで表示できなくなる。構造そのものの破損（オブジェクトの欠落）は従来どおり例外
+
+対象フィールド: `personaldev[].url` / `personaldev[].githubUrl` / `common.portfolio.url` /
+`common.blog.url` / `common.link.{github,x,linkedin}`
 
 ## 5. HTTP セキュリティヘッダー
 

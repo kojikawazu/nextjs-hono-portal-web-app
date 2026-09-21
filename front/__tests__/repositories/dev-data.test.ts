@@ -35,14 +35,30 @@ describe('repositories/dev-data', () => {
         });
 
         // 準正常系
-        it('要素に必須項目が欠けていれば kind=schema の ApiError を投げる', async () => {
-            const { url: _omitted, ...incomplete } = personalItem;
+        it('要素に必須項目（title）が欠けていれば kind=schema の ApiError を投げる', async () => {
+            const { title: _omitted, ...incomplete } = personalItem;
             mockFetch.mockResolvedValueOnce(jsonResponse({ personaldev: [incomplete] }));
 
             const error = await fetchPersonalDevData().catch((e: unknown) => e);
 
             expect(error).toBeInstanceOf(ApiError);
             expect((error as ApiError).kind).toBe('schema');
+        });
+
+        // URL は「リンクを出さない」側へ劣化させる。カードの本文は URL が無くても表示する
+        it.each([
+            ['javascript: スキーム', 'javascript:alert(1)'],
+            ['http（https でない）', 'http://example.com/a'],
+            ['URL ではない文字列', 'not a url'],
+        ])('url が %s でも例外にせず undefined へ劣化する', async (_label, value) => {
+            mockFetch.mockResolvedValueOnce(
+                jsonResponse({ personaldev: [{ ...personalItem, url: value }] }),
+            );
+
+            const [item] = await fetchPersonalDevData();
+
+            expect(item.url).toBeUndefined();
+            expect(item.title).toBe(personalItem.title);
         });
 
         it('ラッパーのキー名が違えば kind=schema の ApiError を投げる', async () => {

@@ -126,3 +126,70 @@ test('Footer', async ({ page }) => {
     // LinkedInリンク
     await expect(footer.locator('a[href="https://linkedin.com/mock-user"]')).toBeVisible();
 });
+
+// Footer の SNS アイコンは、URL が妥当なものだけ描画する（Footer はホーム以外に出る）
+test('Footer (不正な SNS URL はアイコンごと非表示)', async ({ page }) => {
+    await page.route('**/api/gcs/common', async (route) => {
+        await route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify({
+                portfolio: { url: 'https://mock-portfolio.com' },
+                blog: { url: 'https://mock-blog.com' },
+                link: {
+                    github: 'https://github.com/mock-user',
+                    x: 'javascript:alert(1)',
+                    linkedin: 'https://linkedin.com/mock-user',
+                },
+            }),
+        });
+    });
+
+    await page.goto('/personaldev');
+    await page.waitForSelector('text=個人開発プロジェクト①');
+
+    const footer = page.locator('footer');
+    await expect(footer.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
+        'href',
+        'https://github.com/mock-user',
+    );
+    await expect(footer.getByRole('link', { name: 'LinkedIn' })).toHaveAttribute(
+        'href',
+        'https://linkedin.com/mock-user',
+    );
+    // javascript: の X はアイコンごと消える
+    await expect(footer.getByRole('link', { name: 'X', exact: true })).toHaveCount(0);
+    await expect(page.locator('a[href=""]')).toHaveCount(0);
+});
+
+// カードの url が不正ならリンクにせず、本文だけ描画する
+test('Personal Dev Page (不正な url はリンクにしない)', async ({ page }) => {
+    await page.route('**/api/gcs/personaldev', async (route) => {
+        await route.fulfill({
+            contentType: 'application/json',
+            body: JSON.stringify({
+                personaldev: [
+                    {
+                        title: '不正 URL のプロジェクト',
+                        description: '説明文',
+                        tech: ['Next.js'],
+                        url: 'javascript:alert(1)',
+                    },
+                ],
+            }),
+        });
+    });
+
+    await page.goto('/personaldev');
+    await page.waitForSelector('text=不正 URL のプロジェクト');
+
+    // 本文は表示される（カードごと消さない）
+    await expect(page.getByRole('heading', { name: '不正 URL のプロジェクト' })).toBeVisible();
+    await expect(page.getByText('説明文')).toBeVisible();
+    // リンクにはなっていない
+    await expect(
+        page
+            .getByRole('link')
+            .filter({ has: page.getByRole('heading', { name: '不正 URL のプロジェクト' }) }),
+    ).toHaveCount(0);
+    await expect(page.locator('a[href=""]')).toHaveCount(0);
+});
