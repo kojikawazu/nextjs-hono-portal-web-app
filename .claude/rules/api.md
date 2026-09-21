@@ -158,7 +158,7 @@ front/src/app/api/
 
 - RESTful 設計（リソース指向エンドポイント）
 - レスポンス形式: JSON（`c.json()`）
-- ミドルウェア: `cors()` は全体、CSRF 検証（`csrfMiddleware`）は `POST /api/mail/send` に適用
+- ミドルウェア: `cors()` は全体、CSRF 検証（`csrfMiddleware`）は `POST /api/mail/send` に適用。レートリミット（`createRateLimiter`）は `POST /api/mail/send`（3 回/分）と `GET /api/mail/csrf`（20 回/分）に適用し、**送信系では CSRF 検証より前に置く**（後段だと不正トークンでの連打が数えられない）
 - ランタイムは `nodejs`（`@google-cloud/storage` 等の Node 依存 SDK を使用するため）
 - 環境変数: `process.env` から読む。未設定時は 400 で明示的にエラーを返す（詳細は [docs/07-api-specification/](../../docs/07-api-specification/)）
 - 統一エラーレスポンス（`{ "error": "..." }`）と適切な HTTP ステータス（400/403/500）

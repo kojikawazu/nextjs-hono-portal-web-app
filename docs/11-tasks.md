@@ -57,6 +57,7 @@
 | T-45 | `environment.url` が記録されない不具合を修正。Cloud Run URL の動的取得をやめ公開サイトの固定値にした（サービス名・リージョンがシークレットのため URL がマスクされていた） | 完了 |
 | T-46 | 関心別ディレクトリを `front/src/` 直下へ移行（`types` / `schemas` / `constants` / `hooks` / `contexts` / `lib`）。`schema`→`schemas` の複数形化、`utils`→`lib` の統合、`contactFormData` を `schemas/contact.ts` へ移設 | 完了 |
 | T-47 | `fetch` を `repositories/` へ集約（`http` / `common-data` / `dev-data` / `contact`）。共通ヘルパー `fetchJson` / `fetchOk` と `ApiError`（network / status / schema）を導入し、レスポンススキーマを `schemas/` へ移動。リポジトリのユニットテスト 30 件を追加（20 → 50 件） | 完了 |
+| T-48 | 送信系エンドポイントに IP ベースのレートリミットを導入（`POST /api/mail/send` 3 回/分・`GET /api/mail/csrf` 20 回/分）。スライディングウィンドウ方式、超過時 429 + `Retry-After`、追跡クライアント数に上限 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -65,6 +66,7 @@
 | T-B02 | 画像最適化の有効化 | 低 | `next/image`の`unoptimized`をfalseに変更。**有効化すると Image Optimization API が動き出す**ため、`next` のバージョン追随を怠らないこと（2026-09 監査時点の critical RCE は 16.3.3 で修正済み） |
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
 | T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
+| T-B12 | Cloudflare 側のレートリミット導入（エッジで止める） | 中 | アプリ側のレートリミット（T-48）は**インスタンス単位**で、実効上限が「閾値 × インスタンス数」になり、`cf-connecting-ip` / `x-forwarded-for` も詐称しうる（Cloud Run が `--allow-unauthenticated` で直接到達可能なため）。分散・詐称を伴う攻撃にはエッジ側が必要（[application.md §6](./06-security-specification/application.md)） |
 | T-B11 | テスト用と本番用でシークレットを分離し、本番シークレットを `production` Environment へ移す | 中 | `github-actions.md`「シークレットは Environment 単位で管理し、PR からは参照できないようにする」に未対応。`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、そのまま移すと PR の CI が全滅する。テスト専用の認証情報を用意するのが前提（[deploy-design.md](./09-architecture-specification/deploy-design.md)） |
 
 ## 3. マイルストーン
