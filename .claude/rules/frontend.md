@@ -60,7 +60,7 @@ front/src/
 └── types/                  # 型定義
 ```
 
-> 現状: 実装は `front/src/app/` 配下に `types/` `schema/` `constants/` `hooks/` `contexts/` `utils/` を置き、`fetch` は hooks・contexts に散在している。**新規追加・リファクタ時は上記構成を目標とする**（移行は別 issue で扱う）。
+> `types/` `schemas/` `constants/` `hooks/` `contexts/` `lib/` は `front/src/` 直下へ移行済み（issue #94）。**`repositories/` への `fetch` 集約は未対応**で、現状は hooks・contexts に散在している（issue #95）。
 
 ## インポート
 

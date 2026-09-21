@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 // utils
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';

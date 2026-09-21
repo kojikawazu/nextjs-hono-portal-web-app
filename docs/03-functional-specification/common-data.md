@@ -3,7 +3,7 @@
 ## 目次
 
 - [7. 共通データ管理](#7-共通データ管理)
-  - [7.1 CommonContext (`src/app/contexts/CommonContext.tsx`)](#71-commoncontext-srcappcontextscommoncontexttsx)
+  - [7.1 CommonContext (`src/contexts/CommonContext.tsx`)](#71-commoncontext-srccontextscommoncontexttsx)
   - [7.2 共通データ型](#72-共通データ型)
   - [7.3 GCSレスポンスのマッピング](#73-gcsレスポンスのマッピング)
 - [8. ユーティリティ](#8-ユーティリティ)
@@ -13,7 +13,7 @@
 
 ## 7. 共通データ管理
 
-### 7.1 CommonContext (`src/app/contexts/CommonContext.tsx`)
+### 7.1 CommonContext (`src/contexts/CommonContext.tsx`)
 - React Contextで共通データを全ページに提供
 - マウント時に `/api/gcs/common` からデータを取得
 - ローディング状態を管理

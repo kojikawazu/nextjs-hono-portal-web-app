@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 // hooks
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
-import { useContactConfirm } from '@/app/hooks/useContactConfirm';
-import { useModal } from '@/app/hooks/useModal';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
+import { useContactConfirm } from '@/hooks/useContactConfirm';
+import { useModal } from '@/hooks/useModal';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Footer from '@/app/components/layout/Footer';

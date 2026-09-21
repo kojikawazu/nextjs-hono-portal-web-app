@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 // hooks
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
-import { useContactForm } from '@/app/hooks/useContactForm';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
+import { useContactForm } from '@/hooks/useContactForm';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import PageTransition from '@/app/components/page-transition/PageTransition';

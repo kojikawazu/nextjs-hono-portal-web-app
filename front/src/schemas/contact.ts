@@ -26,3 +26,11 @@ export const contactSchema = z.object({
         .min(1, 'お問い合わせ内容を入力してください')
         .max(5000, 'お問い合わせ内容は5000文字以内で入力してください'),
 });
+
+/**
+ * お問い合わせフォームデータ。
+ *
+ * `contactSchema` から導出する。型を手書きで二重定義せず、スキーマを単一の真実とする
+ * （`typescript.md`「スキーマから導出した型は `types/` に再定義しない」）。
+ */
+export type contactFormData = z.infer<typeof contactSchema>;

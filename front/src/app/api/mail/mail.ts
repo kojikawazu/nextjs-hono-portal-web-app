@@ -3,7 +3,7 @@ import type { MiddlewareHandler } from 'hono';
 import { Resend } from 'resend';
 import { nanoid } from 'nanoid';
 import { getCookie, setCookie } from 'hono/cookie';
-import { contactSchema } from '@/app/schema/contact-schema';
+import { contactSchema } from '@/schemas/contact';
 
 /** CSRF トークン発行とメール送信を担うサブルーター（`/api/mail` 配下にマウント）。 */
 const mailRouter = new Hono();

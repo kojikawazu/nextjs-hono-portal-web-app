@@ -2,7 +2,7 @@
 
 import { AnimatePresence } from 'framer-motion';
 // utils
-import { useIsHomePath } from '@/app/hooks/useIsHomePath';
+import { useIsHomePath } from '@/hooks/useIsHomePath';
 // components
 import Navbar from '@/app/components/nav-bar/Navbar';
 import Hero from '@/app/components/hero/Hero';

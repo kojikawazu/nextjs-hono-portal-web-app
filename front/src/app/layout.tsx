@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 // contexts
-import { CommonDataProvider } from './contexts/CommonContext';
+import { CommonDataProvider } from '@/contexts/CommonContext';
 // styles
 import './globals.css';
 

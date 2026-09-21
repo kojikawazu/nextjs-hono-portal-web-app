@@ -55,6 +55,7 @@
 | T-43 | `docs/08-test-specification.md` が 150 行を超えたため `docs/08-test-specification/` へ分割（strategy / levels / ci + README 索引）。参照 4 箇所を更新 | 完了 |
 | T-44 | デプロイに `concurrency`（`cancel-in-progress: false`）と `environment: production`（Cloud Run の実 URL を記録）を設定。承認ゲートは置かない | 完了 |
 | T-45 | `environment.url` が記録されない不具合を修正。Cloud Run URL の動的取得をやめ公開サイトの固定値にした（サービス名・リージョンがシークレットのため URL がマスクされていた） | 完了 |
+| T-46 | 関心別ディレクトリを `front/src/` 直下へ移行（`types` / `schemas` / `constants` / `hooks` / `contexts` / `lib`）。`schema`→`schemas` の複数形化、`utils`→`lib` の統合、`contactFormData` を `schemas/contact.ts` へ移設 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
