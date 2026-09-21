@@ -1,5 +1,5 @@
 import { ApiError } from '@/repositories/http';
-import { fetchPersonalDevData, fetchSampleDevData } from '@/repositories/dev-data';
+import { fetchPersonalDevData } from '@/repositories/dev-data';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch as unknown as typeof fetch;
@@ -13,8 +13,6 @@ const personalItem = {
     tech: ['Next.js', 'Hono'],
     url: 'https://example.com/a',
 };
-/** サンプル開発は個人開発に imageUrl が加わった形。 */
-const sampleItem = { ...personalItem, imageUrl: 'https://example.com/a.png' };
 
 describe('repositories/dev-data', () => {
     beforeEach(() => {
@@ -75,39 +73,6 @@ describe('repositories/dev-data', () => {
             const error = await fetchPersonalDevData().catch((e: unknown) => e);
 
             expect((error as ApiError).kind).toBe('network');
-        });
-    });
-
-    describe('fetchSampleDevData', () => {
-        // 正常系
-        it('sampledev 配列を取り出して返す', async () => {
-            mockFetch.mockResolvedValueOnce(jsonResponse({ sampledev: [sampleItem] }));
-
-            await expect(fetchSampleDevData()).resolves.toEqual([sampleItem]);
-            expect(mockFetch).toHaveBeenCalledWith('/api/gcs/sampledev', undefined);
-        });
-
-        // 準正常系
-        it('imageUrl が欠けていれば kind=schema の ApiError を投げる（個人開発とは必須項目が違う）', async () => {
-            const { imageUrl: _omitted, ...withoutImage } = sampleItem;
-            mockFetch.mockResolvedValueOnce(jsonResponse({ sampledev: [withoutImage] }));
-
-            const error = await fetchSampleDevData().catch((e: unknown) => e);
-
-            expect((error as ApiError).kind).toBe('schema');
-        });
-
-        it('非 2xx なら kind=status の ApiError を投げる', async () => {
-            mockFetch.mockResolvedValueOnce({
-                ok: false,
-                status: 503,
-                statusText: 'Service Unavailable',
-                json: async () => ({}),
-            } as unknown as Response);
-
-            const error = await fetchSampleDevData().catch((e: unknown) => e);
-
-            expect((error as ApiError).status).toBe(503);
         });
     });
 });

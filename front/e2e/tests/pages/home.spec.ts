@@ -28,10 +28,6 @@ test('Top Page', async ({ page }) => {
         'href',
         '/personaldev',
     );
-    await expect(page.getByRole('link', { name: 'サンプル開発履歴' })).toHaveAttribute(
-        'href',
-        '/sampledev',
-    );
     await expect(page.getByRole('link', { name: 'ブログ' })).toHaveAttribute(
         'href',
         'https://mock-blog.com',
@@ -86,13 +82,6 @@ test('Personal Dev Page', async ({ page }) => {
 
     await page.click('a[href="/personaldev"]');
     await expect(page).toHaveURL('/personaldev');
-});
-
-test('Sample Dev Page', async ({ page }) => {
-    await page.goto('/');
-
-    await page.click('a[href="/sampledev"]');
-    await expect(page).toHaveURL('/sampledev');
 });
 
 test('Contact Form Page', async ({ page }) => {

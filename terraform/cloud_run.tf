@@ -56,10 +56,6 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
           value = var.gcs_personal_data_path
         }
         env {
-          name  = "GCS_SAMPLE_DATA_PATH"
-          value = var.gcs_sample_data_path
-        }
-        env {
           name  = "MY_MAIL_ADDRESS"
           value = var.my_mail_address
         }

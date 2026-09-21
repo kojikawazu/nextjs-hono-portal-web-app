@@ -9,7 +9,7 @@ const storage = new Storage(
         ? { apiEndpoint: process.env.GCS_API_ENDPOINT, projectId: 'local-emulator' }
         : undefined,
 );
-/** GCS からデータ（共通 / 個人開発 / サンプル開発）を取得するサブルーター（`/api/gcs` 配下にマウント）。 */
+/** GCS からデータ（共通 / 個人開発）を取得するサブルーター（`/api/gcs` 配下にマウント）。 */
 const gcsRouter = new Hono();
 
 /**
@@ -80,29 +80,6 @@ gcsRouter.get('/personaldev', async (c) => {
     try {
         const bucketName = process.env.GCS_PRIVATE_BUCKET_NAME;
         const fileName = process.env.GCS_PERSONAL_DATA_PATH;
-
-        if (!bucketName || !fileName) {
-            return c.json({ error: 'Bucket name or file name is not set' }, 400);
-        }
-
-        const data = await fetchJsonFromGCS(bucketName, fileName);
-        return c.json(data);
-    } catch (error) {
-        console.error('Failed to fetch data from GCS:', error);
-        return c.json({ error: 'Failed to fetch data from GCS' }, 500);
-    }
-});
-
-/**
- * サンプル開発データを GCS から取得して返す。
- *
- * @param c - Hono コンテキスト
- * @returns サンプル開発データ JSON（200）。バケット名/パス未設定は 400、取得失敗は 500。
- */
-gcsRouter.get('/sampledev', async (c) => {
-    try {
-        const bucketName = process.env.GCS_PRIVATE_BUCKET_NAME;
-        const fileName = process.env.GCS_SAMPLE_DATA_PATH;
 
         if (!bucketName || !fileName) {
             return c.json({ error: 'Bucket name or file name is not set' }, 400);

@@ -2,7 +2,7 @@
 
 [![Deploy to Cloud Run](https://github.com/kojikawazu/nextjs-hono-portal-web-app/actions/workflows/deploy-to-googlecloud.yml/badge.svg)](https://github.com/kojikawazu/nextjs-hono-portal-web-app/actions/workflows/deploy-to-googlecloud.yml)
 
-個人の技術活動（ポートフォリオ・個人開発・サンプル開発）を一元的に公開し、問い合わせ導線を備えたポータルサイト。**Next.js（フロント）+ Hono（バックエンド）の一体型アプリ**を Docker 化し、Google Cloud Run にデプロイしています。
+個人の技術活動（ポートフォリオ・個人開発）を一元的に公開し、問い合わせ導線を備えたポータルサイト。**Next.js（フロント）+ Hono（バックエンド）の一体型アプリ**を Docker 化し、Google Cloud Run にデプロイしています。
 
 🔗 **公開サイト**: <https://smartportalcom.com/>
 
@@ -31,7 +31,6 @@
 |---|---|
 | ホーム (`/`) | ヒーローセクション + ナビゲーション。外部ポートフォリオ・問い合わせへの導線 |
 | 個人開発履歴 (`/personaldev`) | GCS から取得した個人開発プロジェクトをカード一覧で表示 |
-| サンプル開発履歴 (`/sampledev`) | 画像付きのサンプル開発を 2 列グリッドで表示 |
 | お問い合わせ (`/contact/form → /confirm → /success`) | 入力 → 確認 → 送信完了の 3 ステップフロー |
 | メール送信 API (`POST /api/mail/send`) | Resend 経由でメール送信。CSRF トークンで保護 |
 | GCS データ取得 API (`GET /api/gcs/*`) | コンテンツ（共通 / 個人 / サンプル）を GCS の JSON から取得 |
@@ -160,7 +159,6 @@ pnpm dev
 | `GCS_PRIVATE_BUCKET_NAME` | ○ | GCS バケット名 |
 | `GCS_COMMON_DATA_PATH` | ○ | 共通データ JSON パス |
 | `GCS_PERSONAL_DATA_PATH` | ○ | 個人開発データ JSON パス |
-| `GCS_SAMPLE_DATA_PATH` | ○ | サンプル開発データ JSON パス |
 | `MY_MAIL_ADDRESS` | ○ | 問い合わせメールの送信先 |
 | `RESEND_API_KEY` | ○ | Resend API キー |
 | `RESEND_SEND_DOMAIN` | ○ | Resend 送信ドメイン |

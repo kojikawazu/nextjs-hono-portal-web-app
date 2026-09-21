@@ -7,5 +7,5 @@
 | ファイル | 内容 |
 |---|---|
 | [overview.md](./overview.md) | §1 概要・§2 エンドポイント一覧・§4 ミドルウェア・§5 ルーティング構成 |
-| [gcs.md](./gcs.md) | §3.1〜3.5 GCS系エンドポイント詳細（hello / gcs/ / common / personaldev / sampledev） |
+| [gcs.md](./gcs.md) | §3.1〜3.4 GCS系エンドポイント詳細（hello / gcs/ / common / personaldev） |
 | [mail.md](./mail.md) | §3.6〜3.8 Mail系エンドポイント詳細（mail/ / csrf / send） |

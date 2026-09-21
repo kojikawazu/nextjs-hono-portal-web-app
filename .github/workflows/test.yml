@@ -48,7 +48,6 @@ jobs:
             echo GCS_PRIVATE_BUCKET_NAME=${{ secrets.GCS_PRIVATE_BUCKET_NAME }}
             echo GCS_COMMON_DATA_PATH=${{ secrets.GCS_COMMON_DATA_PATH }}
             echo GCS_PERSONAL_DATA_PATH=${{ secrets.GCS_PERSONAL_DATA_PATH }}
-            echo GCS_SAMPLE_DATA_PATH=${{ secrets.GCS_SAMPLE_DATA_PATH }}
             echo MY_MAIL_ADDRESS=${{ secrets.MY_MAIL_ADDRESS }}
             echo RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
             echo RESEND_SEND_DOMAIN=${{ secrets.RESEND_SEND_DOMAIN }}

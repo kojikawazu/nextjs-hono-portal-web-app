@@ -61,4 +61,3 @@ type contactFormData = {
 | `GCS_PRIVATE_BUCKET_NAME` | GCSプライベートバケット名 |
 | `GCS_COMMON_DATA_PATH` | 共通データJSONファイルのパス |
 | `GCS_PERSONAL_DATA_PATH` | 個人開発データJSONファイルのパス |
-| `GCS_SAMPLE_DATA_PATH` | サンプル開発データJSONファイルのパス |
