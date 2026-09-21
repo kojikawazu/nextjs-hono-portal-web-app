@@ -42,7 +42,7 @@
 | `RESEND_API_KEY` | Resend APIキー | はい |
 | `RESEND_SEND_DOMAIN` | Resend送信ドメイン | はい |
 
-> `GCS_API_ENDPOINT` は**統合テスト（IT）専用の任意変数**。設定時のみ GCS SDK をエミュレータ（fake-gcs-server）へ向ける。本番・通常開発では未設定（上記 9 変数には含めない）。詳細は [08-test-specification.md](./08-test-specification.md) の統合テスト節を参照。
+> `GCS_API_ENDPOINT` は**統合テスト（IT）専用の任意変数**。設定時のみ GCS SDK をエミュレータ（fake-gcs-server）へ向ける。本番・通常開発では未設定（上記 9 変数には含めない）。詳細は [08-test-specification/levels.md](./08-test-specification/levels.md) の統合テスト節を参照。
 
 ### 未使用（レガシー）環境変数
 

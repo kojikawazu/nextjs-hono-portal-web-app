@@ -25,7 +25,7 @@ globs:
 | データモデル・ストア・スキーマの変更 | docs/05-data-specification/ |
 | 認証・認可・CORS などセキュリティ仕様の変更 | docs/06-security-specification/ |
 | API エンドポイント（Hono ルート）の追加/変更/削除 | docs/07-api-specification/ |
-| テスト戦略・テスト分類・テスト方針の変更 | docs/08-test-specification.md |
+| テスト戦略・テスト分類・テスト方針の変更 | docs/08-test-specification/ |
 | システム構成・デプロイ構成（Cloud Run 等）・依存技術の変更 | docs/09-architecture-specification/, CLAUDE.md |
 | 用語・運用ルールなどその他仕様の変更 | docs/10-miscellaneous-specification.md |
 | ビジネス要件・要求仕様レベルの変更 | docs/01-business-requirements.md, docs/02-requirements-specification.md |

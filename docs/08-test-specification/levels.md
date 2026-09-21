@@ -1,52 +1,6 @@
-# テスト仕様書（Test Specification）
+# テストレベル別の内容
 
-## 目次
-
-- [1. テスト戦略](#1-テスト戦略)
-- [2. テスト実行コマンド](#2-テスト実行コマンド)
-- [3. ユニットテスト](#3-ユニットテスト)
-  - [3.1 GCS APIテスト (`__tests__/api/gcs.test.ts`)](#31-gcs-apiテスト-__tests__apigcstestts)
-  - [3.2 メール送信APIテスト (`__tests__/api/mail.test.ts`)](#32-メール送信apiテスト-__tests__apimailtestts)
-  - [3.3 モックデータ](#33-モックデータ)
-- [4. 統合テスト（IT）](#4-統合テストit)
-- [5. E2Eテスト](#5-e2eテスト)
-  - [5.1 テストファイル一覧](#51-テストファイル一覧)
-- [6. CI/CDでのテスト](#6-cicdでのテスト)
-  - [テストパイプライン（test.yml）](#テストパイプラインtestyml)
-- [7. テスト環境](#7-テスト環境)
-
-## 1. テスト戦略
-
-| テストレベル | ツール | 対象 |
-|------------|-------|------|
-| ユニットテスト | Jest | API Route（GCS API / Mail API）※外部 I/O はモック |
-| 統合テスト（IT） | Jest + fake-gcs-server | GCS ルート × 実 GCS SDK（エミュレータ結合） |
-| E2Eテスト | Playwright | ページ表示、ユーザーフロー |
-| リンティング | ESLint | コード品質 |
-| フォーマット | Prettier | コードスタイル |
-
-## 2. テスト実行コマンド
-
-```bash
-# ユニットテスト
-pnpm test              # 全テスト実行
-pnpm run test:watch    # ウォッチモード
-pnpm run test:coverage # カバレッジ付き
-
-# 統合テスト（IT）: fake-gcs-server が必要
-pnpm run test:it         # エミュレータ起動済みで実行
-pnpm run test:it:docker  # エミュレータ起動 → IT → 停止 を自動化
-
-# E2Eテスト
-pnpm run test:e2e        # ヘッドレス実行
-pnpm run test:e2e:ui     # UIモード
-pnpm run test:e2e:headed # ブラウザ表示
-
-# コード品質
-pnpm run lint            # ESLint
-pnpm run format:check    # Prettierチェック
-pnpm run format          # Prettier自動修正
-```
+ユニットテスト・統合テスト（IT）・E2E テストの対象と構成。index は [README.md](./README.md)。
 
 ## 3. ユニットテスト
 
@@ -125,26 +79,3 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 - 個人開発の取得が 500 / サンプル開発がネットワーク断 → 「No data available」にフォールバック
 - お問い合わせ送信が 500 → success へ遷移せず、確認画面にエラー（「エラーが発生しました。」）を表示
 
-## 6. CI/CDでのテスト
-
-GitHub Actionsワークフロー:
-
-| ワークフロー | ファイル | トリガー |
-|------------|---------|---------|
-| テスト | `test.yml` | `workflow_call`（他ワークフローから呼び出し） |
-| PRテスト | `pull-request-test.yml` | `pull_request`（対象パスの変更時） |
-| デプロイ | `deploy-to-googlecloud.yml` | `push` to `main`（対象パスの変更時） |
-
-### テストパイプライン（test.yml）
-```
-install → format:check → lint → unit test (Jest) → IT (fake-gcs-server) → e2e test (Playwright) → (deploy)
-```
-
-**注意**: `format:check`（Prettier）・`lint`（ESLint）を install 直後に実行し、失敗時は後続の重いテストへ進まない（fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。
-
-## 7. テスト環境
-
-- Jest環境: `node`（APIテストのみのため、jsdomは不使用）
-- トランスパイラ: `ts-jest`
-- テストレポート: `jest-html-reporters`（Jest）、`html`（Playwright）
-- ポリフィル: `cross-fetch/polyfill`（テスト環境でのfetch API提供）
