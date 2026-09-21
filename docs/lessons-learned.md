@@ -4,6 +4,25 @@
 
 新しいエントリはこの見出しの直下に追記する（新しいものが上）。
 
+## 2026-09-22 zod の `.url()` は `javascript:` を妥当な URL と判定する
+
+### 概要
+
+個人開発カードに GitHub リンクを足す際、`z.string().url()` で検証すれば危険なスキームは弾けると考え、JSDoc にもそう書いた。実際には `javascript:alert(1)` が検証を通過し、追加したユニットテストが失敗して誤りが判明した。`href` に入れば XSS の実行経路になる。
+
+### 詳細
+
+- **何が起きたか**: `githubUrl: z.string().url().optional()` と定義し、「`javascript:` 等の危険なスキームも `.url()` で弾かれる」とコメントに明記した。`githubUrl: 'javascript:alert(1)'` が `undefined` に劣化することを期待したテストが `Received: "javascript:alert(1)"` で失敗した。影響範囲は本番へ出る前に検出できたため実害なし。
+
+- **なぜ起きたか（根本原因）**: **zod の `.url()` は内部で `new URL()` を使って成否を判定しているだけ**で、スキームを制限しない。`new URL('javascript:alert(1)')` は成功する（`javascript:` はスキーム付き URI として構文上妥当）ため、`.url()` も妥当と判定する。実測（zod 3.24.1）では `javascript:` / `data:` / `vbscript:` がいずれも通過し、**拒否されるのは「URL として解釈できない文字列」だけ**だった。「URL として妥当」と「`href` に入れて安全」は**別の概念**であり、前者しか検証していなかった。
+
+- **教訓 / 次からどうする**:
+  - **`href` / `src` に入る値は `.url()` だけで検証を終わらせない。** `.refine()` で `https://` 始まりを要求するなど、**許可するスキームを明示的に限定**する。ルール化した（[`typescript.md`](../.claude/rules/typescript.md)「URL の検証」）。
+  - **「弾かれるはず」と書く前に、弾かれることをテストで示す。** 今回コメントに書いた安全性の根拠は事実と違っていた。**危険な入力を通すテストケースを書けば、思い込みはその場で壊れる**。
+  - **表示専用の任意項目は、不正値で一覧全体を落とさない。** `.catch(undefined)` で「リンクを出さない」側へ劣化させる。1 件の壊れた値で `ApiError(kind='schema')` を投げると、ページ全体が「No data」表示になる。
+
+- **関連**: issue #125 / PR #127 / issue #128（本記録）/ issue #129（既存 `url` フィールドの棚卸し）/ [`.claude/rules/typescript.md`](../.claude/rules/typescript.md) / [`.claude/rules/security.md`](../.claude/rules/security.md)
+
 ## 2026-09-21 environment.url にシークレット由来の値を入れると GitHub は記録しない
 
 ### 概要

@@ -62,6 +62,40 @@ type OnSelect = (id: string) => void;
 - クライアント（`contactSchema`）と API ルートの検証は、信頼境界が違うため**両方に必要**だが、**定義は 1 つ**にして双方から参照する。
 - 用途別のアダプタを使う（`react-hook-form` の `zodResolver` / `@hono/zod-validator`）。**アダプタは変わってもスキーマは変わらない**。
 
+### URL の検証（`.url()` だけで満足しない）
+
+**`href` / `src` に入る URL は、`.url()` に加えて許可するスキームを明示的に限定する。**
+
+`z.string().url()` は内部が `new URL()` のため、**スキーム付き URI であれば何でも通す**。「URL として構文が妥当」と「`href` に入れて安全」は別の概念である。
+
+実測（zod 3.24.1）:
+
+| 入力 | `.url()` の判定 |
+|---|---|
+| `https://example.com` | 通過 |
+| `http://example.com` | 通過 |
+| `javascript:alert(1)` | **通過** |
+| `data:text/html,<script>alert(1)</script>` | **通過** |
+| `vbscript:msgbox(1)` | **通過** |
+| `not a url` | 拒否 |
+
+拒否されるのは「URL として解釈できない文字列」だけで、危険なスキームは素通りする。
+
+```ts
+// ❌ javascript:alert(1) が通る
+url: z.string().url(),
+
+// ✅ 許可するスキームを限定する
+url: z
+    .string()
+    .url()
+    .refine((value) => value.startsWith('https://'), { message: 'https の URL のみ許可する' }),
+```
+
+- **同じ制約を各スキーマへ書き写さない。** 2 箇所目が必要になった時点で部分スキーマとして切り出し、双方から参照する（`duplication.md`）。
+- **表示専用の任意項目は `.catch(undefined)` で劣化させる。** 例外にすると、**1 件の壊れた値で一覧全体が検証エラーになり、ページごと表示できなくなる**。必須項目は従来どおり例外にしてよい（データが壊れているため、黙って表示する方が危険）。
+- 背景と実際に踏んだ経緯は [`docs/lessons-learned.md`](../../docs/lessons-learned.md)（2026-09-22）を参照。
+
 ### スキーマの配置（`schemas/` 集約）
 
 - スキーマは**ソースルート直下の `schemas/` ディレクトリ**に集約する（本プロジェクトでは `front/src/schemas/`）。
