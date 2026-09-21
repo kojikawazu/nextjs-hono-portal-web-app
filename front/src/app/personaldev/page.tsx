@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Github } from 'lucide-react';
 import Link from 'next/link';
 import { PulseLoader } from 'react-spinners';
 // types
@@ -109,6 +109,22 @@ const PersonalHistoryDevPage = () => {
                                                 ))}
                                             </div>
                                         </Link>
+                                        {/* 公開サイトへの Link の「外」に置く。内側に入れると <a> の
+                                            入れ子になり HTML として不正（ブラウザが分解する）。
+                                            githubUrl が無い要素では要素ごと描画しない（レイアウトは
+                                            mt で吸収されるため崩れない）。 */}
+                                        {personalDev.githubUrl && (
+                                            <a
+                                                href={personalDev.githubUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={`${personalDev.title} のGitHubリポジトリ`}
+                                                className="text-gray-400 hover:text-primary transition-colors duration-200 inline-flex items-center gap-2 mt-4 text-sm"
+                                            >
+                                                <Github className="h-4 w-4" />
+                                                GitHub
+                                            </a>
+                                        )}
                                     </motion.div>
                                 ),
                             )

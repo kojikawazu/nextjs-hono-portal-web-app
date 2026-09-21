@@ -40,7 +40,7 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 |---|---|---|
 | `http.test.ts` | `fetchJson` / `fetchOk` | 共通ヘルパー。`ApiError` の `kind` 分類（`network` / `status` / `schema`）とステータス保持 |
 | `common-data.test.ts` | `fetchCommonData` | API 応答から画面用の形への詰め替え |
-| `dev-data.test.ts` | `fetchPersonalDevData` | 配列の取り出し、必須項目欠落の検出 |
+| `dev-data.test.ts` | `fetchPersonalDevData` | 配列の取り出し、必須項目欠落の検出、**任意項目 `githubUrl` の劣化**（未設定・不正 URL・型違いで `undefined`） |
 | `contact.test.ts` | `fetchCsrfToken` / `sendContactMail` | `credentials: 'include'` と `X-CSRF-Token` ヘッダーの付与 |
 
 | 分類 | テストケース | 期待結果 |
@@ -51,6 +51,7 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 | 準正常系 | 必須項目の欠落・キー名違い・型違い | `ApiError`（`kind='schema'`） |
 | 準正常系 | JSON として解釈できない応答 | `ApiError`（`kind='schema'`） |
 | 異常系 | `fetch` が reject（通信断） | `ApiError`（`kind='network'`） |
+| 準正常系 | 任意項目が不正（`javascript:` URL・型違い） | 例外にせず `undefined` へ劣化（一覧は表示される） |
 
 **`kind` を検証するのは呼び出し側の分岐を保証するため。** 単に「throw する」だけを確認すると、通信断とスキーマ不一致を取り違えても気づけない。
 
@@ -97,5 +98,6 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 
 - 共通データ取得が 500 → ヒーローはクラッシュせず描画される（`commonData` が null でも耐える）
 - 個人開発の取得が 500 / ネットワーク断 → 「No data available」にフォールバック
+- `githubUrl` を持つカードにのみ GitHub リンクが出る（持たないカードでは出ない・`target` / `rel` も検証）
 - お問い合わせ送信が 500 → success へ遷移せず、確認画面にエラー（「エラーが発生しました。」）を表示
 

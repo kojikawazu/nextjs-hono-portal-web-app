@@ -36,10 +36,11 @@ test('Personal Dev Page', async ({ page }) => {
     await expect(page.getByText('React')).toBeVisible();
     await expect(page.getByText('TypeScript')).toBeVisible();
     await expect(page.getByText('Tailwind CSS')).toBeVisible();
-    await expect(page.getByRole('link', { name: '個人開発プロジェクト①' })).toHaveAttribute(
-        'href',
-        'https://example.com/project1',
-    );
+    await expect(
+        page
+            .getByRole('link')
+            .filter({ has: page.getByRole('heading', { name: '個人開発プロジェクト①' }) }),
+    ).toHaveAttribute('href', 'https://example.com/project1');
 
     // 個人開発プロジェクト②の表示を確認
     await expect(page.getByRole('heading', { name: '個人開発プロジェクト②' })).toBeVisible();
@@ -47,10 +48,31 @@ test('Personal Dev Page', async ({ page }) => {
     await expect(page.getByText('Next.js')).toBeVisible();
     await expect(page.getByText('Playwright')).toBeVisible();
     await expect(page.getByText('Zod')).toBeVisible();
-    await expect(page.getByRole('link', { name: '個人開発プロジェクト②' })).toHaveAttribute(
-        'href',
-        'https://example.com/project2',
-    );
+    await expect(
+        page
+            .getByRole('link')
+            .filter({ has: page.getByRole('heading', { name: '個人開発プロジェクト②' }) }),
+    ).toHaveAttribute('href', 'https://example.com/project2');
+});
+
+// githubUrl を持つカードだけに GitHub リンクが出る（持たないカードでは出ない）
+test('Personal Dev Page (GitHub リンク)', async ({ page }) => {
+    await page.goto('/personaldev');
+    await page.waitForSelector('text=個人開発プロジェクト①');
+
+    const githubLink = page.getByRole('link', {
+        name: '個人開発プロジェクト① のGitHubリポジトリ',
+    });
+
+    await expect(githubLink).toHaveAttribute('href', 'https://github.com/example/project1');
+    // 別タブで開く。opener 経由の tabnabbing を防ぐため rel も検証する
+    await expect(githubLink).toHaveAttribute('target', '_blank');
+    await expect(githubLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+    // githubUrl を持たない②にはリンクが存在しない（レイアウトのフォールバック）
+    await expect(
+        page.getByRole('link', { name: '個人開発プロジェクト② のGitHubリポジトリ' }),
+    ).toHaveCount(0);
 });
 
 // データがない場合の表示確認
