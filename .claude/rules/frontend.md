@@ -60,7 +60,7 @@ front/src/
 └── types/                  # 型定義
 ```
 
-> `types/` `schemas/` `constants/` `hooks/` `contexts/` `lib/` は `front/src/` 直下へ移行済み（issue #94）。**`repositories/` への `fetch` 集約は未対応**で、現状は hooks・contexts に散在している（issue #95）。
+> 本プロジェクトは上記構成へ移行済み（issue #94・#95）。`fetch` は `repositories/http.ts` の 1 箇所に閉じており、hooks・contexts は repository 関数を呼ぶだけになっている。
 
 ## インポート
 

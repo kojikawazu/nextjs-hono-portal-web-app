@@ -4,15 +4,12 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import type { contactFormData } from '@/schemas/contact';
 import { contactSchema } from '@/schemas/contact';
+import { fetchCsrfToken } from '@/repositories/contact';
 import { STORAGE_KEYS } from '@/constants/storage';
 import { getDataBySessionStorage, setDataBySessionStorage } from '@/lib/session-utils';
 import { setFormError } from '@/lib/form-utils';
-
-/** `/api/mail/csrf` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const csrfResponseSchema = z.object({ csrfToken: z.string() });
 
 /**
  * お問い合わせフォームの状態と送信処理を提供するフック。
@@ -37,24 +34,15 @@ export const useContactForm = () => {
     });
 
     useEffect(() => {
-        const fetchCsrfToken = async () => {
+        const loadCsrfToken = async () => {
             try {
-                const response = await fetch('/api/mail/csrf', {
-                    credentials: 'include', // クッキーを送信するために必要
-                });
-                const data: unknown = await response.json();
-                const parsed = csrfResponseSchema.safeParse(data);
-                if (parsed.success) {
-                    setCsrfToken(parsed.data.csrfToken);
-                } else {
-                    console.error('Unexpected CSRF response format:', data);
-                }
+                setCsrfToken(await fetchCsrfToken());
             } catch (error) {
                 console.error('CSRF token fetch error:', error);
             }
         };
 
-        fetchCsrfToken();
+        loadCsrfToken();
 
         // セッションストレージからデータを取得して復元
         const data = getDataBySessionStorage(STORAGE_KEYS.CONTACT_FORM);

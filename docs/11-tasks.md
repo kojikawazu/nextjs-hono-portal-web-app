@@ -56,6 +56,7 @@
 | T-44 | デプロイに `concurrency`（`cancel-in-progress: false`）と `environment: production`（Cloud Run の実 URL を記録）を設定。承認ゲートは置かない | 完了 |
 | T-45 | `environment.url` が記録されない不具合を修正。Cloud Run URL の動的取得をやめ公開サイトの固定値にした（サービス名・リージョンがシークレットのため URL がマスクされていた） | 完了 |
 | T-46 | 関心別ディレクトリを `front/src/` 直下へ移行（`types` / `schemas` / `constants` / `hooks` / `contexts` / `lib`）。`schema`→`schemas` の複数形化、`utils`→`lib` の統合、`contactFormData` を `schemas/contact.ts` へ移設 | 完了 |
+| T-47 | `fetch` を `repositories/` へ集約（`http` / `common-data` / `dev-data` / `contact`）。共通ヘルパー `fetchJson` / `fetchOk` と `ApiError`（network / status / schema）を導入し、レスポンススキーマを `schemas/` へ移動。リポジトリのユニットテスト 30 件を追加（20 → 50 件） | 完了 |
 
 ## 2. 未対応・検討中タスク
 

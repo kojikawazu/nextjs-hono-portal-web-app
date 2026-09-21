@@ -1,24 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { z } from 'zod';
+import { fetchSampleDevData } from '@/repositories/dev-data';
 import type { SampleDevDataType } from '@/types/sample-data';
 
-/** `/api/gcs/sampledev` の応答形状。外部入力のため unknown で受けてこのスキーマで検証する。 */
-const sampleDevResponseSchema = z.object({
-    sampledev: z.array(
-        z.object({
-            title: z.string(),
-            description: z.string(),
-            tech: z.array(z.string()),
-            imageUrl: z.string(),
-            url: z.string(),
-        }),
-    ),
-});
-
 /**
- * サンプル開発データを GCS API から取得するフック。
+ * サンプル開発データを取得するフック。
+ *
+ * 通信とスキーマ検証は `repositories/dev-data.ts` が担う。本フックは状態管理と
+ * 副作用の制御に専念する（`frontend.md`「`fetch` を書いてよいのは `repositories/` だけ」）。
  *
  * @returns 取得したデータ一覧（`sampleDevDataList`）と読み込み状態（`isLoading`）
  */
@@ -27,20 +17,10 @@ export const useSampleDevData = () => {
     const [sampleDevDataList, setSampleDevDataList] = useState<SampleDevDataType[]>([]);
 
     useEffect(() => {
-        const fetchData = async () => {
+        const load = async () => {
             setIsLoading(true);
             try {
-                const result = await fetch('/api/gcs/sampledev');
-                if (result.ok) {
-                    // 外部入力は unknown で受け、スキーマ検証でナローイングしてから使う。
-                    const data: unknown = await result.json();
-                    const parsed = sampleDevResponseSchema.safeParse(data);
-                    if (parsed.success) {
-                        setSampleDevDataList(parsed.data.sampledev);
-                    } else {
-                        console.error('Unexpected API response format:', data);
-                    }
-                }
+                setSampleDevDataList(await fetchSampleDevData());
             } catch (error) {
                 console.error('Error fetching sample development data:', error);
             } finally {
@@ -48,7 +28,7 @@ export const useSampleDevData = () => {
             }
         };
 
-        fetchData();
+        load();
     }, []);
 
     return { sampleDevDataList, isLoading };
