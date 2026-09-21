@@ -41,7 +41,6 @@
     ├── Docker build (.env生成含む)
     ├── Push to Artifact Registry
     ├── Deploy to Cloud Run
-    ├── Resolve service URL (environment.url に記録)
     └── Cleanup old images
 ```
 
@@ -52,7 +51,7 @@
 | トリガ | `push` to `main`（`paths`: `.github/**`, `front/**`） | PR ではデプロイしない |
 | `concurrency.group` | `${{ github.workflow }}-${{ github.ref }}` | 同一ブランチのデプロイを直列化する |
 | `concurrency.cancel-in-progress` | **`false`** | **CI とは逆**。実行途中でキャンセルすると Cloud Run のリビジョン切り替えや古いイメージ削除が中断され、不整合が残る。連続マージ時は後発が前発の完了を待つ |
-| `environment` | `production`（`url` に Cloud Run の実サービス URL） | デプロイ履歴と URL を GitHub に記録する |
+| `environment` | `production`（`url` は公開サイト <https://smartportalcom.com/> の固定値） | デプロイ履歴と URL を GitHub に記録する。**Cloud Run の直 URL を動的取得しない** — サービス名・リージョンがシークレットのため URL がマスクされ `environment_url` が記録されない。利用者が開くのも Cloudflare 経由の公開サイト側（issue #115） |
 | 承認ゲート | **なし** | main マージでそのままデプロイする運用を維持（issue #113 の判断） |
 
 **シークレットは Environment ではなくリポジトリレベルで管理している。** `github-actions.md` は「シークレットは Environment 単位で管理し、PR からは参照できないようにする」と定めるが、`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、`production` Environment へ移すと PR の CI が動かなくなる。分離にはテスト用と本番用でシークレットを別立てにする必要があり、未対応として `docs/11-tasks.md` に残している。
