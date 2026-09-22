@@ -33,6 +33,7 @@
 | `front/src/**` | `.claude/rules/typescript.md`, `.claude/rules/jsdoc.md` |
 | `front/src/app/**`, `front/src/components/**`, `front/src/hooks/**`, `front/src/contexts/**`, `front/src/repositories/**`, `front/src/schemas/**`, `front/src/constants/**`, `front/src/types/**`, `front/src/lib/**` | `.claude/rules/frontend.md` |
 | `front/src/app/api/**` | `.claude/rules/api.md`, `.claude/rules/dry-run.md`, `.claude/rules/domain-layer.md` |
+| `terraform/**` | `.claude/rules/iac.md` |
 | `.github/workflows/**` | `.claude/rules/github-actions.md` |
 
 `front/src/app/api/**` は `front/src/**` と `front/src/app/**` の内側にあるため、API を変更する場合は上表の 3 行すべて（TypeScript / フロントエンド / API）が同時に該当します。

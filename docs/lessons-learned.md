@@ -4,6 +4,27 @@
 
 新しいエントリはこの見出しの直下に追記する（新しいものが上）。
 
+## 2026-09-22 Terraform の state をローカルのみに置いた結果、環境の入れ替えで失われた
+
+### 概要
+
+`terraform.tfvars` が無いことに気づいて調査したところ、**より深刻な問題として state 自体が失われている**ことが判明した。backend を設定しておらず、`.gitignore` で `terraform.tfstate` を除外していたため、state はローカルにしか存在せず、環境を入れ替えた時点で消えていた。この状態で `apply` すると既存リソースを新規作成しようとするため、実行できない。
+
+### 詳細
+
+- **何が起きたか**: `/aiusage` 追加に伴う `terraform apply` を案内しようとして、`terraform.tfvars` が無いことに気づいた。調べると `main.tf` に `backend` ブロックが無く（ローカル state）、`terraform.tfstate` は `.gitignore` で除外され、Git 履歴にも存在しなかった。**インフラ定義はコードにあるが適用できない**状態。実害は出ていない（後述）。
+
+- **なぜ起きたか（根本原因）**: 2 つ重なっていた。
+  1. **`.gitignore` の判断を「秘密かどうか」だけで行った。** `terraform.tfvars`（秘密を含む）と `terraform.tfstate`（秘密ではないが巨大で競合しやすい）を同じ「除外」に括った結果、**state だけが行き場を失った**。tfvars は「各自のローカルに置く」で成立するが、state は共有される必要があり、除外するならリモート backend が要る。
+  2. **IaC が実際の変更経路から外れていた。** デプロイは `gcloud run deploy`、アプリの環境変数は Docker イメージに焼いた `.env` 経由で回っており、**Terraform は初期構築時にしか使われていなかった**。そのため state を失っても何も壊れず、**誰も気づかない**状態が続いた。
+
+- **教訓 / 次からどうする**:
+  - **除外するファイルは「代わりの置き場所」とセットで決める。** `.gitignore` に足すとき、「これはどこに置くのか」を必ず答える。state ならリモート backend、tfvars なら変数名の一覧をドキュメントに残す。ルール化した（[`iac.md`](../.claude/rules/iac.md)）。
+  - **IaC が実際の変更経路に乗っているかを確認する。** 乗っていないなら、その定義は「適用されない飾り」であり、壊れても検知できない。`plan` の差分が空であることを定期的に確認する。
+  - **「壊れても誰も気づかない」構造を疑う。** `duplication.md` の「CI は README を読まないので、README が腐っても CI は緑のまま」と同じ形。今回も、偶然 `tfvars` を探さなければ発覚しなかった。
+
+- **関連**: issue #134（復元方針の検討）/ issue #132・PR #133（発覚の経緯）/ [`.claude/rules/iac.md`](../.claude/rules/iac.md) / [`.claude/rules/duplication.md`](../.claude/rules/duplication.md)
+
 ## 2026-09-22 zod の `.url()` は `javascript:` を妥当な URL と判定する
 
 ### 概要
