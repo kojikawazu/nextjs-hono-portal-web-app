@@ -9,6 +9,10 @@
   - [4.2 表示](#42-表示)
   - [4.3 GitHub リンク](#43-github-リンク)
   - [4.4 データ型](#44-データ型)
+- [5. AI 活用方法ページ (`/aiusage`)](#5-ai-活用方法ページ-aiusage)
+  - [5.1 データ取得](#51-データ取得)
+  - [5.2 表示](#52-表示)
+  - [5.3 データ型](#53-データ型)
 
 ## 3. ホームページ (`/`)
 
@@ -52,3 +56,36 @@ type PersonalDevDataType = {
     githubUrl?: string;
 };
 ```
+
+## 5. AI 活用方法ページ (`/aiusage`)
+
+### 5.1 データ取得
+- マウント時に `/api/gcs/aiusage` からデータを取得
+- レスポンス形式: `{ aiusage: AiUsageDataType }`
+
+### 5.2 表示
+- **原則ブロック**をセクションより前に表示（左ボーダー + 強調）。ページ全体を貫く前提のため
+- セクション（`sections[]`）を配列順に表示。通し番号（`01`〜）+ 見出し + 要約 + 項目リスト
+- 各項目: 項目名、説明、`decision` がある場合のみ「人間 → …」、`url` がある場合のみ参考リンク（別タブ）
+- データ未取得・0 件のときは `No AI usage data available.`
+
+### 5.3 データ型
+```typescript
+type AiUsageDataType = {
+    principle: string;
+    sections: {
+        title: string;
+        summary: string;
+        items: {
+            title: string;
+            description: string;
+            /** 人間が決めること（任意） */
+            decision?: string;
+            /** 参考リンク（任意。https のみ） */
+            url?: string;
+        }[];
+    }[];
+};
+```
+
+画面仕様の正本は [docs/mockups/screens.md](../mockups/screens.md)。

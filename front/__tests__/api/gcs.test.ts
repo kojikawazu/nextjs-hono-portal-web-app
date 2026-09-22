@@ -2,6 +2,7 @@ import gcsRouter from '@/app/api/gcs/gcs';
 
 const mockCommonData = require('../../e2e/tests/mock/common.json');
 const mockPersonalDevData = require('../../e2e/tests/mock/personaldev.json');
+const mockAiUsageData = require('../../e2e/tests/mock/aiusage.json');
 
 // GCS の file().download() をテストから制御できる共有モック。
 // 既定は fileName に応じたモックデータを返す。異常系では *Once で失敗を差し込む。
@@ -11,6 +12,8 @@ const mockDownload = jest.fn(async (fileName: string) => {
         data = mockCommonData;
     } else if (fileName.includes('personaldev')) {
         data = mockPersonalDevData;
+    } else if (fileName.includes('aiusage')) {
+        data = mockAiUsageData;
     } else {
         data = {};
     }
@@ -30,6 +33,7 @@ describe('GCS Router', () => {
         process.env.GCS_PRIVATE_BUCKET_NAME = 'mock-bucket';
         process.env.GCS_COMMON_DATA_PATH = 'common/mock-data.json';
         process.env.GCS_PERSONAL_DATA_PATH = 'personaldev/mock-data.json';
+        process.env.GCS_AIUSAGE_DATA_PATH = 'aiusage/mock-data.json';
         // 異常系で意図的に発生する console.error はテスト出力から抑制する
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
@@ -52,6 +56,12 @@ describe('GCS Router', () => {
         expect(await response.json()).toEqual(mockPersonalDevData);
     });
 
+    test('GET /api/gcs/aiusage - Normal', async () => {
+        const response = await gcsRouter.fetch(new Request('http://localhost/aiusage'));
+        expect(response.status).toBe(200);
+        expect(await response.json()).toEqual(mockAiUsageData);
+    });
+
     // ---- 準正常系（Semi-Normal）: 環境変数未設定 → 400 ----
     test('GET /api/gcs/common - Semi-Normal (環境変数未設定 → 400)', async () => {
         delete process.env.GCS_PRIVATE_BUCKET_NAME;
@@ -63,6 +73,13 @@ describe('GCS Router', () => {
     test('GET /api/gcs/personaldev - Semi-Normal (環境変数未設定 → 400)', async () => {
         delete process.env.GCS_PERSONAL_DATA_PATH;
         const response = await gcsRouter.fetch(new Request('http://localhost/personaldev'));
+        expect(response.status).toBe(400);
+        expect(await response.json()).toEqual({ error: 'Bucket name or file name is not set' });
+    });
+
+    test('GET /api/gcs/aiusage - Semi-Normal (環境変数未設定 → 400)', async () => {
+        delete process.env.GCS_AIUSAGE_DATA_PATH;
+        const response = await gcsRouter.fetch(new Request('http://localhost/aiusage'));
         expect(response.status).toBe(400);
         expect(await response.json()).toEqual({ error: 'Bucket name or file name is not set' });
     });
@@ -85,6 +102,12 @@ describe('GCS Router', () => {
     test('GET /api/gcs/personaldev - Abnormal (GCS download 例外 → 500)', async () => {
         mockDownload.mockRejectedValueOnce(new Error('GCS unavailable'));
         const response = await gcsRouter.fetch(new Request('http://localhost/personaldev'));
+        expect(response.status).toBe(500);
+        expect(await response.json()).toEqual({ error: 'Failed to fetch data from GCS' });
+    });
+    test('GET /api/gcs/aiusage - Abnormal (GCS download 例外 → 500)', async () => {
+        mockDownload.mockRejectedValueOnce(new Error('GCS unavailable'));
+        const response = await gcsRouter.fetch(new Request('http://localhost/aiusage'));
         expect(response.status).toBe(500);
         expect(await response.json()).toEqual({ error: 'Failed to fetch data from GCS' });
     });

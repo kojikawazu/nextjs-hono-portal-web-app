@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>publish-aiusage-data — nextjs-hono-portal-web-app</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sequence-common.css">
+</head>
+<body>
+  <div class="back-link"><a href="index.html">← 画面一覧に戻る</a></div>
+  <h1>publish-aiusage-data</h1>
+  <p class="page-desc">
+    サイト運営者（本人）が掲載内容を書き換えてから、訪問者の画面に反映されるまでの運用フロー。
+    <strong>Web アプリ側の再デプロイは不要</strong>で、データリポジトリの更新と GCS への同期だけで反映される。
+  </p>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('tab1', this)">CI が動く場合</button>
+    <button class="tab-btn" onclick="showTab('tab2', this)">課金上限で手動同期になる場合</button>
+  </div>
+
+  <div id="tab1" class="tab-panel active">
+    <div class="seq-wrapper">
+      <p class="seq-title">通常フロー（GitHub Actions が同期する）</p>
+      <p class="seq-subtitle">json/ の変更でのみ deploy ワークフローが発火する</p>
+
+      <div class="actor-header">
+        <div class="seq-actor-box actor-user">運営者</div>
+        <div class="seq-actor-box actor-external">data-app<br>リポジトリ</div>
+        <div class="seq-actor-box actor-server">GitHub Actions</div>
+        <div class="seq-actor-box actor-external">Google Cloud<br>Storage</div>
+        <div class="seq-actor-box actor-front">ポータル<br>(訪問者の画面)</div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-lbl">json/aiusage.json を編集して PR を作成</div>
+        <div class="step-diag"><span class="diag-from">運営者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">repo</span></div>
+        <div class="step-note">データ変更も PR レビューを通す</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-lbl">レビュー後に main へマージ</div>
+        <div class="step-diag"><span class="diag-from">運営者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">repo</span></div>
+        <div class="step-note">マージは人間が行う</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-lbl">push(main, paths: json/**) で発火</div>
+        <div class="step-diag"><span class="diag-from">repo</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">CI</span></div>
+        <div class="step-note">ドキュメント修正ではデータ配信を走らせない</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-lbl">gsutil rsync -r -d json/ で同期</div>
+        <div class="step-diag"><span class="diag-from">CI</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">GCS</span></div>
+        <div class="step-note"><strong>コピー元に無いファイルは宛先から削除される</strong></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div class="step-lbl">完了</div>
+        <div class="step-diag"><span class="diag-from">GCS</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">CI</span></div>
+        <div class="step-note">—</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">6</div>
+        <div class="step-lbl">次回アクセス時に API 経由で最新 JSON を取得</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">GCS</span></div>
+        <div class="step-note">消費側は実行時取得。<strong>ポータルの再デプロイは不要</strong></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">7</div>
+        <div class="step-lbl">反映を確認</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">運営者</span></div>
+        <div class="step-note">—</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--color-primary)"></span>操作・リクエスト</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-green) 0 6px,transparent 6px 12px)"></span>成功の応答</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab2" class="tab-panel">
+    <div class="seq-wrapper">
+      <p class="seq-title">代替フロー（Actions が起動しない）</p>
+      <p class="seq-subtitle">data-app は private リポジトリで Actions が課金対象。上限に達するとジョブが起動しない</p>
+
+      <div class="actor-header">
+        <div class="seq-actor-box actor-user">運営者</div>
+        <div class="seq-actor-box actor-server">GitHub Actions</div>
+        <div class="seq-actor-box actor-external">Google Cloud<br>Storage</div>
+        <div class="seq-actor-box actor-front">ポータル<br>(訪問者の画面)</div>
+      </div>
+
+      <div class="block-row block-err">alt 課金上限でジョブが起動しない</div>
+      <div class="step-row">
+        <div class="step-num">x1</div>
+        <div class="step-lbl">ジョブ未起動（実行前に失敗）</div>
+        <div class="step-diag"><span class="diag-from">CI</span><span class="av-line d e"></span><span class="ah-l e"></span><span class="diag-to">運営者</span></div>
+        <div class="step-note">数秒で fail する。<strong>内容の検証は行われていない</strong></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">x2</div>
+        <div class="step-lbl">scripts/sync-to-gcs.sh を dry-run</div>
+        <div class="step-diag"><span class="diag-from">運営者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">GCS</span></div>
+        <div class="step-note">既定は dry-run。<strong>削除を検出すると中断する</strong></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">x3</div>
+        <div class="step-lbl">削除対象を目視 → --apply で同期</div>
+        <div class="step-diag"><span class="diag-from">運営者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">GCS</span></div>
+        <div class="step-note">削除が意図どおりのときだけ <code>--allow-delete</code> を付ける</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">x4</div>
+        <div class="step-lbl">GCS の内容を読み返して検証</div>
+        <div class="step-diag"><span class="diag-from">GCS</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">運営者</span></div>
+        <div class="step-note">スクリプトが同期後に実物を読み出して確認する</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">x5</div>
+        <div class="step-lbl">次回アクセス時に反映される</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">運営者</span></div>
+        <div class="step-note">再デプロイ不要なのは通常フローと同じ</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--color-primary)"></span>操作・リクエスト</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-green) 0 6px,transparent 6px 12px)"></span>成功の応答</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-red) 0 6px,transparent 6px 12px)"></span>失敗・未起動</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function showTab(id, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  </script>
+  <div class="screen-label">sequence-publish-aiusage-data · sequences/publish-aiusage-data.md</div>
+</body>
+</html>

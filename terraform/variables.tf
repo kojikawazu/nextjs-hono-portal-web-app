@@ -69,6 +69,10 @@ variable "gcs_personal_data_path" {
   type = string
 }
 
+variable "gcs_aiusage_data_path" {
+  type = string
+}
+
 variable "node_env" {
   type = string
 }

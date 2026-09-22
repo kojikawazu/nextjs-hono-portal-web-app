@@ -7,6 +7,7 @@
   - [3.2 `GET /api/gcs/`](#32-get-apigcs)
   - [3.3 `GET /api/gcs/common`](#33-get-apigcscommon)
   - [3.4 `GET /api/gcs/personaldev`](#34-get-apigcspersonaldev)
+  - [3.5 `GET /api/gcs/aiusage`](#35-get-apigcsaiusage)
 
 ## 3. エンドポイント詳細（GCS系）
 
@@ -94,5 +95,37 @@ GCSから個人開発データを取得する。
   ]
 }
 ```
+
+**エラーレスポンス**: 3.3と同様
+
+---
+
+### 3.5 `GET /api/gcs/aiusage`
+
+GCSからAI活用方法データを取得する。
+
+**必要な環境変数**
+- `GCS_PRIVATE_BUCKET_NAME`
+- `GCS_AIUSAGE_DATA_PATH`
+
+**レスポンス (200)**
+```json
+{
+  "aiusage": {
+    "principle": "string",
+    "sections": [
+      {
+        "title": "string",
+        "summary": "string",
+        "items": [
+          { "title": "string", "description": "string", "decision": "string?", "url": "string?" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+`decision` / `url` は任意。`url` は `https` のみ許可し、それ以外はクライアント側で `undefined` に劣化する。
 
 **エラーレスポンス**: 3.3と同様

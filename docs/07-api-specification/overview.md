@@ -23,6 +23,7 @@
 | GET | `/api/gcs/` | GCS API接続確認 | なし |
 | GET | `/api/gcs/common` | 共通データ取得 | なし |
 | GET | `/api/gcs/personaldev` | 個人開発データ取得 | なし |
+| GET | `/api/gcs/aiusage` | AI 活用方法データ取得 | なし |
 | GET | `/api/mail/` | Mail API接続確認 | なし |
 | GET | `/api/mail/csrf` | CSRFトークン発行 | なし |
 | POST | `/api/mail/send` | メール送信 | CSRF |
@@ -47,7 +48,8 @@ Hono App (basePath: /api)
 ├── /gcs (gcsRouter)
 │   ├── GET /
 │   ├── GET /common
-│   └── GET /personaldev
+│   ├── GET /personaldev
+│   └── GET /aiusage
 └── /mail (mailRouter)
     ├── GET /
     ├── GET /csrf

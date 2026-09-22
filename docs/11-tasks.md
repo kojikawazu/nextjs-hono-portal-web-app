@@ -63,6 +63,7 @@
 | T-51 | 「サンプル開発履歴」ページ（`/sampledev`）を削除（issue #27）。ページ・hook・repository 関数・schema / types・Hono ルート `GET /api/gcs/sampledev`・ナビリンク・UT / IT / E2E の該当ケースと、どこからも読まれなくなる環境変数 `GCS_SAMPLE_DATA_PATH`（`.env.example` / ワークフロー / Terraform）まで一括で撤去 | 完了 |
 | T-52 | 個人開発カードに GitHub リンクを追加（issue #125・親 #28）。`githubUrl` を optional + https 限定で検証し、不正値は例外にせず `undefined` へ劣化させる（1 件の壊れた値で一覧全体を落とさない）。データ側は data-app #36 | 完了 |
 | T-53 | `href` に入る外部由来 URL のスキーム検証を横断適用（issue #129）。`schemas/url.ts` に制約を 1 箇所定義し、`personaldev` 2 件・`common` 5 件へ合成。不正・未設定はリンクごと非表示に統一し、`href=""` を作らない | 完了 |
+| T-54 | AI 活用方法ページ `/aiusage` を新設（issue #132）。画面仕様の正本を `docs/mockups/` に作成（mock-screen）し、Hono ルート・スキーマ・repository・hook・ページ・Navbar・環境変数 `GCS_AIUSAGE_DATA_PATH` を追加。データは data-app #40 | 完了 |
 
 ## 2. 未対応・検討中タスク
 

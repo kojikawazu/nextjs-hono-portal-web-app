@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>view-aiusage — nextjs-hono-portal-web-app</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="sequence-common.css">
+</head>
+<body>
+  <div class="back-link"><a href="index.html">← 画面一覧に戻る</a></div>
+  <h1>view-aiusage</h1>
+  <p class="page-desc">
+    訪問者が Navbar から AI 活用方法ページを開き、GCS 上の JSON から取得した工程別の AI 活用内容を閲覧する。
+    取得に失敗した場合もページはクラッシュさせず、空状態の表示にフォールバックする。
+  </p>
+
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('tab1', this)">正常系（閲覧・外部リンク）</button>
+    <button class="tab-btn" onclick="showTab('tab2', this)">異常系（400 / 500 / 0 件）</button>
+  </div>
+
+  <div id="tab1" class="tab-panel active">
+    <div class="seq-wrapper">
+      <p class="seq-title">閲覧フロー</p>
+      <p class="seq-subtitle">Navbar → データ取得 → 工程カード表示 → ツールの外部リンク</p>
+
+      <div class="actor-header">
+        <div class="seq-actor-box actor-user">訪問者</div>
+        <div class="seq-actor-box actor-front">フロントエンド<br>(/aiusage)</div>
+        <div class="seq-actor-box actor-server">Hono API<br>(/api/gcs/aiusage)</div>
+        <div class="seq-actor-box actor-external">Google Cloud<br>Storage</div>
+      </div>
+
+      <div class="step-row">
+        <div class="step-num">1</div>
+        <div class="step-lbl">Navbar の「AI 活用方法」をクリック</div>
+        <div class="step-diag"><span class="diag-from">訪問者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">全ページ共通の入口</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">2</div>
+        <div class="step-lbl">ローディング表示（PulseLoader）</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d"></span><span class="ah-l"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note">既存ページと同じ体裁</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">3</div>
+        <div class="step-lbl">GET /api/gcs/aiusage</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">API</span></div>
+        <div class="step-note">取得は <code>repositories/</code> の関数からのみ行う（fetch を書いてよいのはそこだけ）</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">4</div>
+        <div class="step-lbl">aiusage.json をダウンロード</div>
+        <div class="step-diag"><span class="diag-from">API</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">GCS</span></div>
+        <div class="step-note">バケットは private。<strong>サーバーがサービスアカウント権限で取得して中継</strong>する</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">5</div>
+        <div class="step-lbl">JSON を返す</div>
+        <div class="step-diag"><span class="diag-from">GCS</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">API</span></div>
+        <div class="step-note">—</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">6</div>
+        <div class="step-lbl">200 { aiusage: [...] }</div>
+        <div class="step-diag"><span class="diag-from">API</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">—</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">7</div>
+        <div class="step-lbl">Zod スキーマで検証</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">FE</span></div>
+        <div class="step-note"><code>url</code> は <code>optionalHttpsUrlSchema</code> を合成。<code>javascript:</code> 等は <code>undefined</code> へ劣化</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">8</div>
+        <div class="step-lbl">工程カードを配列順に表示</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note">—</div>
+      </div>
+
+      <div class="block-row block-cond">opt ツールの公式サイトを開く</div>
+      <div class="step-row">
+        <div class="step-num">9</div>
+        <div class="step-lbl">ツールのリンクをクリック</div>
+        <div class="step-diag"><span class="diag-from">訪問者</span><span class="av-line"></span><span class="ah-r"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">リンクは <code>url</code> がある場合のみ描画される</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">10</div>
+        <div class="step-lbl">別タブで外部サイトを開く</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note"><code>target="_blank"</code> + <code>rel="noopener noreferrer"</code> 必須</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--color-primary)"></span>リクエスト（実線）</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-green) 0 6px,transparent 6px 12px)"></span>レスポンス（破線・成功）</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-red) 0 6px,transparent 6px 12px)"></span>レスポンス（破線・エラー）</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab2" class="tab-panel">
+    <div class="seq-wrapper">
+      <p class="seq-title">異常系・空データ</p>
+      <p class="seq-subtitle">失敗の種類を利用者に出し分けず、すべて空状態へ倒す</p>
+
+      <div class="actor-header">
+        <div class="seq-actor-box actor-user">訪問者</div>
+        <div class="seq-actor-box actor-front">フロントエンド<br>(/aiusage)</div>
+        <div class="seq-actor-box actor-server">Hono API<br>(/api/gcs/aiusage)</div>
+        <div class="seq-actor-box actor-external">Google Cloud<br>Storage</div>
+      </div>
+
+      <div class="block-row block-cond">alt 環境変数（バケット名・パス）が未設定</div>
+      <div class="step-row">
+        <div class="step-num">a1</div>
+        <div class="step-lbl">400 { error: "Bucket name or file name is not set" }</div>
+        <div class="step-diag"><span class="diag-from">API</span><span class="av-line d e"></span><span class="ah-l e"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">GCS へは問い合わせない（設定不備を先に弾く）</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">a2</div>
+        <div class="step-lbl">No AI usage data available.</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d e"></span><span class="ah-l e"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note">原因はサーバーログに残す（利用者には出さない）</div>
+      </div>
+
+      <div class="block-row block-err">else GCS 取得に失敗</div>
+      <div class="step-row">
+        <div class="step-num">b1</div>
+        <div class="step-lbl">500 { error: "Failed to fetch data from GCS" }</div>
+        <div class="step-diag"><span class="diag-from">API</span><span class="av-line d e"></span><span class="ah-l e"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">ダウンロード失敗・JSON パース失敗を含む</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">b2</div>
+        <div class="step-lbl">No AI usage data available.</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d e"></span><span class="ah-l e"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note">ページはクラッシュさせない</div>
+      </div>
+
+      <div class="block-row block-ok">else データが 0 件</div>
+      <div class="step-row">
+        <div class="step-num">c1</div>
+        <div class="step-lbl">200 { aiusage: [] }</div>
+        <div class="step-diag"><span class="diag-from">API</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">FE</span></div>
+        <div class="step-note">空配列は異常ではない</div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">c2</div>
+        <div class="step-lbl">No AI usage data available.</div>
+        <div class="step-diag"><span class="diag-from">FE</span><span class="av-line d s"></span><span class="ah-l s"></span><span class="diag-to">訪問者</span></div>
+        <div class="step-note">表示は 3 経路とも同じ</div>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--color-primary)"></span>リクエスト（実線）</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-green) 0 6px,transparent 6px 12px)"></span>成功レスポンス</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:repeating-linear-gradient(to right,var(--color-red) 0 6px,transparent 6px 12px)"></span>エラーレスポンス</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  function showTab(id, el) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  </script>
+  <div class="screen-label">sequence-view-aiusage · sequences/view-aiusage.md</div>
+</body>
+</html>

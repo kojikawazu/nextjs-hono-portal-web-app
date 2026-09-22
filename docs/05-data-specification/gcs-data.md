@@ -6,6 +6,7 @@
 - [2. GCSデータモデル](#2-gcsデータモデル)
   - [2.1 共通データ (`GCS_COMMON_DATA_PATH`)](#21-共通データ-gcs_common_data_path)
   - [2.2 個人開発データ (`GCS_PERSONAL_DATA_PATH`)](#22-個人開発データ-gcs_personal_data_path)
+  - [2.3 AI 活用方法データ (`GCS_AIUSAGE_DATA_PATH`)](#23-ai-活用方法データ-gcs_aiusage_data_path)
 
 ## 1. データストア
 
@@ -13,7 +14,7 @@
 
 | データストア | 用途 |
 |------------|------|
-| GCS（プライベートバケット） | コンテンツデータ（共通、個人開発） |
+| GCS（プライベートバケット） | コンテンツデータ（共通、個人開発、AI 活用方法） |
 | sessionStorage（ブラウザ） | お問い合わせフォームの一時データ、CSRFトークン |
 
 ## 2. GCSデータモデル
@@ -93,3 +94,28 @@ type PersonalDevDataType = {
 **`https` 以外・未設定は `undefined` へ劣化**する（リンクを描画しない）。`url` が劣化した場合も
 **カードごと消さず、タイトル・説明・技術スタックは表示する**。方針の詳細は
 [06-security-specification/application.md](../06-security-specification/application.md) §4。
+
+### 2.3 AI 活用方法データ (`GCS_AIUSAGE_DATA_PATH`)
+
+GCS上のJSONファイル構造（正本は data-app の `docs/05-data-specification.md`）:
+
+```json
+{
+  "aiusage": {
+    "principle": "意思決定権は人間にある。…",
+    "sections": [
+      {
+        "title": "土台をつくる",
+        "summary": "…",
+        "items": [
+          { "title": "ルールの明文化", "description": "…", "decision": "…", "url": "https://…" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- `decision`（人間が決めること）と `url`（参考リンク）は**任意**
+- `url` は `schemas/url.ts` の `optionalHttpsUrlSchema` で検証し、`https` 以外は `undefined` へ劣化する
+- **非公開リポジトリを題材にする項目には `url` を付けない**（訪問者に GitHub の 404 を見せないため）

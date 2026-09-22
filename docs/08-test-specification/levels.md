@@ -10,12 +10,12 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 
 | 分類 | テストケース | 期待結果 |
 |------|------------|---------|
-| 正常系 | `GET /common` `/personaldev` | 200 + モックデータ |
+| 正常系 | `GET /common` `/personaldev` `/aiusage` | 200 + モックデータ |
 | 準正常系 | 各エンドポイント - 環境変数未設定 | 400 + `Bucket name or file name is not set` |
 | 異常系 | `GET /common` - download 例外 / 不正 JSON | 500 + `Failed to fetch data from GCS` |
 | 異常系 | `GET /personaldev` - download 例外 | 500 + `Failed to fetch data from GCS` |
 
-合計: 7テストケース（正常 2 / 準正常 2 / 異常 3）
+合計: 10テストケース（正常 3 / 準正常 3 / 異常 4）
 
 ### 3.2 メール送信APIテスト (`__tests__/api/mail.test.ts`)
 
@@ -40,6 +40,7 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 |---|---|---|
 | `http.test.ts` | `fetchJson` / `fetchOk` | 共通ヘルパー。`ApiError` の `kind` 分類（`network` / `status` / `schema`）とステータス保持 |
 | `common-data.test.ts` | `fetchCommonData` | API 応答から画面用の形への詰め替え |
+| `ai-usage.test.ts` | `fetchAiUsageData` | 入れ子構造の検証、任意項目（`decision` / `url`）の扱い |
 | `dev-data.test.ts` | `fetchPersonalDevData` | 配列の取り出し、必須項目欠落の検出、**任意項目 `githubUrl` の劣化**（未設定・不正 URL・型違いで `undefined`） |
 | `contact.test.ts` | `fetchCsrfToken` / `sendContactMail` | `credentials: 'include'` と `X-CSRF-Token` ヘッダーの付与 |
 
@@ -61,6 +62,7 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 テスト用のモックJSONファイルは `e2e/tests/mock/` に配置:
 - `common.json`
 - `personaldev.json`
+- `aiusage.json`
 - `csrf.json`
 
 ## 4. 統合テスト（IT）
@@ -72,11 +74,11 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 
 | 分類 | テストケース（`__tests__/it/gcs.it.test.ts`） | 期待結果 |
 |------|------------|---------|
-| 正常系 | `GET /common` `/personaldev`（実取得） | 200 + シードデータ |
+| 正常系 | `GET /common` `/personaldev` `/aiusage`（実取得） | 200 + シードデータ |
 | 準正常系 | 環境変数未設定 | 400 |
 | 異常系 | 存在しないオブジェクト | 500 |
 
-合計: 6テストケース（正常 2 / 準正常 2 / 異常 2）。**DB を使わない構成のため DB コンテナは不要**（結合先は外部 SaaS の GCS で、そのエミュレータを使う）。
+合計: 8テストケース（正常 3 / 準正常 2 / 異常 3）。**DB を使わない構成のため DB コンテナは不要**（結合先は外部 SaaS の GCS で、そのエミュレータを使う）。
 
 ## 5. E2Eテスト
 
@@ -86,6 +88,7 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 |---------|-----------|
 | `e2e/tests/pages/home.spec.ts` | ホームページ |
 | `e2e/tests/pages/personaldev.spec.ts` | 個人開発履歴ページ |
+| `e2e/tests/pages/aiusage.spec.ts` | AI 活用方法ページ |
 | `e2e/tests/pages/contact-form.spec.ts` | お問い合わせフォーム |
 | `e2e/tests/pages/contact-confirm.spec.ts` | お問い合わせ確認画面 |
 | `e2e/tests/pages/contact-success.spec.ts` | 送信完了画面 |

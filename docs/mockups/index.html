@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nextjs-hono-portal-web-app — 画面モック一覧</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body { padding: 40px 24px; max-width: 900px; margin: 0 auto; }
+    .page-header { margin-bottom: 8px; }
+    .page-header h1 { font-size: 26px; margin: 8px 0 4px; }
+    .page-header p { color: var(--color-text-sub); margin: 0; }
+    .source-link { font-size: 13px; margin: 16px 0 32px; }
+    .source-link a { color: var(--color-primary); text-decoration: none; font-weight: 600; }
+    .section-title {
+      font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--color-text-muted); border-bottom: 1px solid var(--color-border);
+      padding-bottom: 8px; margin: 36px 0 16px;
+    }
+    .section-title span { text-transform: none; letter-spacing: normal; font-weight: 400; }
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .screen-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); transition: box-shadow .15s, transform .15s; }
+    .screen-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .screen-card a { display: block; padding: 20px; text-decoration: none; color: inherit; }
+    .screen-icon { font-size: 26px; margin-bottom: 8px; }
+    .role-tag { display: inline-block; padding: 2px 10px; border-radius: var(--radius-full); font-size: 11px; font-weight: 700; margin-bottom: 8px; }
+    .role-visitor { background: #ede9fe; color: #5b21b6; }
+    .role-common { background: var(--color-grey-bg); color: #374151; }
+    .screen-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+    .screen-path { font-size: 12px; color: var(--color-text-muted); font-family: ui-monospace, monospace; margin-bottom: 8px; }
+    .screen-desc { font-size: 13px; color: var(--color-text-sub); line-height: 1.6; }
+    table.hint { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+    table.hint th, table.hint td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    table.hint th { background: var(--color-grey-bg); font-size: 12px; color: var(--color-text-sub); }
+    table.hint tr:last-child td { border-bottom: 0; }
+    code { background: var(--color-grey-bg); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="page-header">
+    <div class="screen-icon">🤖</div>
+    <h1>nextjs-hono-portal-web-app — 画面モック</h1>
+    <p>AI 活用方法ページ（<code>/aiusage</code>）とその導線</p>
+  </div>
+
+  <div class="source-link">
+    正本: <a href="screens.md">画面仕様（screens.md）</a> ／
+    <a href="sequences/view-aiusage.md">sequences/view-aiusage.md</a> ／
+    <a href="sequences/publish-aiusage-data.md">sequences/publish-aiusage-data.md</a>
+    <br>
+    <span style="color:var(--color-text-muted)">※ この HTML は正本からのレンダリング結果です。仕様を変えるときは正本を先に更新してください。</span>
+  </div>
+
+  <div class="section-title">シーケンス — <span>ユースケース別の流れ</span></div>
+  <div class="card-grid">
+    <div class="screen-card">
+      <a href="sequence-view-aiusage.html">
+        <div class="screen-icon">👁️</div>
+        <span class="role-tag role-visitor">訪問者</span>
+        <div class="screen-name">view-aiusage</div>
+        <div class="screen-path">sequences/view-aiusage.md</div>
+        <div class="screen-desc">ページを開いて原則とセクションを閲覧する。400 / 500 / 0 件はすべて空状態へフォールバック。</div>
+      </a>
+    </div>
+    <div class="screen-card">
+      <a href="sequence-publish-aiusage-data.html">
+        <div class="screen-icon">🚚</div>
+        <span class="role-tag role-common">運用</span>
+        <div class="screen-name">publish-aiusage-data</div>
+        <div class="screen-path">sequences/publish-aiusage-data.md</div>
+        <div class="screen-desc">掲載内容を更新して反映するまで。Actions が課金上限で起動しないときの手動同期も含む。</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section-title">訪問者 — <span>認証は無く、全員が同じ画面を見る</span></div>
+  <div class="card-grid">
+    <div class="screen-card">
+      <a href="visitor-aiusage.html">
+        <div class="screen-icon">🧠</div>
+        <span class="role-tag role-visitor">訪問者</span>
+        <div class="screen-name">AI 活用方法</div>
+        <div class="screen-path">/aiusage</div>
+        <div class="screen-desc">原則（意思決定権は人間）と 4 セクション（土台 / 工程 / 情報収集 / 任せないこと）を紹介する。</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="section-title">データモデルヒント — <span>画面 UI から導出した JSON 構造の候補</span></div>
+  <p style="font-size:13px;color:var(--color-text-sub);margin-top:0">
+    本プロジェクトはデータベースを使わず、GCS 上の JSON でコンテンツを管理する。以下は確定した設計ではなく、レビューの入力。
+  </p>
+  <table class="hint">
+    <tr><th>構造候補</th><th>主要フィールド</th><th>導出元（画面ID）</th></tr>
+    <tr>
+      <td><code>aiusage</code>（ルート）</td>
+      <td><code>principle</code>（原則の 1 文・必須）／<code>sections[]</code></td>
+      <td>visitor-aiusage</td>
+    </tr>
+    <tr>
+      <td><code>aiusage.sections[]</code></td>
+      <td><code>title</code>（必須）／<code>summary</code>（必須）／<code>items[]</code></td>
+      <td>visitor-aiusage</td>
+    </tr>
+    <tr>
+      <td><code>aiusage.sections[].items[]</code></td>
+      <td><code>title</code>（必須）／<code>description</code>（必須）／<code>decision</code>（<strong>任意</strong>）／<code>url</code>（<strong>任意</strong>）</td>
+      <td>visitor-aiusage</td>
+    </tr>
+  </table>
+  <p style="font-size:13px;color:var(--color-text-sub)">
+    セクションは <strong>土台をつくる / 開発工程で使い分ける / 情報収集を自動化する / AI に任せないこと</strong> の 4 つ。
+    <strong>文言はデータ側（<code>aiusage.json</code>）に持ち</strong>、この仕様書は構造だけを定める。
+    非公開リポジトリの題材には <code>url</code> を付けない（訪問者に 404 を見せないため）。詳細は
+    <a href="screens.md" style="color:var(--color-primary)">screens.md</a> を参照。
+  </p>
+
+  <div class="screen-label">index · docs/mockups/</div>
+</body>
+</html>

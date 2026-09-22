@@ -19,6 +19,7 @@ const Navbar = () => {
     const menuItems = [
         { name: 'ポートフォリオ', path: commonData?.portfolioUrl },
         { name: '個人開発履歴', path: '/personaldev' },
+        { name: 'AI 活用方法', path: '/aiusage' },
         { name: 'ブログ', path: commonData?.blogUrl },
         { name: 'お問い合わせ', path: '/contact/form' },
     ].filter((item): item is { name: string; path: string } => Boolean(item.path));
