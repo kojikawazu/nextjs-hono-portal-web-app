@@ -5,3 +5,4 @@ process.env.GCS_API_ENDPOINT = process.env.GCS_API_ENDPOINT || 'http://localhost
 process.env.GCS_PRIVATE_BUCKET_NAME = 'it-bucket';
 process.env.GCS_COMMON_DATA_PATH = 'common.json';
 process.env.GCS_PERSONAL_DATA_PATH = 'personaldev.json';
+process.env.GCS_AIUSAGE_DATA_PATH = 'aiusage.json';

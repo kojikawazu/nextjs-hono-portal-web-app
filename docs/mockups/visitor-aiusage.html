@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI 活用方法 — nextjs-hono-portal-web-app</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* この画面固有のスタイルのみ */
+    .back-home { color: var(--color-primary-light); text-decoration: none; font-size: 14px; }
+    .page-title { font-size: 34px; font-weight: 700; margin: var(--spacing-lg) 0 var(--spacing-sm); }
+    .lead { color: var(--color-dark-text-sub); max-width: 760px; margin: 0 0 var(--spacing-xl); }
+
+    /* 原則ブロック（ページの背骨） */
+    .principle {
+      border-left: 3px solid var(--color-primary-light);
+      background: rgba(129,140,248,.08);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+    .principle-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; color: var(--color-primary-light); text-transform: uppercase; }
+    .principle-text { font-size: 17px; font-weight: 700; margin: var(--spacing-sm) 0 0; }
+    .principle-split { display: flex; flex-wrap: wrap; gap: var(--spacing-md); margin-top: var(--spacing-md); font-size: 13px; color: var(--color-dark-text-sub); }
+    .principle-split div { flex: 1; min-width: 220px; }
+    .principle-split strong { color: var(--color-dark-text); }
+
+    .section { margin-bottom: var(--spacing-xl); }
+    .section-head { display: flex; align-items: baseline; gap: var(--spacing-md); flex-wrap: wrap; }
+    .section-num { font-size: 12px; font-weight: 700; color: var(--color-primary-light); letter-spacing: .1em; }
+    .section-title { font-size: 21px; font-weight: 700; margin: 0; }
+    .section-summary { color: var(--color-dark-text-sub); margin: var(--spacing-sm) 0 var(--spacing-md); max-width: 760px; }
+
+    .items { display: flex; flex-direction: column; gap: var(--spacing-sm); }
+    .item { padding: var(--spacing-md); }
+    .item-title { font-weight: 700; margin: 0 0 4px; }
+    .item-desc { color: var(--color-dark-text-sub); font-size: 14px; margin: 0; }
+    .item-decision {
+      display: inline-block; margin-top: var(--spacing-sm);
+      font-size: 13px; color: var(--color-dark-text);
+      background: rgba(34,197,94,.12); border-radius: var(--radius-sm);
+      padding: 4px 10px;
+    }
+    .item-decision b { color: var(--color-green); }
+    .item-link { display: inline-block; margin-top: var(--spacing-sm); font-size: 13px; color: var(--color-dark-text-sub); text-decoration: none; border-bottom: 1px dotted var(--color-dark-border); }
+    .item-link:hover { color: var(--color-primary-light); }
+
+    .empty-state { text-align: center; color: var(--color-dark-text); padding: 32px 0; }
+    .state-note { margin-top: 48px; padding: var(--spacing-md); border: 1px dashed var(--color-dark-border); border-radius: var(--radius-md); color: var(--color-dark-text-sub); font-size: 13px; }
+    .state-note h3 { margin: 0 0 var(--spacing-sm); font-size: 13px; color: var(--color-dark-text); }
+    footer.site { border-top: 1px solid rgba(79,70,229,.15); padding: var(--spacing-lg); color: var(--color-dark-text-sub); font-size: 13px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="desktop-frame">
+    <div class="desktop-topbar">
+      <a class="nav-item" style="color:var(--color-primary-light);font-weight:700;font-size:18px" href="index.html">My Tech Hub</a>
+      <nav style="display:flex;gap:24px">
+        <a class="nav-item" href="#" onclick="alert('外部サイト: ポートフォリオ（モック）');return false;">ポートフォリオ</a>
+        <a class="nav-item" href="#" onclick="alert('既存ページ: /personaldev（モック）');return false;">個人開発履歴</a>
+        <a class="nav-item active" href="visitor-aiusage.html">AI 活用方法</a>
+        <a class="nav-item" href="#" onclick="alert('外部サイト: ブログ（モック）');return false;">ブログ</a>
+        <a class="nav-item" href="#" onclick="alert('既存ページ: /contact/form（モック）');return false;">お問い合わせ</a>
+      </nav>
+    </div>
+
+    <div class="desktop-content">
+      <a class="back-home" href="index.html">← Homeへ戻る</a>
+
+      <h1 class="page-title">AI 活用方法</h1>
+      <p class="lead">
+        開発の大半を AI と進めています。ツールを使うだけでなく、<strong>AI が従うルールと手順を先に整備する</strong>ことを重視しています。
+      </p>
+
+      <!-- 原則ブロック（principle） -->
+      <div class="principle">
+        <div class="principle-label">原則</div>
+        <p class="principle-text">意思決定権は人間にある。</p>
+        <div class="principle-split">
+          <div><strong>AI がやること</strong><br>選択肢とトレードオフを出す。調べる。手を動かす。</div>
+          <div><strong>人間が決めること</strong><br>要求の採否・設計判断・マージ・本番反映。</div>
+        </div>
+      </div>
+
+      <!-- sections[] を配列順に表示 -->
+      <section class="section">
+        <div class="section-head"><span class="section-num">01</span><h2 class="section-title">土台をつくる</h2></div>
+        <p class="section-summary">
+          AI に仕事を任せる前に、従うべき規約と定型作業の手順を明文化しています。指示のたびに前提を説明し直さずに済み、出力のばらつきが減ります。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">ルールの明文化</p>
+            <p class="item-desc">設計・テスト・Git 運用・ドキュメント更新などの規約をルールファイルに分割して置き、AI が常に参照する状態にしています。</p>
+            <span class="item-decision"><b>人間 →</b> どのルールを採用し、どこまで縛るか</span><br>
+            <a class="item-link" href="https://github.com/kojikawazu/nextjs-hono-portal-web-app/tree/main/.claude/rules" target="_blank" rel="noopener noreferrer">このサイトのルール（24 ファイル）を見る ↗</a>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">ルールの配布</p>
+            <p class="item-desc">同じ規約を複数のリポジトリへ展開できるようにしています。プロジェクトごとに書き直さず、改善を横展開できます。</p>
+            <span class="item-decision"><b>人間 →</b> 配布対象と、プロジェクト固有の例外</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">作業のスキル化</p>
+            <p class="item-desc">PR 作成・セルフレビュー・教訓の記録など、繰り返す手順をスキルとして定義しています。毎回の指示が短くなり、手順の抜けも防げます。</p>
+            <span class="item-decision"><b>人間 →</b> スキル化する作業の選定</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">グローバルスキル</p>
+            <p class="item-desc">リポジトリを問わず使える共通スキルを用意しています。技術スタックが違っても同じ進め方ができます。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">プロジェクトの初期化</p>
+            <p class="item-desc">新規プロジェクトを標準構成（ドキュメント・ルール一式）で立ち上げるスキルを持っています。最初から同じ土台で始められます。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><span class="section-num">02</span><h2 class="section-title">開発工程で使い分ける</h2></div>
+        <p class="section-summary">
+          要件定義から運用まで AI と進めますが、各工程で「AI にやらせること」と「人間が決めること」を分けています。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">要件定義</p>
+            <p class="item-desc">やりたいことを渡し、抜けている観点と決めるべき論点を洗い出させます。</p>
+            <span class="item-decision"><b>人間 →</b> どの要求を採用するか</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">設計</p>
+            <p class="item-desc">構成案を複数出させ、採らなかった案とその理由まで残させます。画面モックまで作って、実装前に認識を合わせます。</p>
+            <span class="item-decision"><b>人間 →</b> 採用する構成とトレードオフの取り方</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">実装</p>
+            <p class="item-desc">ルールを読ませたうえで差分を書かせ、テストも同時に書かせます。詰まったときは別の AI に同じ問題を投げ、第二案を取ります。</p>
+            <span class="item-decision"><b>人間 →</b> 設計からの逸脱を認めるかどうか</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">テスト</p>
+            <p class="item-desc">正常系・準正常系・異常系の 3 分類で観点を洗い出させます。テストが落ちたら実装を直す（テストを実装に合わせない）順序を守らせます。</p>
+            <span class="item-decision"><b>人間 →</b> どこまでを異常系として守るか</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">レビュー</p>
+            <p class="item-desc">PR に AI レビューを入れます。指摘は鵜呑みにせず、根拠を確認してから取り込みます。</p>
+            <span class="item-decision"><b>人間 →</b> 指摘の採否とマージ</span>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">ドキュメント・運用</p>
+            <p class="item-desc">コードを変えたら同じ PR で仕様書を追随させます。運用で判明した落とし穴は教訓として蓄積します。</p>
+            <span class="item-decision"><b>人間 →</b> 教訓をルールへ昇格させるかどうか</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><span class="section-num">03</span><h2 class="section-title">情報収集を自動化する</h2></div>
+        <p class="section-summary">
+          手を動かさなくても情報が溜まる状態を作っています。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">定期実行での情報収集</p>
+            <p class="item-desc">Claude の定期実行（cron）で毎朝テック情報を調べさせ、結果を蓄積しています。調べる時間を確保しなくても情報が入ってきます。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">収集・ディスカッション用のリポジトリ</p>
+            <p class="item-desc">調べた内容や AI とのやり取りをリポジトリに集約し、後から検索・参照できるようにしています。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">教訓の横断集約</p>
+            <p class="item-desc">各リポジトリの教訓ログを機械的に集め、繰り返し現れる失敗を見つけられるようにしています。繰り返すものはルールへ昇格させます。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><span class="section-num">04</span><h2 class="section-title">AI に任せないこと</h2></div>
+        <p class="section-summary">
+          速度より「取り返しのつかなさ」を優先します。次の判断は AI に委ねません。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">PR のマージ承認</p>
+            <p class="item-desc">自動マージはしません。差分を読んで人間が承認します。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">本番データの書き換え</p>
+            <p class="item-desc">実行前に必ず dry-run で変更内容と削除対象を確認します。削除を伴う操作は明示的に許可したときだけ実行します。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">シークレットの取り扱い</p>
+            <p class="item-desc">鍵・認証情報はコミットさせません。除外設定と検出の仕組みで二重に防ぎます。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">最終的な設計判断</p>
+            <p class="item-desc">トレードオフを並べさせたうえで、どれを取るかは人間が決めます。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 正本「備考」に定義した状態。実装時の見た目を確認するためモック上に併記する -->
+      <div class="state-note">
+        <h3>この画面が取りうる他の状態（screens.md の「備考」より）</h3>
+        <ul style="margin:0 0 8px;padding-left:20px">
+          <li><strong>ローディング中</strong>: 中央に PulseLoader を表示（既存ページと同じ）</li>
+          <li><strong>空状態 / 取得失敗</strong>: 下記の表示にフォールバックする</li>
+        </ul>
+        <div class="empty-state">No AI usage data available.</div>
+        <ul style="margin:0;padding-left:20px">
+          <li><strong><code>decision</code> が無い項目</strong>: 「人間 →」の行を出さない（03・04 の各項目がその状態）</li>
+          <li><strong><code>url</code> が無い項目</strong>: リンクを出さない。<strong>非公開リポジトリの題材は文章だけで説明する</strong>ため、リンクを持つのは 01 の 1 項目のみ</li>
+        </ul>
+      </div>
+    </div>
+
+    <footer class="site">© 2026 My Tech Hub. All rights reserved.</footer>
+  </div>
+
+  <div class="screen-label">visitor-aiusage · /aiusage</div>
+</body>
+</html>

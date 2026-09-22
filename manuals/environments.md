@@ -11,6 +11,7 @@ BACKEND_API_URL=
 GCS_PRIVATE_BUCKET_NAME=
 GCS_COMMON_DATA_PATH=
 GCS_PERSONAL_DATA_PATH=
+GCS_AIUSAGE_DATA_PATH=
 MY_MAIL_ADDRESS=
 RESEND_API_KEY=
 RESEND_SEND_DOMAIN=
@@ -38,6 +39,7 @@ domain_zone_dns_name = ""
 gcs_private_bucket_name = ""
 gcs_common_data_path = ""
 gcs_personal_data_path = ""
+gcs_aiusage_data_path = ""
 node_env = ""
 allowed_origin = ""
 backend_api_url = ""
@@ -64,6 +66,7 @@ BACKEND_API_URL
 GCS_PRIVATE_BUCKET_NAME
 GCS_COMMON_DATA_PATH
 GCS_PERSONAL_DATA_PATH
+GCS_AIUSAGE_DATA_PATH
 MY_MAIL_ADDRESS
 RESEND_API_KEY
 RESEND_SEND_DOMAIN

@@ -30,6 +30,7 @@
 | 画面 / 機能 | 説明 |
 |---|---|
 | ホーム (`/`) | ヒーローセクション + ナビゲーション。外部ポートフォリオ・問い合わせへの導線 |
+| AI 活用方法 (`/aiusage`) | 原則と 4 セクション（土台 / 工程 / 情報収集 / 任せないこと）を表示 |
 | 個人開発履歴 (`/personaldev`) | GCS から取得した個人開発プロジェクトをカード一覧で表示（`githubUrl` があるカードには GitHub リンクを表示） |
 | お問い合わせ (`/contact/form → /confirm → /success`) | 入力 → 確認 → 送信完了の 3 ステップフロー |
 | メール送信 API (`POST /api/mail/send`) | Resend 経由でメール送信。CSRF トークンで保護 |
@@ -159,6 +160,7 @@ pnpm dev
 | `GCS_PRIVATE_BUCKET_NAME` | ○ | GCS バケット名 |
 | `GCS_COMMON_DATA_PATH` | ○ | 共通データ JSON パス |
 | `GCS_PERSONAL_DATA_PATH` | ○ | 個人開発データ JSON パス |
+| `GCS_AIUSAGE_DATA_PATH` | ○ | AI 活用方法データ JSON パス |
 | `MY_MAIL_ADDRESS` | ○ | 問い合わせメールの送信先 |
 | `RESEND_API_KEY` | ○ | Resend API キー |
 | `RESEND_SEND_DOMAIN` | ○ | Resend 送信ドメイン |
