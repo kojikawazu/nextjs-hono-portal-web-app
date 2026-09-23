@@ -1,5 +1,22 @@
-.next/
-manuals/
+# ビルドコンテキストは front/（deploy-to-googlecloud.yml の working-directory）。
+# builder は COPY . . のため、ここで除外しないものはすべてビルドに読まれる。
+
+# 依存・ビルド成果物（コンテナ内で作り直す。ホストのものを持ち込まない）
 node_modules/
-private/
-terraform/
+.next/
+*.tsbuildinfo
+
+# env: .env 以外を除外する。.env は CI が Secrets から生成し、Dockerfile がイメージへコピーする正本。
+# .env.local 等がローカルビルドで混ざると NEXT_PUBLIC_* がバンドルに埋め込まれる。
+.env*
+!.env
+
+# 鍵
+*.pem
+*.key
+
+# テスト・レポート（実行時に不要）
+coverage/
+jest-report/
+playwright-report/
+test-results/

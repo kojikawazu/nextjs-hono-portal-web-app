@@ -1,10 +1,6 @@
 # ---------------------------------------------
 # Variables
 # ---------------------------------------------
-variable "project" {
-  type = string
-}
-
 variable "environment" {
   type = string
 }
@@ -85,26 +81,18 @@ variable "backend_api_url" {
   type = string
 }
 
+# plan / apply の出力に値を出さない（Cloud Run の env として state には平文で入る点は変わらない）
 variable "my_mail_address" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
+# plan / apply の出力に値を出さない（同上）
 variable "resend_api_key" {
-  type = string
+  type      = string
+  sensitive = true
 }
 
 variable "resend_send_domain" {
   type = string
 }
-
-# variable "api_validate_secret_token" {
-#   type = string
-# }
-
-# variable "api_secret_token" {
-#   type = string
-# }
-
-# variable "next_public_api_token" {
-#   type = string
-# }

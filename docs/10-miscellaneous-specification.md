@@ -59,7 +59,7 @@
 
 ### Terraform
 
-Terraform変数の詳細は `manuals/environments.md` を参照。
+Terraform変数の詳細は `manuals/environments.md` を参照。`terraform.tfvars` の置き場所と、Cloud Run 環境変数の正本（Terraform）/ イメージ内 `.env`（フォールバック）の優先関係は [09-architecture-specification/iac.md](./09-architecture-specification/iac.md) を参照。
 
 ### GitHub Actions Secrets
 

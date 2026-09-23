@@ -29,7 +29,7 @@
 |---|---|
 | 検査方法 | `git ls-files` でインデックスを走査（履歴・ワーキングツリーは見ない。数秒で完了） |
 | 検出対象（鍵） | `*.key` / `*.pem` / `*.p12` / `*.pfx` / `*.jks` / `*.keystore` / `id_rsa` / `id_ed25519` / `id_dsa` / `credentials.json` / サービスアカウント鍵（`service-account.json` / `service_account.json` / `serviceAccountKey.json` など区切り違いを含む） |
-| 検出対象（設定） | `.env` 系（`.env`, `.env.local`, `.env.production` 等）/ `*.tfvars` |
+| 検出対象（設定） | `.env` 系（`.env`, `.env.local`, `.env.production` 等）/ Terraform の `*.tfvars` / `*.tfvars.json` / `*.tfstate`（`errored.tfstate`・`*.tfstate.backup` 含む）/ `*.tfplan`（いずれも秘密を平文で含む） |
 | 除外 | `*.example` / `*.sample` / `*.template` / `*.dist` / `*.env.d.ts`（テンプレートと型定義は誤検知になるため） |
 | 発火 | 変更種別を問わず常に実行（パスフィルタをかけない） |
 

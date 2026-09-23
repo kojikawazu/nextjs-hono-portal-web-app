@@ -22,11 +22,21 @@ serviceAccountKey.json
 !.env.example
 
 # terraform
-terraform/.terraform
-.terraform.lock.hcl
-terraform.tfstate
-terraform.tfstate.backup
-terraform.tfvars
+# state と tfvars は共有バケット gs://my-infra-tfstate/nextjs-hono-portal-web-app/ に置く（docs/09-architecture-specification/iac.md）
+# .terraform.lock.hcl は除外しない（provider のバージョンとハッシュを固定するためコミットする）
+**/.terraform/
+# state: backend への保存に失敗すると errored.tfstate がローカルに書かれる（秘密を平文で含む）
+*.tfstate
+*.tfstate.*
+# 変数: 環境別・auto 読み込み・JSON 形式も秘密を含みうる
+*.tfvars
+*.tfvars.json
+# 保存した plan（-out）は sensitive 値も平文で含む
+*.tfplan
+tfplan
+# クラッシュログは変数の値を含みうる
+crash.log
+crash.*.log
 
 # other
 private/

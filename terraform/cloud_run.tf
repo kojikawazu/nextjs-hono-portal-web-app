@@ -5,6 +5,12 @@
 resource "google_service_account" "cloud_run_sa" {
   account_id   = "cloud-run-sa"
   display_name = "Cloud Run Service Account"
+
+  # 同じ GCP プロジェクトの別サービス（echo-blog-app / nextjs-echo-chat-app-service）もこの SA で動いている。
+  # このリポジトリの destroy / replace で消すと他サービスが停止するため、削除を禁止する。
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # Google Cloud Run にデプロイするサービス
@@ -85,10 +91,3 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
     google_artifact_registry_repository.nextjs_hono_portal_app_repo
   ]
 }
-
-# Cloud Run API を有効化
-# resource "google_project_service" "run" {
-#   service = "run.googleapis.com"
-#   project = var.gcp_project_id
-# }
-

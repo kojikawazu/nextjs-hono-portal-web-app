@@ -11,6 +11,9 @@
 | GCS | プライベートバケット（サービスアカウント認証） |
 | Docker | alpineベースの最小イメージ |
 | GitHub Actions | Secretsによる機密情報管理 |
+| Terraform state / tfvars | 共有バケット `gs://my-infra-tfstate/nextjs-hono-portal-web-app/` に置き Git に含めない。**state には Cloud Run の環境変数（`RESEND_API_KEY` 等）が平文で入る**ため、tfvars を同じバケットに置いても読める範囲は広がらない。バケットは公開アクセス防止（`enforced`）・均一バケットレベルアクセス・バージョニングを有効化済み（[09-architecture-specification/iac.md](../09-architecture-specification/iac.md)） |
+| state の信頼境界 | GCS の権限はバケット単位のため、**バケットへの read 権限を持つ主体は全プロジェクトの state / tfvars を読める**（prefix は権限境界ではない）。バケットは本アプリと同じ GCP プロジェクトにあるため、プロジェクト権限を継承する主体（デフォルト Compute SA 等）も対象になりうる。主体の整理は `my-infra-workspace` 側で扱う |
+| plan 出力のマスク | `resend_api_key` / `my_mail_address` は `sensitive = true` とし、`plan` / `apply` の出力に値を出さない |
 
 ## 7. 環境変数（セキュリティ関連）
 

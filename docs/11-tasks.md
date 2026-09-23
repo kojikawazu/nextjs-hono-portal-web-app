@@ -64,6 +64,7 @@
 | T-52 | 個人開発カードに GitHub リンクを追加（issue #125・親 #28）。`githubUrl` を optional + https 限定で検証し、不正値は例外にせず `undefined` へ劣化させる（1 件の壊れた値で一覧全体を落とさない）。データ側は data-app #36 | 完了 |
 | T-53 | `href` に入る外部由来 URL のスキーム検証を横断適用（issue #129）。`schemas/url.ts` に制約を 1 箇所定義し、`personaldev` 2 件・`common` 5 件へ合成。不正・未設定はリンクごと非表示に統一し、`href=""` を作らない | 完了 |
 | T-54 | AI 活用方法ページ `/aiusage` を新設（issue #132）。画面仕様の正本を `docs/mockups/` に作成（mock-screen）し、Hono ルート・スキーマ・repository・hook・ページ・Navbar・環境変数 `GCS_AIUSAGE_DATA_PATH` を追加。データは data-app #40 | 完了 |
+| T-55 | Terraform の state 復旧（issue #137・発端 #134）。`backend "gcs"`（`gs://my-infra-tfstate/nextjs-hono-portal-web-app`）を設定し、既存 9 リソースを `import {}` ブロックで取り込む。`terraform.tfvars` も同じ prefix に置き `make tf-vars-pull` / `tf-vars-push` で同期。Cloud Run から `GCS_SAMPLE_DATA_PATH` を削除し `GCS_AIUSAGE_DATA_PATH` を反映。共有 SA に `prevent_destroy`、秘密変数に `sensitive`、PR CI に `terraform fmt` / `validate` を追加（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -74,6 +75,7 @@
 | T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
 | T-B12 | Cloudflare 側のレートリミット導入（エッジで止める） | 中 | アプリ側のレートリミット（T-48）は**インスタンス単位**で、実効上限が「閾値 × インスタンス数」になり、`cf-connecting-ip` / `x-forwarded-for` も詐称しうる（Cloud Run が `--allow-unauthenticated` で直接到達可能なため）。分散・詐称を伴う攻撃にはエッジ側が必要（[application.md §6](./06-security-specification/application.md)） |
 | T-B11 | テスト用と本番用でシークレットを分離し、本番シークレットを `production` Environment へ移す | 中 | `github-actions.md`「シークレットは Environment 単位で管理し、PR からは参照できないようにする」に未対応。`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、そのまま移すと PR の CI が全滅する。テスト専用の認証情報を用意するのが前提（[deploy-design.md](./09-architecture-specification/deploy-design.md)） |
+| T-B13 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移す | 中 | 現状は tfvars と state に平文で入る（`plan` 出力は `sensitive = true` でマスク済み）。移行すれば tfvars から秘密が消え、Cloud Run の環境変数も Secret 参照になる（issue #137 で積み残し） |
 
 ## 3. マイルストーン
 

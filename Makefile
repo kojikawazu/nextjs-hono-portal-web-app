@@ -103,6 +103,18 @@ ci: format-check lint test test-it-docker ## CI 相当をローカルで実行�
 # Terraform（IaC）
 # ---------------------------------------------------------------------------
 
+# tfvars の同期は my-infra-workspace の共通スクリプトを直接呼ぶ（コピーすると実装がずれるため）。
+# clone 先が違う場合は `make tf-vars-pull MY_INFRA_DIR=<path>` で上書きする。
+MY_INFRA_DIR ?= $(HOME)/developer/claude/my-infra-workspace
+
+.PHONY: tf-vars-pull
+tf-vars-pull: ## terraform.tfvars を共有 state バケットから取得（上書きは FORCE=--force）
+	$(MY_INFRA_DIR)/scripts/tfvars.sh pull --dir $(TF) $(FORCE)
+
+.PHONY: tf-vars-push
+tf-vars-push: ## terraform.tfvars を共有 state バケットへ保存（上書きは FORCE=--force）
+	$(MY_INFRA_DIR)/scripts/tfvars.sh push --dir $(TF) $(FORCE)
+
 .PHONY: tf-init
 tf-init: ## terraform init
 	terraform -chdir=$(TF) init
