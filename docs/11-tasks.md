@@ -65,6 +65,7 @@
 | T-53 | `href` に入る外部由来 URL のスキーム検証を横断適用（issue #129）。`schemas/url.ts` に制約を 1 箇所定義し、`personaldev` 2 件・`common` 5 件へ合成。不正・未設定はリンクごと非表示に統一し、`href=""` を作らない | 完了 |
 | T-54 | AI 活用方法ページ `/aiusage` を新設（issue #132）。画面仕様の正本を `docs/mockups/` に作成（mock-screen）し、Hono ルート・スキーマ・repository・hook・ページ・Navbar・環境変数 `GCS_AIUSAGE_DATA_PATH` を追加。データは data-app #40 | 完了 |
 | T-55 | Terraform の state 復旧（issue #137・発端 #134）。`backend "gcs"`（`gs://my-infra-tfstate/nextjs-hono-portal-web-app`）を設定し、既存 9 リソースを `import {}` ブロックで取り込む。`terraform.tfvars` も同じ prefix に置き `make tf-vars-pull` / `tf-vars-push` で同期。Cloud Run から `GCS_SAMPLE_DATA_PATH` を削除し `GCS_AIUSAGE_DATA_PATH` を反映。共有 SA に `prevent_destroy`、秘密変数に `sensitive`、PR CI に `terraform fmt` / `validate` を追加（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
+| T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
 
 ## 2. 未対応・検討中タスク
 
