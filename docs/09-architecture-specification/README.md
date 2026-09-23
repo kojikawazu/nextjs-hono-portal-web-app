@@ -9,3 +9,4 @@
 | [tech-stack.md](./tech-stack.md) | §1 システム構成図・§2 技術スタック（フロント / バック / インフラ / 開発ツール） |
 | [structure.md](./structure.md) | §3 ディレクトリ構成・§4 アーキテクチャパターン |
 | [deploy-design.md](./deploy-design.md) | §5 デプロイメント・§6 デザインシステム |
+| [iac.md](./iac.md) | §7 インフラ構成管理（Terraform の管理対象・state / tfvars の置き場所・変更経路の分担） |

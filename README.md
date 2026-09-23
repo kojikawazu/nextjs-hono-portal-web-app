@@ -147,7 +147,7 @@ pnpm dev
 | `pnpm test:it:docker` | `make test-it-docker` | 統合テスト（fake-gcs-server 自動起動〜停止） |
 | `pnpm test:e2e` | `make e2e` | Playwright E2E（`e2e-ui` / `e2e-headed` も可） |
 | — | `make ci` | CI 相当を一括実行（format:check → lint → UT → IT） |
-| — | `make tf-init` / `tf-plan` / `tf-apply` | Terraform（`terraform/`） |
+| — | `make tf-vars-pull` / `tf-init` / `tf-plan` / `tf-apply` | Terraform（`terraform/`。手順は [manuals/terraform.md](./manuals/terraform.md)） |
 
 ## 環境変数
 

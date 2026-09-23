@@ -26,6 +26,8 @@
 ```
 [GitHub Push/PR]
     ↓
+[GitHub Actions - pull-request-test.yml]  ※ terraform/ 変更時は terraform fmt -check / validate も実行（backend 非接続）
+    ↓
 [GitHub Actions - test.yml]
     ├── pnpm/action-setup でpnpmセットアップ
     ├── pnpm install --frozen-lockfile

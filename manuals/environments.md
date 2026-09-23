@@ -19,10 +19,9 @@ RESEND_SEND_DOMAIN=
 
 ## Terraformの設定
 
-terraform.tfvarsに以下の環境変数を設定します。
+`terraform/terraform.tfvars` に以下の変数を設定します。実体は共有 state バケットに置き、`make tf-vars-pull` で取得します（[terraform.md](./terraform.md)）。
 
 ```bash
-project = ""
 environment = ""
 gcp_project_id = ""
 gcp_region = ""

@@ -24,6 +24,7 @@ jobs:
             pull-requests: read
         outputs:
             app: ${{ steps.filter.outputs.app }}
+            terraform: ${{ steps.filter.outputs.terraform }}
         steps:
             - uses: actions/checkout@v4
 
@@ -43,12 +44,36 @@ jobs:
                         - '!.claude/**'
                         - '!terraform/**'
                         - '!architecture/**'
+                      # 肯定パターンは every と AND になるため、1 本だけの filter に分ける
+                      # （パターンが 1 本なら every でも some でも結果は同じ）。
+                      terraform:
+                        - 'terraform/**'
 
     test:
         needs: changes
         if: needs.changes.outputs.app == 'true'
         uses: ./.github/workflows/test.yml
         secrets: inherit
+
+    # Terraform の静的検査。backend（共有 GCS バケット）には接続しないため認証不要。
+    # state を触らない範囲で、構文・参照切れ・整形崩れを PR 時点で止める。
+    terraform:
+        needs: changes
+        if: needs.changes.outputs.terraform == 'true'
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: terraform
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: hashicorp/setup-terraform@v3
+
+            - name: Terraform fmt / validate
+              run: |
+                  terraform fmt -check -recursive
+                  terraform init -backend=false -input=false
+                  terraform validate
 
     # required status check の受け皿。必ず起動し、単一の名前で結果を報告する。
     #
@@ -58,7 +83,7 @@ jobs:
     # どちらを必須チェックに登録しても、もう一方のケースでそのチェックが
     # 存在せず pending のまま詰む。名前が変わらないジョブをここで用意する。
     test-result:
-        needs: [changes, test]
+        needs: [changes, test, terraform]
         if: always()
         runs-on: ubuntu-latest
         permissions: {}
@@ -67,8 +92,9 @@ jobs:
               env:
                   CHANGES_RESULT: ${{ needs.changes.result }}
                   TEST_RESULT: ${{ needs.test.result }}
+                  TERRAFORM_RESULT: ${{ needs.terraform.result }}
               run: |
-                  echo "changes=$CHANGES_RESULT test=$TEST_RESULT"
+                  echo "changes=$CHANGES_RESULT test=$TEST_RESULT terraform=$TERRAFORM_RESULT"
 
                   # changes が落ちると test は needs 未達でスキップされる。
                   # それを成功扱いにするとテストが 1 本も走らないまま通ってしまう。
@@ -78,10 +104,12 @@ jobs:
                   fi
 
                   # skipped は「アプリに無関係な変更のみ」を意味するので成功扱いにする。
-                  case "$TEST_RESULT" in
-                      success | skipped) ;;
-                      *)
-                          echo "::error::test ジョブが $TEST_RESULT で終了しました"
-                          exit 1
-                          ;;
-                  esac
+                  for pair in "test=$TEST_RESULT" "terraform=$TERRAFORM_RESULT"; do
+                      case "${pair#*=}" in
+                          success | skipped) ;;
+                          *)
+                              echo "::error::${pair%%=*} ジョブが ${pair#*=} で終了しました"
+                              exit 1
+                              ;;
+                      esac
+                  done

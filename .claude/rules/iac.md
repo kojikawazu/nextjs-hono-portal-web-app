@@ -18,13 +18,14 @@ globs: terraform/**
 | `*.tf`（定義） | コミットする | リポジトリ |
 | `backend` 設定 | コミットする | リポジトリ |
 | `terraform.tfstate` | **除外する** | **リモート backend** |
-| `terraform.tfvars` | **除外する**（秘密情報を含む） | 各自のローカル + **変数一覧をドキュメント化** |
+| `terraform.tfvars` | **除外する**（秘密情報を含む） | **リモート backend と同じ prefix**（本プロジェクトは下記）+ **変数一覧をドキュメント化** |
 
 ### 本プロジェクトの state 置き場
 
 - **共有バケット `gs://my-infra-tfstate`**（GCP プロジェクト `portal-projects-449214`）に、**prefix でリポジトリを分けて**置く。
 - **prefix はリポジトリ名と 1:1**（本リポジトリなら `nextjs-hono-portal-web-app`）。略称や別名を作らない。
 - バケットの作成・設定と命名規約の**正本は `my-infra-workspace` リポジトリ**（private）。本ファイルに手順を書き写さない。
+- **`terraform.tfvars` も同じ prefix 直下に置く**（`<prefix>/terraform.tfvars`）。ローカルだけに置くと、state と同じく環境の入れ替えで失われる。同期は `make tf-vars-pull` / `tf-vars-push`（my-infra-workspace の共通スクリプトを呼ぶ。コピーしない）に一本化する（設計は `docs/09-architecture-specification/iac.md`、手順は `manuals/terraform.md`）。state に秘密が平文で入る以上、tfvars を同じバケットに置いても読める範囲は広がらない。
 - **prefix は権限境界ではない。** GCS の権限はバケット単位のため、バケットへの read 権限を渡した相手は**全プロジェクトの state を読める**。特定プロジェクトだけを他人と共有するなら、そのプロジェクトは別バケットに分ける。
 
 **除外するファイルは、必ず「代わりの置き場所」とセットで決める。** `.gitignore` の判断を「秘密かどうか」だけで行うと、秘密ではないが除外すべきもの（state）が行き場を失う。`terraform.tfvars` を除外する場合は、**必要な変数名の一覧をドキュメントに残す**（値は書かない）。
@@ -48,6 +49,6 @@ globs: terraform/**
 ## レビュー観点
 
 - backend 設定がコミットされているか。ローカル state のままになっていないか。
-- `.gitignore` で除外したファイルについて、**代わりの置き場所が決まっているか**（state はリモート backend、tfvars は変数一覧のドキュメント）。
+- `.gitignore` で除外したファイルについて、**代わりの置き場所が決まっているか**（state はリモート backend、tfvars は同じ prefix ＋変数一覧のドキュメント）。
 - IaC が実際の変更経路に乗っているか。乗っていないなら、その旨と理由が記録されているか。
 - 同じ設定が IaC と別経路の両方で管理されていないか。あるなら優先順位が明記されているか。
