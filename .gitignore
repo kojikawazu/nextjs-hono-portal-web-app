@@ -14,8 +14,11 @@ node_modules/
 *.p12
 *.pfx
 service-account.json
+service_account.json
 credentials.json
 serviceAccountKey.json
+# GCP コンソールからダウンロードした SA 鍵の既定名 <project-id>-<12桁の16進>.json（issue #140）
+*-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].json
 
 # env files（ルートには置かない想定。安全網として除外）
 .env*
