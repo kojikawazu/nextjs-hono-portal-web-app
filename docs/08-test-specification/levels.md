@@ -19,18 +19,21 @@ GCSの`@google-cloud/storage`をモックし、Hono Routerのレスポンスを�
 
 ### 3.2 メール送信APIテスト (`__tests__/api/mail.test.ts`)
 
-`resend`（メール送信）と `nanoid` をモックし、Hono Router のレスポンス・CSRF 検証・入力バリデーション・HTML エスケープ・失敗時の安全な失敗を検証する。
+`resend`（メール送信）と `nanoid` をモックし、Hono Router のレスポンス・CSRF 検証・入力バリデーション・HTML エスケープ・失敗時の安全な失敗を検証する。`resend` のモックは実物と同じく**キーが空ならコンストラクタで例外を投げる**（常に成功するモックでは issue #145 を検出できないため）。
 
 | 分類 | テストケース | 期待結果 |
 |------|------------|---------|
-| 正常系 | `POST /send` - 正常入力 | 200 + `success: true`（Resend 呼び出し 1 回） |
+| 正常系 | `POST /send` - 正常入力 | 200 + `success: true`（Resend 呼び出し 1 回・実行時の env のキーで生成） |
+| 準正常系 | `RESEND_API_KEY` 未設定でモジュールを import | 例外にならない（`next build` はキー無しで API ルートを評価する。issue #145） |
 | 準正常系 | HTML を含む入力 | エスケープして送信（`<script>` 等が生のまま含まれない） |
 | 準正常系 | CSRFトークンなし / 不一致 | 403 + `Invalid CSRF token` |
-| 準正常系 | 必須フィールド欠落 | 400 + `Missing required fields` |
+| 準正常系 | 必須フィールド欠落 / 不正なメールアドレス / 本文の上限超過 | 400 + 共有スキーマ（`contactSchema`）のメッセージ |
+| 準正常系 | 必須 env（`RESEND_SEND_DOMAIN`）未設定 | 400 + `Mail service is not configured` |
+| 準正常系 | `RESEND_API_KEY` 未設定 | 400 + `Mail service is not configured`（Resend を生成しない） |
 | 異常系 | Resend 例外 | 500 + `Failed to send email` |
 | 異常系 | 不正 JSON ボディ | 500 + `Failed to send email` |
 
-合計: 7テストケース（正常 1 / 準正常 4 / 異常 2）
+合計: 12テストケース（正常 1 / 準正常 9 / 異常 2）
 
 ### 3.3 リポジトリテスト (`__tests__/repositories/*.test.ts`)
 

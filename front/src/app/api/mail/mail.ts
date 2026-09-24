@@ -33,8 +33,6 @@ const csrfRateLimiter = createRateLimiter({
     limit: CSRF_RATE_LIMIT,
     windowMs: RATE_LIMIT_WINDOW_MS,
 });
-// Resendクライアントの初期化
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
  * HTML の特殊文字をエスケープする。
@@ -124,12 +122,17 @@ mailRouter.post('/send', sendRateLimiter, csrfMiddleware, async (c) => {
         const { name, email, subjects, messages } = parsed.data;
 
         // 送信に必要な環境変数が未設定なら暗黙フォールバックせず明示的に 400 を返す（GCS ルートと対称）。
+        const apiKey = process.env.RESEND_API_KEY;
         const sendDomain = process.env.RESEND_SEND_DOMAIN;
         const toAddress = process.env.MY_MAIL_ADDRESS;
-        if (!process.env.RESEND_API_KEY || !sendDomain || !toAddress) {
+        if (!apiKey || !sendDomain || !toAddress) {
             return c.json({ error: 'Mail service is not configured' }, 400);
         }
 
+        // クライアントは env を確認した後に生成する。モジュールのトップレベルで生成すると、
+        // キーの無い環境（next build のページデータ収集。本番のキーは実行時に Secret Manager
+        // から注入される）で Resend のコンストラクタが例外を投げ、ビルドが落ちる（issue #145）。
+        const resend = new Resend(apiKey);
         const response = await resend.emails.send({
             from: `Resend <${sendDomain}@resend.dev>`,
             to: toAddress,
