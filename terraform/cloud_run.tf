@@ -65,13 +65,20 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
           name  = "GCS_AIUSAGE_DATA_PATH"
           value = var.gcs_aiusage_data_path
         }
-        env {
-          name  = "MY_MAIL_ADDRESS"
-          value = var.my_mail_address
-        }
-        env {
-          name  = "RESEND_API_KEY"
-          value = var.resend_api_key
+        # 秘密は Secret Manager から注入する（値は Terraform を通らない。secret_manager.tf）。
+        # latest はインスタンスの起動時に解決される。ローテーション後は、新しい revision を作って
+        # 全インスタンスを入れ替える（既存インスタンスは古い値のまま動き続けるため）。
+        dynamic "env" {
+          for_each = local.app_secrets
+          content {
+            name = env.key
+            value_from {
+              secret_key_ref {
+                name = google_secret_manager_secret.app[env.key].secret_id
+                key  = "latest"
+              }
+            }
+          }
         }
         env {
           name  = "RESEND_SEND_DOMAIN"
@@ -87,7 +94,9 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
     latest_revision = true
   }
 
+  # 読み取り権限が付く前に revision を作ると、secret を解決できず起動に失敗する。
   depends_on = [
-    google_artifact_registry_repository.nextjs_hono_portal_app_repo
+    google_artifact_registry_repository.nextjs_hono_portal_app_repo,
+    google_secret_manager_secret_iam_member.app_accessor,
   ]
 }

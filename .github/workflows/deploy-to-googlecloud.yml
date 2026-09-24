@@ -7,6 +7,9 @@ on:
         paths:
             - '.github/**'
             - 'front/**'
+    # 手動の再デプロイ（secret のローテーション後に revision を作り直す・ロールバック等）。
+    # main 以外からは実行しない（deploy ジョブの if で止める）。
+    workflow_dispatch:
 
 # 既定の広い権限に依存しない。GCP へのデプロイは credentials_json（SA キー）で
 # 認証し GITHUB_TOKEN を使わないため、checkout 用の contents: read で足りる。
@@ -27,6 +30,8 @@ jobs:
 
   deploy:
         needs: test
+        # workflow_dispatch は任意のブランチを選んで実行できるため、main 以外のデプロイを止める。
+        if: github.ref == 'refs/heads/main'
         runs-on: ubuntu-latest
 
         # 本番環境としてデプロイ履歴と URL を GitHub に記録する。
@@ -60,6 +65,8 @@ jobs:
               run: |
                   gcloud auth configure-docker ${{ secrets.GCP_REGION }}-docker.pkg.dev
 
+            # RESEND_API_KEY / MY_MAIL_ADDRESS は書かない。本番では Cloud Run が Secret Manager から注入し、
+            # ここに書くと Artifact Registry のイメージに平文で残るため（issue #142）。
             # 個別リダイレクトではなくグループにまとめて 1 回で書き出す（shellcheck SC2129）
             - name: Create file
               run: |
@@ -71,8 +78,6 @@ jobs:
                     echo GCS_COMMON_DATA_PATH=${{ secrets.GCS_COMMON_DATA_PATH }}
                     echo GCS_PERSONAL_DATA_PATH=${{ secrets.GCS_PERSONAL_DATA_PATH }}
                     echo GCS_AIUSAGE_DATA_PATH=${{ secrets.GCS_AIUSAGE_DATA_PATH }}
-                    echo MY_MAIL_ADDRESS=${{ secrets.MY_MAIL_ADDRESS }}
-                    echo RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
                     echo RESEND_SEND_DOMAIN=${{ secrets.RESEND_SEND_DOMAIN }}
                     echo API_VALIDATE_SECRET_TOKEN=${{ secrets.API_VALIDATE_SECRET_TOKEN }}
                     echo API_SECRET_TOKEN=${{ secrets.API_SECRET_TOKEN }}

@@ -81,18 +81,6 @@ variable "backend_api_url" {
   type = string
 }
 
-# plan / apply の出力に値を出さない（Cloud Run の env として state には平文で入る点は変わらない）
-variable "my_mail_address" {
-  type      = string
-  sensitive = true
-}
-
-# plan / apply の出力に値を出さない（同上）
-variable "resend_api_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "resend_send_domain" {
   type = string
 }
