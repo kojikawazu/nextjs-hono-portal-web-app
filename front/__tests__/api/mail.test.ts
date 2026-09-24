@@ -4,13 +4,40 @@ jest.mock('nanoid', () => ({ nanoid: () => 'test-token' }));
 
 // Resend（外部 I/O）をモックし、送信内容を検証できるようにする
 const mockSend = jest.fn().mockResolvedValue({ id: 'mock-email-id' });
+/** Resend の生成時に渡されたキーを記録する（生成のタイミングと引数を検証するため）。 */
+const mockResendCtor = jest.fn();
 jest.mock('resend', () => ({
-    Resend: jest.fn().mockImplementation(() => ({
-        emails: { send: mockSend },
-    })),
+    // 実物（resend 4.x）と同じく、キーが空ならコンストラクタで例外を投げる。
+    // 常に成功するモックだと、キーの無い環境で import が落ちる不具合（issue #145）を検出できない。
+    Resend: class {
+        emails = { send: mockSend };
+        constructor(key?: string) {
+            mockResendCtor(key);
+            if (!key) throw new Error('Missing API key');
+        }
+    },
 }));
 
 import mailRouter from '@/app/api/mail/mail';
+
+describe('Mail Router - モジュール読み込み', () => {
+    // 準正常系: キーの無い環境（next build のページデータ収集。本番のキーは実行時に
+    // Secret Manager から注入される）でも、import が例外にならない（issue #145）
+    test('Semi-Normal: RESEND_API_KEY 未設定でも import が例外にならない', async () => {
+        const saved = process.env.RESEND_API_KEY;
+        delete process.env.RESEND_API_KEY;
+        try {
+            await jest.isolateModulesAsync(async () => {
+                const mod = await import('@/app/api/mail/mail');
+                expect(typeof mod.default.fetch).toBe('function');
+            });
+            expect(mockResendCtor).not.toHaveBeenCalled();
+        } finally {
+            if (saved === undefined) delete process.env.RESEND_API_KEY;
+            else process.env.RESEND_API_KEY = saved;
+        }
+    });
+});
 
 // 有効な CSRF トークン（ヘッダーは JSON 文字列 / Cookie は生値）を付けた /send リクエストを作る
 /**
@@ -74,6 +101,8 @@ describe('Mail Router - /send', () => {
         expect(res.status).toBe(200);
         expect(await res.json()).toEqual({ success: true, response: { id: 'mock-email-id' } });
         expect(mockSend).toHaveBeenCalledTimes(1);
+        // クライアントはリクエスト時に、実行時の env のキーで生成される
+        expect(mockResendCtor).toHaveBeenCalledWith('test-resend-key');
     });
 
     // 準正常系: HTML を含む入力はエスケープして送信する（HTML インジェクション対策）
@@ -204,6 +233,29 @@ describe('Mail Router - /send', () => {
             expect(mockSend).not.toHaveBeenCalled();
         } finally {
             process.env.RESEND_SEND_DOMAIN = saved;
+        }
+    });
+
+    // 準正常系: API キーが未設定 → 400。クライアントを生成しない（生成すると例外で 500 になる）
+    test('POST /send - Semi-Normal: RESEND_API_KEY 未設定は 400', async () => {
+        const saved = process.env.RESEND_API_KEY;
+        delete process.env.RESEND_API_KEY;
+        try {
+            const res = await mailRouter.fetch(
+                buildSendRequest({
+                    name: 'Taro',
+                    email: 'taro@example.com',
+                    subjects: 'Hello',
+                    messages: 'Hi',
+                }),
+            );
+
+            expect(res.status).toBe(400);
+            expect(await res.json()).toEqual({ error: 'Mail service is not configured' });
+            expect(mockResendCtor).not.toHaveBeenCalled();
+            expect(mockSend).not.toHaveBeenCalled();
+        } finally {
+            process.env.RESEND_API_KEY = saved;
         }
     });
 
