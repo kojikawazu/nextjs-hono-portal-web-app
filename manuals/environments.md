@@ -42,10 +42,10 @@ gcs_aiusage_data_path = ""
 node_env = ""
 allowed_origin = ""
 backend_api_url = ""
-my_mail_address = ""
-resend_api_key = ""
 resend_send_domain = ""
 ```
+
+`RESEND_API_KEY` / `MY_MAIL_ADDRESS` は tfvars に置かず、Secret Manager に登録する（[terraform.md](./terraform.md)「秘密の値」）。
 
 ## GitHub Actionsの設定
 
@@ -73,3 +73,5 @@ API_VALIDATE_SECRET_TOKEN
 API_SECRET_TOKEN
 NEXT_PUBLIC_API_TOKEN
 ```
+
+`MY_MAIL_ADDRESS` / `RESEND_API_KEY` はテスト（`test.yml`）だけが使う（テスト用と本番用の分離は T-B11）。deploy ジョブはイメージ内 `.env` に書かない（本番は Cloud Run が Secret Manager から注入する）。

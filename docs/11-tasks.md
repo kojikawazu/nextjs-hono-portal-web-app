@@ -66,6 +66,7 @@
 | T-54 | AI 活用方法ページ `/aiusage` を新設（issue #132）。画面仕様の正本を `docs/mockups/` に作成（mock-screen）し、Hono ルート・スキーマ・repository・hook・ページ・Navbar・環境変数 `GCS_AIUSAGE_DATA_PATH` を追加。データは data-app #40 | 完了 |
 | T-55 | Terraform の state 復旧（issue #137・発端 #134）。`backend "gcs"`（`gs://my-infra-tfstate/nextjs-hono-portal-web-app`）を設定し、既存 9 リソースを `import {}` ブロックで取り込む。`terraform.tfvars` も同じ prefix に置き `make tf-vars-pull` / `tf-vars-push` で同期。Cloud Run から `GCS_SAMPLE_DATA_PATH` を削除し `GCS_AIUSAGE_DATA_PATH` を反映。共有 SA に `prevent_destroy`、秘密変数に `sensitive`、PR CI に `terraform fmt` / `validate` を追加（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
 | T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
+| T-57 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移行（issue #142・旧 T-B13）。Terraform は secret の器と secret 単位の `secretAccessor` だけを持ち、値は `gcloud secrets versions add` で投入する。Cloud Run の env を `secret_key_ref`（`latest`）へ切り替え、tfvars・state・deploy ジョブの `.env` から値を除去。ローテーション後の revision 作り直し用に deploy へ `workflow_dispatch` を追加（[manuals/terraform.md](../manuals/terraform.md)） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
@@ -76,7 +77,6 @@
 | T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
 | T-B12 | Cloudflare 側のレートリミット導入（エッジで止める） | 中 | アプリ側のレートリミット（T-48）は**インスタンス単位**で、実効上限が「閾値 × インスタンス数」になり、`cf-connecting-ip` / `x-forwarded-for` も詐称しうる（Cloud Run が `--allow-unauthenticated` で直接到達可能なため）。分散・詐称を伴う攻撃にはエッジ側が必要（[application.md §6](./06-security-specification/application.md)） |
 | T-B11 | テスト用と本番用でシークレットを分離し、本番シークレットを `production` Environment へ移す | 中 | `github-actions.md`「シークレットは Environment 単位で管理し、PR からは参照できないようにする」に未対応。`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、そのまま移すと PR の CI が全滅する。テスト専用の認証情報を用意するのが前提（[deploy-design.md](./09-architecture-specification/deploy-design.md)） |
-| T-B13 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移す | 中 | 現状は tfvars と state に平文で入る（`plan` 出力は `sensitive = true` でマスク済み）。移行すれば tfvars から秘密が消え、Cloud Run の環境変数も Secret 参照になる（issue #137 で積み残し） |
 
 ## 3. マイルストーン
 

@@ -21,6 +21,7 @@ GCP プロジェクト `portal-projects-449214` の以下を管理する。
 | Cloud DNS ゾーン `nextjs-hono-portal-app-zone` | `cloud_dns.tf` | レコードは Terraform 管理外 |
 | Artifact Registry `nextjs-hono-portal-app-repo` | `gcr.tf` | |
 | GCS バケット `portal-projects-449214-portal-app-bucket` / IAM × 2 | `gcs.tf` | IAM は `_member`（非権威的）。data-app 用 SA 等の他メンバーには触れない |
+| Secret Manager `nextjs-hono-portal-resend-api-key` / `nextjs-hono-portal-my-mail-address` / IAM × 2 | `secret_manager.tf` | **器と IAM のみ**。値（version）は Terraform 管理外で `gcloud` から投入する（§7.3）。`prevent_destroy` で削除を禁止 |
 
 ## 7.2 state と tfvars の置き場所
 
@@ -53,10 +54,11 @@ gs://my-infra-tfstate/
 |---|---|---|
 | アプリの更新（コンテナイメージ） | GitHub Actions | `deploy-to-googlecloud.yml` の `gcloud run deploy --image`（環境変数には触れない） |
 | インフラ・環境変数・IAM | Terraform | `make tf-vars-pull` → `make tf-plan` → `make tf-apply` |
+| 秘密の値（`RESEND_API_KEY` / `MY_MAIL_ADDRESS`） | Secret Manager | `gcloud secrets versions add` → revision の作り直し（[manuals/terraform.md](../../manuals/terraform.md)）。Terraform は参照（`secret_key_ref` の `latest`）だけを持つ |
 
 - CI はイメージを同じ名前（タグ無し）で push するため、イメージ参照は Terraform の定義と一致し差分にならない。
 - **環境変数は Terraform だけで変更する。** コンソールや `gcloud run services update --set-env-vars` で変えると、次の `apply` で定義の値に戻される。
-- イメージ内 `front/.env`（CI が Secrets から生成）は**フォールバック**。Next.js は既存の `process.env` を `.env` で上書きしないため、Cloud Run サービス側の値が優先される。`.env` だけに変数を足すと、Terraform が知らない値で本番が動く状態になる。
+- イメージ内 `front/.env`（CI が Secrets から生成）は**フォールバック**。Next.js は既存の `process.env` を `.env` で上書きしないため、Cloud Run サービス側の値が優先される。`.env` だけに変数を足すと、Terraform が知らない値で本番が動く状態になる。**Secret Manager から注入する 2 変数は `.env` に書かない**（イメージに平文で残るため。issue #142）。
 
 ## 7.4 state 不在からの復旧（issue #137）
 
