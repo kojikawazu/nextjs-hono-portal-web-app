@@ -27,11 +27,17 @@ resource "google_secret_manager_secret" "app" {
   }
 }
 
-# secret 単位で付与する（プロジェクト単位にしない）。
-# cloud-run-sa は他アプリと共有のため、他アプリからも読める。専用 SA への分離は issue #143。
+# secret 単位で、portal 専用の実行 SA にだけ付与する（プロジェクト単位にしない）。
 resource "google_secret_manager_secret_iam_member" "app_accessor" {
   for_each  = local.app_secrets
   secret_id = google_secret_manager_secret.app[each.key].secret_id
   role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.cloud_run_sa.email}"
+  member    = "serviceAccount:${google_service_account.portal_run.email}"
+
+  # member の変更は置き換えになる。既定の「削除 → 作成」だと、Cloud Run が新 SA へ切り替わる前に
+  # 旧 SA の権限が消え、旧 revision で起動するインスタンスが secret を解決できない。
+  # 先に作成し、旧付与の削除をこれに依存する Cloud Run の更新後まで遅らせる。
+  lifecycle {
+    create_before_destroy = true
+  }
 }

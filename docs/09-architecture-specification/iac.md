@@ -16,11 +16,11 @@ GCP プロジェクト `portal-projects-449214` の以下を管理する。
 | リソース | 定義 | 備考 |
 |---|---|---|
 | Cloud Run サービス `nextjs-hono-portal-service` / invoker IAM | `cloud_run.tf` / `cloud_run_iam.tf` | 環境変数もここで定義する（§7.3） |
-| サービスアカウント `cloud-run-sa` | `cloud_run.tf` | **共有リソース**。`echo-blog-app` / `nextjs-echo-chat-app-service` もこの SA で動くため `prevent_destroy` で削除を禁止 |
+| サービスアカウント `nextjs-hono-portal-run` | `cloud_run.tf` | **portal 専用の実行 SA**。secret の `secretAccessor` とバケットの `objectViewer` はこの SA だけに付与する（issue #143）。旧実行 SA `cloud-run-sa` は他アプリ（`echo-blog-app` / `nextjs-echo-chat-app-service`）が使うため、削除せず `removed` ブロックで管理から外した |
 | ドメインマッピング `smartportalcom.com` | `cloud_dns.tf` | |
 | Cloud DNS ゾーン `nextjs-hono-portal-app-zone` | `cloud_dns.tf` | レコードは Terraform 管理外 |
 | Artifact Registry `nextjs-hono-portal-app-repo` | `gcr.tf` | |
-| GCS バケット `portal-projects-449214-portal-app-bucket` / IAM × 2 | `gcs.tf` | IAM は `_member`（非権威的）。data-app 用 SA 等の他メンバーには触れない |
+| GCS バケット `portal-projects-449214-portal-app-bucket` / IAM × 3 | `gcs.tf` | IAM は `_member`（非権威的）。data-app 用 SA 等の他メンバーには触れない |
 | Secret Manager `nextjs-hono-portal-resend-api-key` / `nextjs-hono-portal-my-mail-address` / IAM × 2 | `secret_manager.tf` | **器と IAM のみ**。値（version）は Terraform 管理外で `gcloud` から投入する（§7.3）。`prevent_destroy` で削除を禁止 |
 
 ## 7.2 state と tfvars の置き場所

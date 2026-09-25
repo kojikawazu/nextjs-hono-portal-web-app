@@ -28,6 +28,13 @@ resource "google_storage_bucket_iam_member" "viewer" {
   member = "serviceAccount:${var.service_account_email}"
 }
 
+# Cloud Run（portal 専用の実行 SA）がアプリから JSON を読むための権限（issue #143）
+resource "google_storage_bucket_iam_member" "run_viewer" {
+  bucket = google_storage_bucket.nextjs_hono_gcs_portal_app_bkt.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.portal_run.email}"
+}
+
 resource "google_storage_bucket_iam_member" "editor" {
   bucket = google_storage_bucket.nextjs_hono_gcs_portal_app_bkt.name
   role   = "roles/storage.objectAdmin"
