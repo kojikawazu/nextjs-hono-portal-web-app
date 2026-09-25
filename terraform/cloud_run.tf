@@ -7,16 +7,6 @@ resource "google_service_account" "portal_run" {
   display_name = "nextjs-hono-portal Cloud Run runtime"
 }
 
-# 旧実行 SA（cloud-run-sa）は他サービス（echo-blog-app / nextjs-echo-chat-app-service）が使い続けるため、
-# 削除せず state からだけ外す。このリポジトリが使わない共有リソースを管理し続けない（issue #143）。
-removed {
-  from = google_service_account.cloud_run_sa
-
-  lifecycle {
-    destroy = false
-  }
-}
-
 # Google Cloud Run にデプロイするサービス
 resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
   name     = var.service_name

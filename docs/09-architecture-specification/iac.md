@@ -16,7 +16,7 @@ GCP プロジェクト `portal-projects-449214` の以下を管理する。
 | リソース | 定義 | 備考 |
 |---|---|---|
 | Cloud Run サービス `nextjs-hono-portal-service` / invoker IAM | `cloud_run.tf` / `cloud_run_iam.tf` | 環境変数もここで定義する（§7.3） |
-| サービスアカウント `nextjs-hono-portal-run` | `cloud_run.tf` | **portal 専用の実行 SA**。secret の `secretAccessor` とバケットの `objectViewer` はこの SA だけに付与する（issue #143）。旧実行 SA `cloud-run-sa` は他アプリ（`echo-blog-app` / `nextjs-echo-chat-app-service`）が使うため、削除せず `removed` ブロックで管理から外した |
+| サービスアカウント `nextjs-hono-portal-run` | `cloud_run.tf` | **portal 専用の実行 SA**。secret の `secretAccessor` とバケットの `objectViewer` はこの SA だけに付与する（issue #143）。旧実行 SA `cloud-run-sa` は他アプリ（`echo-blog-app` / `nextjs-echo-chat-app-service`）が使うため、削除せず `removed` ブロック（`destroy = false`）で state から外した。適用後にブロックは削除した |
 | ドメインマッピング `smartportalcom.com` | `cloud_dns.tf` | |
 | Cloud DNS ゾーン `nextjs-hono-portal-app-zone` | `cloud_dns.tf` | レコードは Terraform 管理外 |
 | Artifact Registry `nextjs-hono-portal-app-repo` | `gcr.tf` | |

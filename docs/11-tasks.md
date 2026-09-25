@@ -67,7 +67,7 @@
 | T-55 | Terraform の state 復旧（issue #137・発端 #134）。`backend "gcs"`（`gs://my-infra-tfstate/nextjs-hono-portal-web-app`）を設定し、既存 9 リソースを `import {}` ブロックで取り込む。`terraform.tfvars` も同じ prefix に置き `make tf-vars-pull` / `tf-vars-push` で同期。Cloud Run から `GCS_SAMPLE_DATA_PATH` を削除し `GCS_AIUSAGE_DATA_PATH` を反映。共有 SA に `prevent_destroy`、秘密変数に `sensitive`、PR CI に `terraform fmt` / `validate` を追加（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
 | T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
 | T-57 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移行（issue #142・旧 T-B13）。Terraform は secret の器と secret 単位の `secretAccessor` だけを持ち、値は `gcloud secrets versions add` で投入する。Cloud Run の env を `secret_key_ref`（`latest`）へ切り替え、tfvars・state・deploy ジョブの `.env` から値を除去。ローテーション後の revision 作り直し用に deploy へ `workflow_dispatch` を追加（[manuals/terraform.md](../manuals/terraform.md)） | 完了 |
-| T-58 | Cloud Run を portal 専用の実行 SA `nextjs-hono-portal-run` で動かす（issue #143）。secret の `secretAccessor` とバケットの `objectViewer` を専用 SA に Terraform で付与し、共有 SA `cloud-run-sa` からは外した。`cloud-run-sa` は他アプリが使うため `removed` ブロックで管理から外すだけにした（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
+| T-58 | Cloud Run を portal 専用の実行 SA `nextjs-hono-portal-run` で動かす（issue #143）。secret の `secretAccessor` とバケットの `objectViewer` を専用 SA に Terraform で付与し、共有 SA `cloud-run-sa` からは外した。`cloud-run-sa` は他アプリが使うため `removed` ブロックで state から外すだけにした（適用後にブロックは削除）（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
 
 ## 2. 未対応・検討中タスク
 
