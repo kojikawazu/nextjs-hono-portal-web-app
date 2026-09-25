@@ -44,16 +44,9 @@ gcloud artifacts docker images list asia-northeast1-docker.pkg.dev/[project-id]/
 
 ## Cloud Run から GCS へのアクセス設定
 
+Cloud Run の実行 SA（`nextjs-hono-portal-run`）への `roles/storage.objectViewer` は **Terraform（`terraform/gcs.tf` の `run_viewer`）で付与する**。`gcloud` で手動付与しない（Terraform 管理外の付与が残り、他アプリと共有の SA に権限が漏れていた。issue #143）。付与の確認だけは以下で行える。
+
 ```bash
-# GCSバケットのIAMポリシーを取得
-gcloud storage buckets get-iam-policy gs://[project-id]-[bucket-name]
-
-# 必要な IAM 権限を付与
-gcloud storage buckets add-iam-policy-binding gs://[project-id]-[bucket-name] \
- --member="serviceAccount:cloud-run-sa@[project-id].iam.gserviceaccount.com" \
- --role="roles/storage.objectViewer"
-
-# GCSバケットのIAMポリシーを取得
 gcloud storage buckets get-iam-policy gs://[project-id]-[bucket-name]
 ```
 

@@ -1,16 +1,10 @@
 # ---------------------------------------------
 # Cloud Run
 # ---------------------------------------------
-# Google Cloud Run のサービスアカウントを作成
-resource "google_service_account" "cloud_run_sa" {
-  account_id   = "cloud-run-sa"
-  display_name = "Cloud Run Service Account"
-
-  # 同じ GCP プロジェクトの別サービス（echo-blog-app / nextjs-echo-chat-app-service）もこの SA で動いている。
-  # このリポジトリの destroy / replace で消すと他サービスが停止するため、削除を禁止する。
-  lifecycle {
-    prevent_destroy = true
-  }
+# portal 専用の実行 SA。secret・バケットの権限をこの SA だけに付与し、他アプリから読めないようにする（issue #143）。
+resource "google_service_account" "portal_run" {
+  account_id   = "nextjs-hono-portal-run"
+  display_name = "nextjs-hono-portal Cloud Run runtime"
 }
 
 # Google Cloud Run にデプロイするサービス
@@ -85,7 +79,7 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
           value = var.resend_send_domain
         }
       }
-      service_account_name = google_service_account.cloud_run_sa.email
+      service_account_name = google_service_account.portal_run.email
     }
   }
 
@@ -94,9 +88,10 @@ resource "google_cloud_run_service" "nextjs_hono_portal_app_service" {
     latest_revision = true
   }
 
-  # 読み取り権限が付く前に revision を作ると、secret を解決できず起動に失敗する。
+  # 読み取り権限が付く前に revision を作ると、secret を解決できず起動に失敗する（GCS は初回リクエストで失敗する）。
   depends_on = [
     google_artifact_registry_repository.nextjs_hono_portal_app_repo,
     google_secret_manager_secret_iam_member.app_accessor,
+    google_storage_bucket_iam_member.run_viewer,
   ]
 }

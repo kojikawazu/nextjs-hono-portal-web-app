@@ -4,6 +4,22 @@
 
 新しいエントリはこの見出しの直下に追記する（新しいものが上）。
 
+## 2026-09-25 create_before_destroy と removed ブロックを同じ apply に入れたら plan が Cycle で失敗した
+
+### 概要
+
+issue #143 で、Cloud Run の実行 SA を共有 SA（`cloud-run-sa`）から専用 SA へ切り替えた。secret の `secretAccessor` に `create_before_destroy` を付け、同じ変更で旧 SA を `removed`（`destroy = false`）で state から外そうとしたところ、`terraform plan` が `Error: Cycle` で失敗した。plan の段階で止まったため、本番への影響はない。
+
+### 詳細
+
+- 何が起きたか: plan のエラーに、旧付与の削除（`destroy deposed`）、旧 SA を state から外す処理（`forget`）、Cloud Run の更新が循環として並んだ。SA の切り替えと旧 SA を管理から外す作業を 2 回の apply に分けて解消した（1 回目: SA の切り替えと権限の付け替え、2 回目: `removed` だけ）。
+- なぜ起きたか（根本原因）: `create_before_destroy` を付けると、置き換える resource の旧オブジェクト（deposed）の削除は、それに依存する resource（Cloud Run）の更新の後まで遅らされる。さらに、この指定はその resource が依存する先（旧付与の `member` が参照していた `cloud_run_sa`）にも伝わる。旧付与は `cloud_run_sa` を参照していたので、「旧付与の削除 → `cloud_run_sa` の forget」の順が必要になる。一方で、Cloud Run の更新は旧付与の削除より前でなければならない。これらが合わさって、依存グラフに輪ができた。
+- 教訓 / 次からどうする:
+  - **resource の置き換え（特に `create_before_destroy`）と、その旧参照先を `removed` で外す作業は、同じ apply に入れない。** 先に参照を付け替えて apply し、参照が無くなってから `removed` だけを apply する。
+  - **順序を保証する仕組み（`create_before_destroy` / `depends_on`）を入れたら、まず plan を実行してグラフが組めることを確かめてから、設計どおりか判断する。** 設計の段階では循環に気づけなかった。
+  - `removed` / `import` のように適用で役目が終わるブロックは、適用後に別コミットで削除する（state が 1 つしかないため、残しても何もしない）。
+- 関連: issue #143 / [`docs/09-architecture-specification/iac.md`](./09-architecture-specification/iac.md) / [`.claude/rules/iac.md`](../.claude/rules/iac.md)
+
 ## 2026-09-24 環境変数をビルド時の .env から外したら、トップレベルで初期化していた SDK が next build を落とした
 
 ### 概要
