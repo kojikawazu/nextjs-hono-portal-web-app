@@ -72,5 +72,5 @@
 | eslint-plugin-jsdoc | ^63.0.12 | JSDoc(TSDoc) 規約の lint 強制（`front/eslint.config.mjs`） |
 | Prettier | ^3.4.2 | コードフォーマット |
 | Jest | ^29.7.0 | ユニットテスト |
-| Playwright | ^1.50.1 | E2Eテスト |
+| Playwright | ^1.64.1 | E2Eテスト（CI ランナー `ubuntu-latest` = Ubuntu 26.04 でブラウザを導入するには 1.61.0 以降が必要） |
 | fake-gcs-server | latest (Docker) | GCS 統合テスト用エミュレータ（`docker-compose.test.yml`） |
