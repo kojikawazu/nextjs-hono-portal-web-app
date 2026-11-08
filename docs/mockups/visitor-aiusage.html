@@ -158,7 +158,7 @@
       <section class="section">
         <div class="section-head"><span class="section-num">03</span><h2 class="section-title">情報収集を自動化する</h2></div>
         <p class="section-summary">
-          手を動かさなくても情報が溜まる状態を作っています。
+          定期実行で AI を利用しています。AI の調査能力、まとめ能力を使い、以下の対応を実施しています。
         </p>
         <div class="items">
           <div class="card-dark item">
@@ -177,26 +177,47 @@
       </section>
 
       <section class="section">
-        <div class="section-head"><span class="section-num">04</span><h2 class="section-title">AI に任せないこと</h2></div>
+        <div class="section-head"><span class="section-num">04</span><h2 class="section-title">人間が対応すること</h2></div>
         <p class="section-summary">
-          速度より「取り返しのつかなさ」を優先します。次の判断は AI に委ねません。
+          意思決定は、ユーザーが判断します。
         </p>
         <div class="items">
           <div class="card-dark item">
-            <p class="item-title">PR のマージ承認</p>
-            <p class="item-desc">自動マージはしません。差分を読んで人間が承認します。</p>
-          </div>
-          <div class="card-dark item">
-            <p class="item-title">本番データの書き換え</p>
-            <p class="item-desc">実行前に必ず dry-run で変更内容と削除対象を確認します。削除を伴う操作は明示的に許可したときだけ実行します。</p>
-          </div>
-          <div class="card-dark item">
-            <p class="item-title">シークレットの取り扱い</p>
-            <p class="item-desc">鍵・認証情報はコミットさせません。除外設定と検出の仕組みで二重に防ぎます。</p>
+            <p class="item-title">PR レビュー</p>
+            <p class="item-desc">PR は人間に見てもらい、ユーザーと AI で壁打ちします。人間が承認するとマージされます。</p>
           </div>
           <div class="card-dark item">
             <p class="item-title">最終的な設計判断</p>
-            <p class="item-desc">トレードオフを並べさせたうえで、どれを取るかは人間が決めます。</p>
+            <p class="item-desc">PR でもプロンプトでも AI と壁打ちしながら、解説され、人間に最終判断をしてもらいます。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><span class="section-num">05</span><h2 class="section-title">品質を担保する</h2></div>
+        <p class="section-summary">
+          AI には AI 揺れがどうしてもあります。そのため、AI レビューや人間レビュー、UT や結合テストで品質ゲートを張って品質を担保します。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">AI レビュー</p>
+            <p class="item-desc">セルフレビューのスキルで規約との齟齬を洗い出し、PR には Codex や Copilot のレビューを入れます。複数の視点で揺れを拾います。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">人間レビュー</p>
+            <p class="item-desc">AI のレビューを通った PR も、最後は人間が差分を読んで確認します。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">ユニットテスト（UT）</p>
+            <p class="item-desc">実装と同時にテストを書き、CI で毎回実行します。モックは外部 I/O だけにし、正常系 1 に対して異常系 2 以上を目安にします。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">結合テスト</p>
+            <p class="item-desc">外部依存はコンテナの実物やエミュレータにつなぎ、モックでは見えない連携の誤りを拾います。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">シナリオテスト</p>
+            <p class="item-desc">画面遷移をまたぐ利用者の操作の流れを、E2E で最初から最後まで通して確認します。部品単位のテストでは見えない、つなぎ目の抜けを拾います。</p>
           </div>
         </div>
       </section>
