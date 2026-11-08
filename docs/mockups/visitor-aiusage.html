@@ -193,6 +193,31 @@
         </div>
       </section>
 
+      <section class="section">
+        <div class="section-head"><span class="section-num">05</span><h2 class="section-title">品質を担保する</h2></div>
+        <p class="section-summary">
+          AI には AI 揺れがどうしてもあります。そのため、AI レビューや人間レビュー、UT や結合テストで品質ゲートを張って品質を担保します。
+        </p>
+        <div class="items">
+          <div class="card-dark item">
+            <p class="item-title">AI レビュー</p>
+            <p class="item-desc">セルフレビューのスキルで規約との齟齬を洗い出し、PR には Codex や Copilot のレビューを入れます。複数の視点で揺れを拾います。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">人間レビュー</p>
+            <p class="item-desc">AI のレビューを通った PR も、最後は人間が差分を読んで確認します。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">ユニットテスト（UT）</p>
+            <p class="item-desc">実装と同時にテストを書き、CI で毎回実行します。モックは外部 I/O だけにし、正常系 1 に対して異常系 2 以上を目安にします。</p>
+          </div>
+          <div class="card-dark item">
+            <p class="item-title">結合テスト</p>
+            <p class="item-desc">外部依存はコンテナの実物やエミュレータにつなぎ、モックでは見えない連携の誤りを拾います。</p>
+          </div>
+        </div>
+      </section>
+
       <!-- 正本「備考」に定義した状態。実装時の見た目を確認するためモック上に併記する -->
       <div class="state-note">
         <h3>この画面が取りうる他の状態（screens.md の「備考」より）</h3>

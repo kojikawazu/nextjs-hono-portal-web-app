@@ -29,13 +29,14 @@ test('AI Usage Page', async ({ page }) => {
     // 原則がセクションより前に表示される
     await expect(page.getByText('意思決定権は人間にある。', { exact: false })).toBeVisible();
 
-    // 4 セクションがデータの配列順に並ぶ
+    // 5 セクションがデータの配列順に並ぶ
     const sectionTitles = await page.getByRole('heading', { level: 2 }).allTextContents();
     expect(sectionTitles).toEqual([
         '土台をつくる',
         '開発工程で使い分ける',
         '情報収集を自動化する',
         '人間が対応すること',
+        '品質を担保する',
     ]);
 
     // decision を持つ項目にだけ「人間 →」が出る（データ上は 9 件）
