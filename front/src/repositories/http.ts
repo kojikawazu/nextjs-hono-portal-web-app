@@ -33,7 +33,7 @@ export class ApiError extends Error {
  * @throws {ApiError} 通信に失敗した場合（`network`）、非 2xx の場合（`status`）、応答が
  *   スキーマに一致しない場合（`schema`）
  */
-export async function fetchJson<TSchema extends z.ZodTypeAny>(
+export async function fetchJson<TSchema extends z.ZodType>(
     input: string,
     schema: TSchema,
     init?: RequestInit,

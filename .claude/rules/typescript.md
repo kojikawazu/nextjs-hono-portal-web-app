@@ -66,9 +66,9 @@ type OnSelect = (id: string) => void;
 
 **`href` / `src` に入る URL は、`.url()` に加えて許可するスキームを明示的に限定する。**
 
-`z.string().url()` は内部が `new URL()` のため、**スキーム付き URI であれば何でも通す**。「URL として構文が妥当」と「`href` に入れて安全」は別の概念である。
+`z.url()`（zod 3 では `z.string().url()`）は、**スキーム付き URI であれば何でも通す**。「URL として構文が妥当」と「`href` に入れて安全」は別の概念である。
 
-実測（zod 3.24.1）:
+実測（zod 3.24.1 の `z.string().url()`、zod 4.6.7 の `z.url()` で結果は同じ）:
 
 | 入力 | `.url()` の判定 |
 |---|---|
@@ -83,13 +83,10 @@ type OnSelect = (id: string) => void;
 
 ```ts
 // ❌ javascript:alert(1) が通る
-url: z.string().url(),
+url: z.url(),
 
 // ✅ 許可するスキームを限定する
-url: z
-    .string()
-    .url()
-    .refine((value) => value.startsWith('https://'), { message: 'https の URL のみ許可する' }),
+url: z.url().refine((value) => value.startsWith('https://'), { error: 'https の URL のみ許可する' }),
 ```
 
 - **同じ制約を各スキーマへ書き写さない。** 2 箇所目が必要になった時点で部分スキーマとして切り出し、双方から参照する（`duplication.md`）。
