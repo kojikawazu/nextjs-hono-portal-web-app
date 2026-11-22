@@ -46,14 +46,14 @@
 
 ### 未使用（レガシー）環境変数
 
-以下は GitHub Actions による `.env` / `.env.test` 生成（`deploy-to-googlecloud.yml`, `test.yml`）や `manuals/environments.md` に登場するが、**現行のアプリケーションコード（`src/`）からは一切参照されていない**。旧フロント/バック分離構成の名残と考えられる。新規にこれらへ依存しないこと（不要であれば CI シークレットごと削除を推奨）。
+以下は GitHub Actions による `.env` 生成（`deploy-to-googlecloud.yml`）や `manuals/environments.md` に登場するが、**現行のアプリケーションコード（`src/`）からは一切参照されていない**。旧フロント/バック分離構成の名残と考えられる。新規にこれらへ依存しないこと（不要であれば CI シークレットごと削除を推奨）。`test.yml` の `.env.test` 生成は issue #161 で廃止した。
 
 | 変数名 | 登場箇所 | 状態 |
 |--------|---------|------|
 | `BACKEND_API_URL` | deploy / .env | 未使用 |
-| `API_VALIDATE_SECRET_TOKEN` | deploy / test / .env(.test) | 未使用 |
-| `API_SECRET_TOKEN` | deploy / test / .env(.test) | 未使用 |
-| `NEXT_PUBLIC_API_TOKEN` | deploy / test / .env(.test) | 未使用 |
+| `API_VALIDATE_SECRET_TOKEN` | deploy / .env | 未使用 |
+| `API_SECRET_TOKEN` | deploy / .env | 未使用 |
+| `NEXT_PUBLIC_API_TOKEN` | deploy / .env | 未使用 |
 
 > 本アプリの API は認証を持たない（[06-security-specification/](./06-security-specification/) / [07-api-specification/](./07-api-specification/)）。上記トークンは認証機構として機能していない。
 

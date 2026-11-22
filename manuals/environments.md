@@ -66,12 +66,12 @@ GCS_PRIVATE_BUCKET_NAME
 GCS_COMMON_DATA_PATH
 GCS_PERSONAL_DATA_PATH
 GCS_AIUSAGE_DATA_PATH
-MY_MAIL_ADDRESS
-RESEND_API_KEY
 RESEND_SEND_DOMAIN
 API_VALIDATE_SECRET_TOKEN
 API_SECRET_TOKEN
 NEXT_PUBLIC_API_TOKEN
 ```
 
-`MY_MAIL_ADDRESS` / `RESEND_API_KEY` はテスト（`test.yml`）だけが使う（テスト用と本番用の分離は T-B11）。deploy ジョブはイメージ内 `.env` に書かない（本番は Cloud Run が Secret Manager から注入する）。
+テスト（`test.yml`）はシークレットを使わない（issue #161）。PR の CI にも Dependabot 用シークレットの登録は不要。
+
+`MY_MAIL_ADDRESS` / `RESEND_API_KEY` は GitHub のシークレットに置かない。以前はテストだけが使っていたが、issue #161 でどのワークフローからも参照されなくなった。本番では Cloud Run が Secret Manager から注入する（deploy ジョブはイメージ内 `.env` に書かない）。リポジトリに残っている場合は削除してよい。
