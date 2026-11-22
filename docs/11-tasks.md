@@ -68,6 +68,7 @@
 | T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
 | T-57 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移行（issue #142・旧 T-B13）。Terraform は secret の器と secret 単位の `secretAccessor` だけを持ち、値は `gcloud secrets versions add` で投入する。Cloud Run の env を `secret_key_ref`（`latest`）へ切り替え、tfvars・state・deploy ジョブの `.env` から値を除去。ローテーション後の revision 作り直し用に deploy へ `workflow_dispatch` を追加（[manuals/terraform.md](../manuals/terraform.md)） | 完了 |
 | T-58 | Cloud Run を portal 専用の実行 SA `nextjs-hono-portal-run` で動かす（issue #143）。secret の `secretAccessor` とバケットの `objectViewer` を専用 SA に Terraform で付与し、共有 SA `cloud-run-sa` からは外した。`cloud-run-sa` は他アプリが使うため `removed` ブロックで state から外すだけにした（適用後にブロックは削除）（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
+| T-59 | test ジョブから GCP 認証と `.env.test` 生成（本番シークレット 13 個）を撤去し、呼び出し元の `secrets: inherit` も外す（issue #161）。どのテストも使っておらず、Dependabot PR ではシークレットが渡らず認証で必ず落ちていた。`.env.test` を読むだけだった `playwright.config.ts` の `dotenv` も削除（[ci.md](./08-test-specification/ci.md)） | 完了 |
 | T-60 | 間接依存の Dependabot alerts 8 件を `pnpm.overrides` で解消（issue #163）。T-49 の overrides が当時の修正版に**バージョンを固定**していたため、後から出た advisory の修正版へ上がらず再発していた（`brace-expansion@2` 2.1.4→2.1.7、`fast-xml-parser` 5.7.0→5.12.0、`postcss-selector-parser` 6.1.3→6.1.5）。fast-xml-parser 5.12.0 が要求する `fast-xml-builder ^1.3.1` を、既存の override（1.1.7 固定）が範囲外に押さえ込んでいたため 1.3.2 へ上げた。上流が旧メジャーを固定する `minimatch@9`→11.0.1・`glob@10`→14.0.2・`uuid@9`→11.1.1 はメジャー越えのため、利用側の API（`globSync` / `glob.glob` / `minimatch` / `v4`）の存在と CJS の入口・Node 20 対応を確認した。overrides は**固定した時点から自動更新が止まる**ため、アラートが出たら overrides 側を見直す | 完了 |
 
 ## 2. 未対応・検討中タスク
@@ -78,7 +79,7 @@
 | T-B03 | `useIsHomePath`の命名修正 | 低 | 名前と実装が逆 |
 | T-B10 | `resend` を 4.1.1 → 6.x へ更新（`js-cookie` の high を解消） | 低 | メジャー 2 段更新で破壊的変更を含む。`js-cookie` はブラウザ用 Cookie ライブラリで、サーバー側のメール描画では実行されないため緊急性は低い（[security-audit-report-2026-09.md](./security-audit-report-2026-09.md)） |
 | T-B12 | Cloudflare 側のレートリミット導入（エッジで止める） | 中 | アプリ側のレートリミット（T-48）は**インスタンス単位**で、実効上限が「閾値 × インスタンス数」になり、`cf-connecting-ip` / `x-forwarded-for` も詐称しうる（Cloud Run が `--allow-unauthenticated` で直接到達可能なため）。分散・詐称を伴う攻撃にはエッジ側が必要（[application.md §6](./06-security-specification/application.md)） |
-| T-B11 | テスト用と本番用でシークレットを分離し、本番シークレットを `production` Environment へ移す | 中 | `github-actions.md`「シークレットは Environment 単位で管理し、PR からは参照できないようにする」に未対応。`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、そのまま移すと PR の CI が全滅する。テスト専用の認証情報を用意するのが前提（[deploy-design.md](./09-architecture-specification/deploy-design.md)） |
+| T-B11 | テスト用と本番用でシークレットを分離し、本番シークレットを `production` Environment へ移す | 中 | `github-actions.md`「シークレットは Environment 単位で管理し、PR からは参照できないようにする」に未対応。障害だった「`test.yml` が PR で同じシークレットを使う」は T-59（issue #161）で解消し、テストはシークレットを一切使わなくなった。テスト専用の認証情報も不要で、残るのは Environment への移し替えだけ（[deploy-design.md](./09-architecture-specification/deploy-design.md)） |
 
 ## 3. マイルストーン
 
