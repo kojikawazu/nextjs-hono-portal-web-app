@@ -68,6 +68,7 @@
 | T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
 | T-57 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移行（issue #142・旧 T-B13）。Terraform は secret の器と secret 単位の `secretAccessor` だけを持ち、値は `gcloud secrets versions add` で投入する。Cloud Run の env を `secret_key_ref`（`latest`）へ切り替え、tfvars・state・deploy ジョブの `.env` から値を除去。ローテーション後の revision 作り直し用に deploy へ `workflow_dispatch` を追加（[manuals/terraform.md](../manuals/terraform.md)） | 完了 |
 | T-58 | Cloud Run を portal 専用の実行 SA `nextjs-hono-portal-run` で動かす（issue #143）。secret の `secretAccessor` とバケットの `objectViewer` を専用 SA に Terraform で付与し、共有 SA `cloud-run-sa` からは外した。`cloud-run-sa` は他アプリが使うため `removed` ブロックで state から外すだけにした（適用後にブロックは削除）（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
+| T-60 | 間接依存の Dependabot alerts 8 件を `pnpm.overrides` で解消（issue #163）。T-49 の overrides が当時の修正版に**バージョンを固定**していたため、後から出た advisory の修正版へ上がらず再発していた（`brace-expansion@2` 2.1.4→2.1.7、`fast-xml-parser` 5.7.0→5.12.0、`postcss-selector-parser` 6.1.3→6.1.5）。fast-xml-parser 5.12.0 が要求する `fast-xml-builder ^1.3.1` を、既存の override（1.1.7 固定）が範囲外に押さえ込んでいたため 1.3.2 へ上げた。上流が旧メジャーを固定する `minimatch@9`→11.0.1・`glob@10`→14.0.2・`uuid@9`→11.1.1 はメジャー越えのため、利用側の API（`globSync` / `glob.glob` / `minimatch` / `v4`）の存在と CJS の入口・Node 20 対応を確認した。overrides は**固定した時点から自動更新が止まる**ため、アラートが出たら overrides 側を見直す | 完了 |
 
 ## 2. 未対応・検討中タスク
 
