@@ -3,19 +3,17 @@ import { z } from 'zod';
 /**
  * `href` / `src` に入れて安全な URL のスキーマ。
  *
- * **`z.string().url()` だけでは不十分**。内部が `new URL()` のため、スキーム付き URI で
- * あれば `javascript:` / `data:` / `vbscript:` も「妥当な URL」として通す（実測: zod 3.24.1）。
- * これらは `href` に入ると XSS の実行経路になるため、`https` に限定する。
+ * **`z.url()` だけでは不十分**。スキーム付き URI であれば `javascript:` / `data:` /
+ * `vbscript:` も「妥当な URL」として通す（実測: zod 3.24.1 の `z.string().url()`、
+ * zod 4.6.7 の `z.url()` とも同じ）。これらは `href` に入ると XSS の実行経路になるため、
+ * `https` に限定する。
  *
  * 制約の定義はこのファイルだけに置き、各スキーマはここから合成する
  * （`duplication.md`「同じ制約を書き写さない」／`typescript.md`「URL の検証」）。
  */
-export const httpsUrlSchema = z
-    .string()
-    .url()
-    .refine((value) => value.startsWith('https://'), {
-        message: 'https の URL のみ許可する',
-    });
+export const httpsUrlSchema = z.url().refine((value) => value.startsWith('https://'), {
+    error: 'https の URL のみ許可する',
+});
 
 /**
  * 表示用リンクの URL スキーマ。検証に通らない値は `undefined` に劣化させる。

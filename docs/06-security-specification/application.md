@@ -76,8 +76,8 @@ cors({
 `front/src/schemas/url.ts`（検証）/ 各コンポーネント（描画）
 
 - すべての外部リンク（`target="_blank"`）に `rel="noopener noreferrer"` を付与
-- **`href` に入る外部由来の URL は `https` に限定する**。`z.string().url()` は内部が
-  `new URL()` のため `javascript:` / `data:` / `vbscript:` を通す（実測: zod 3.24.1）。
+- **`href` に入る外部由来の URL は `https` に限定する**。`z.url()` は
+  `javascript:` / `data:` / `vbscript:` を通す（実測: zod 3.24.1・4.6.7）。
   スキーム限定は `schemas/url.ts` の `httpsUrlSchema` に 1 箇所だけ定義し、各スキーマはそれを合成する
 - **検証に通らない URL・未設定の URL はリンクごと描画しない**（`optionalHttpsUrlSchema` が
   `undefined` へ劣化させ、描画側が要素を出し分ける）。`href=""` のリンクを作らない

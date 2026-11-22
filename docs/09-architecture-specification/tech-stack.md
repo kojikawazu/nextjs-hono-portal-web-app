@@ -35,8 +35,8 @@
 | TypeScript | ^5 | 型安全性 |
 | Tailwind CSS | ^3.4.1 | ユーティリティファーストCSS |
 | Framer Motion | ^12.0.6 | アニメーション |
-| React Hook Form | ^7.54.2 | フォーム管理 |
-| Zod | ^3.24.1 | スキーマバリデーション |
+| React Hook Form | ^7.92.0 | フォーム管理（`@hookform/resolvers` ^7.0.8 の `zodResolver` で Zod と接続） |
+| Zod | ^4.6.7 | スキーマバリデーション |
 | Radix UI | - | アクセシブルUIコンポーネント (Label) |
 | Lucide React | ^0.474.0 | アイコン |
 | FontAwesome | ^6.7.2 | SNSアイコン |

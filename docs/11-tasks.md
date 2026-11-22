@@ -68,6 +68,7 @@
 | T-56 | secret-scan / `.gitignore` が GCP SA 鍵の既定名 `<project-id>-<12桁の16進>.json` を検出できなかった（issue #140）。名前のパターンを追加し、`*.json` を中身（`type: service_account` + `private_key`）でも判定して名前を変えても検出する | 完了 |
 | T-57 | Terraform の秘密変数（`resend_api_key` / `my_mail_address`）を Secret Manager 参照へ移行（issue #142・旧 T-B13）。Terraform は secret の器と secret 単位の `secretAccessor` だけを持ち、値は `gcloud secrets versions add` で投入する。Cloud Run の env を `secret_key_ref`（`latest`）へ切り替え、tfvars・state・deploy ジョブの `.env` から値を除去。ローテーション後の revision 作り直し用に deploy へ `workflow_dispatch` を追加（[manuals/terraform.md](../manuals/terraform.md)） | 完了 |
 | T-58 | Cloud Run を portal 専用の実行 SA `nextjs-hono-portal-run` で動かす（issue #143）。secret の `secretAccessor` とバケットの `objectViewer` を専用 SA に Terraform で付与し、共有 SA `cloud-run-sa` からは外した。`cloud-run-sa` は他アプリが使うため `removed` ブロックで state から外すだけにした（適用後にブロックは削除）（[iac.md](./09-architecture-specification/iac.md)） | 完了 |
+| T-61 | zod 3.24.1 → 4.6.7 へ移行し high（GHSA-mrhx-c7xc-m3w5）を解消（issue #165・Dependabot #154 を置き換え）。zod 4 に対応する `@hookform/resolvers` 3 → 7（6 / 7 の破壊的変更は effect-ts / typebox のみ）と、その peer の `react-hook-form` 7.54 → 7.92 を同時に更新。非推奨 API を移行（`z.string().email()` → `z.email()`、`.url()` → `z.url()`、refine の `message` → `error`、`z.ZodTypeAny` → `z.ZodType`）。eslint-plugin-react-hooks 経由の zod 3.25.76 は `pnpm dedupe` で 4.6.7 に寄せた。`z.url()` も `javascript:` を通すことを実測し、`typescript.md` の根拠を更新 | 完了 |
 
 ## 2. 未対応・検討中タスク
 
