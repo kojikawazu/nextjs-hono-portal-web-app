@@ -52,8 +52,8 @@ jobs:
     test:
         needs: changes
         if: needs.changes.outputs.app == 'true'
+        # シークレットは渡さない（test.yml はシークレットを使わない。issue #161）
         uses: ./.github/workflows/test.yml
-        secrets: inherit
 
     # Terraform の静的検査。backend（共有 GCS バケット）には接続しないため認証不要。
     # state を触らない範囲で、構文・参照切れ・整形崩れを PR 時点で止める。

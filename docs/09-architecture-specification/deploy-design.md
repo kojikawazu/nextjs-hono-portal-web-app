@@ -56,7 +56,7 @@
 | `environment` | `production`（`url` は公開サイト <https://smartportalcom.com/> の固定値） | デプロイ履歴と URL を GitHub に記録する。**Cloud Run の直 URL を動的取得しない** — サービス名・リージョンがシークレットのため URL がマスクされ `environment_url` が記録されない。利用者が開くのも Cloudflare 経由の公開サイト側（issue #115） |
 | 承認ゲート | **なし** | main マージでそのままデプロイする運用を維持（issue #113 の判断） |
 
-**シークレットは Environment ではなくリポジトリレベルで管理している。** `github-actions.md` は「シークレットは Environment 単位で管理し、PR からは参照できないようにする」と定めるが、`test.yml` が PR で同じ 14 個のシークレット（GCP SA キー・Resend・GCS パス等）を使うため、`production` Environment へ移すと PR の CI が動かなくなる。分離にはテスト用と本番用でシークレットを別立てにする必要があり、未対応として `docs/11-tasks.md` に残している。
+**シークレットは Environment ではなくリポジトリレベルで管理している。** `github-actions.md` は「シークレットは Environment 単位で管理し、PR からは参照できないようにする」と定めるが、移行は未対応（`docs/11-tasks.md` の T-B11）。かつては `test.yml` が PR で同じシークレット（GCP SA キー・Resend・GCS パス等）を使っており、移すと PR の CI が動かなくなるのが障害だった。issue #161 で `test.yml` はシークレットを一切使わない構成になり（呼び出し元も `secrets: inherit` を付けない）、この障害は解消済み。残るのは Environment への移し替えだけである。
 
 **注意**: CI に `format:check`・`lint`・`typecheck` を追加済み（install 直後、fail fast）。`build` ステップは CI に無く、Docker ビルド内で実行される。型チェックを CI に独立して置いているのは、これが無いと型エラーが main マージ後のデプロイまで検出されないため。
 
